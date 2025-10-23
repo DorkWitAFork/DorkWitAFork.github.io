@@ -1,0 +1,17 @@
+h1 {
+    border: 2pt solid blue;
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+p {
+    text-align: center;
+}
+
+div {
+    margin: 15px;
+}
+
+nav {
+    margin: 15px;
+}
