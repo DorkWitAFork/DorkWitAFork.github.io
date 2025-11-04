@@ -12,6 +12,27 @@ div {
     margin: 15px;
 }
 
-nav {
-    margin: 15px;
+nav ul {
+    display : flex;
+    justify-content: center;
+    list-style : none;
+    padding: 0;
+    background-color: #003366;
+    margin : 0;
+}
+
+nav li a {
+    color : white;
+    text-decoration: none;
+    padding: 15px 25px;
+    display : block;
+}
+
+.card {
+    max-width: 700px;
+    margin : 40px auto;
+    background : white;
+    padding : 25px;
+    border-radius : 10px;
+    box-shadow : 0 0 15px rgba(0,0,0,0.1);
 }
