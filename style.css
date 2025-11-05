@@ -1,15 +1,22 @@
-h1 {
-    border: 2pt solid blue;
-    text-align: center;
+.assignment-4 {
+    display: flex;
+    justify-content: center;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.assignment-5 {
+    display: flex;
+    justify-content: center;
+    font-family: Tahoma, Geneva, Verdana, sans-serif;
+}
+
+hr.default {
+    height: 3px;
+    background-color: #0055aa;
 }
 
 p {
     text-align: center;
-}
-
-div {
-    margin: 15px;
 }
 
 nav ul {
