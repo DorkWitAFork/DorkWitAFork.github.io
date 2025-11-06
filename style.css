@@ -1,13 +1,13 @@
 .assignment-4 {
     display: flex;
     justify-content: center;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .assignment-5 {
     display: flex;
     justify-content: center;
-    font-family: Tahoma, Geneva, Verdana, sans-serif;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 hr.default {
@@ -20,19 +20,19 @@ p {
 }
 
 nav ul {
-    display : flex;
+    display: flex;
     justify-content: center;
-    list-style : none;
+    list-style: none;
     padding: 0;
     background-color: #003366;
-    margin : 0;
+    margin: 0;
 }
 
 nav li a {
-    color : white;
+    color: white;
     text-decoration: none;
     padding: 15px 25px;
-    display : block;
+    display: block;
 }
 
 nav li a:hover {
@@ -41,9 +41,9 @@ nav li a:hover {
 
 .card {
     max-width: 700px;
-    margin : 40px auto;
-    background : white;
-    padding : 25px;
-    border-radius : 10px;
-    box-shadow : 0 0 15px rgba(0,0,0,0.1);
+    margin: 40px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
 }
