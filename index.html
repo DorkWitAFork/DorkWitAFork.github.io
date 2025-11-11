@@ -4,10 +4,18 @@
     <meta charset="utf-8" />
     <link rel="stylesheet" href="style.css">
     <title>CSC 193A Assignments</title>
+
+    <!-- For Assignment 5 -->
     <script src="fancifymytext.js" defer></script>
+
+    <!-- For Assignment 6-->
+    <link rel="stylesheet" href="assignment_6_style.css">
+    <script src="encrypt-it.js" defer></script>
   </head>
 
   <body>
+
+  <!-- Assignment 4 -->
   <main class="card">
     <nav>
       <ul>
@@ -30,6 +38,8 @@
         What are you waiting for? Go <a href="https://www.indeed.com/jobs?q=software+engineer&l=Sacramento%2C+CA%2C+95827">apply!</a>
     </p>
     </main>
+
+    <!-- Assignment 5 -->
     <main class="card">
         <h1 class="assignment-5">Assignment 5</h1>
         <hr class="default">
@@ -46,6 +56,36 @@
             
             <button id="mooBtn">MOO</button>
         </fieldset>
+    </main>
+
+    <!-- Assignment 6 -->
+    <main class="card assignment-6-section">
+      <h1 class="assignment-6">Assignment 6: Encrypt-It!</h1>
+      <hr class="default">
+
+      <fieldset>
+        <legend>Text to Encrypt</legend>
+        <textarea id="input-text" rows="10" cols="60"
+          placeholder="Enter your message to be encrypted here"></textarea>
+      </fieldset>
+
+      <fieldset>
+        <legend>Encrypt Options</legend>
+        <p>
+          <strong>Cipher Type:</strong>
+          <select id="cipher-type">
+            <option value="shift">Shift Cipher</option>
+          </select>
+        </p>
+
+        <button id="encrypt-it">Encrypt It!</button>
+        <button id="reset">Reset</button>
+      </fieldset>
+
+      <div id="result-area">
+        <h2>Result:</h2>
+        <p id="result"></p>
+      </div>
     </main>
   </body>
 </html>

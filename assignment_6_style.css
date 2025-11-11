@@ -1,0 +1,144 @@
+/* Assignment 6 (Encrypt-It) Scoped Styles */
+@import url('https://fonts.googleapis.com/css?family=Orbitron|Lato');
+
+.assignment-6-section {
+  background-color: #202020;
+  color: white;
+  font-family: "Lato", sans-serif;
+}
+
+/* Limit typography and spacing */
+.assignment-6-section h1,
+.assignment-6-section h2,
+.assignment-6-section legend {
+  text-align: center;
+}
+
+.assignment-6-section h1 {
+  margin: 30px auto;
+  font-size: 28pt;
+  font-family: "Orbitron", sans-serif;
+  text-shadow: 3px 3px #d92b6f, -3px -3px #047ab9;
+  animation: glitch 1s;
+}
+
+.assignment-6-section legend {
+  padding: 0 16pt;
+  font-size: 16pt;
+}
+
+.assignment-6-section button,
+.assignment-6-section strong,
+.assignment-6-section textarea,
+.assignment-6-section #result-area {
+  font-size: 14pt;
+}
+
+.assignment-6-section strong {
+  line-height: 26pt;
+}
+
+.assignment-6-section select {
+  padding: 2pt;
+  margin: 0 14pt;
+  font-size: 12pt;
+}
+
+/* Fieldset */
+.assignment-6-section button,
+.assignment-6-section fieldset,
+.assignment-6-section select,
+.assignment-6-section textarea,
+.assignment-6-section #result {
+  border-radius: 5pt;
+}
+
+.assignment-6-section fieldset {
+  width: 80%;
+  padding: 7pt 14pt;
+  border: 1.5pt solid white;
+  margin: 14pt auto;
+}
+
+.assignment-6-section textarea {
+  width: 100%;
+  padding: 1pt;
+  border: 2px solid #101010;
+  background-color: #5f5d5d;
+  resize: none;
+  outline: none;
+  transition: border-color 0.5s;
+}
+
+.assignment-6-section textarea:focus {
+  border-color: #047ab9;
+}
+
+.assignment-6-section #result {
+  width: 80%;
+  padding: 7pt;
+  min-height: 20px;
+  margin: 0 auto;
+  background-color: #101010;
+}
+
+.assignment-6-section button,
+.assignment-6-section select {
+  border: none;
+}
+
+.assignment-6-section button {
+  min-width: 150px;
+  padding: 5px;
+  margin: 5px 0;
+  background-color: #047ab9;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.assignment-6-section button:hover {
+  background-color: #d92b6f;
+}
+
+.assignment-6-section h2,
+.assignment-6-section p {
+  animation: fade-in-up 0.5s;
+  animation-fill-mode: both;
+}
+
+.assignment-6-section p {
+  animation-delay: 0.2s;
+  margin: 0;
+}
+
+/* Animations */
+@keyframes glitch {
+  0% {
+    opacity: 0;
+    text-shadow: none;
+  }
+  15% {
+    text-shadow: 1px 1px #d92b6f, -1px -1px #047ab9;
+  }
+  35% {
+    text-shadow: 10px 10px #047ab9, -10px -10px #d92b6f;
+  }
+  65% {
+    text-shadow: 1px 1px #d92b6f, -1px -1px #047ab9;
+  }
+  100% {
+    opacity: 1;
+    text-shadow: 3px 3px #d92b6f, -3px -3px #047ab9;
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    transform: translateY(8pt);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
