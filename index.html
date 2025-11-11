@@ -4,7 +4,10 @@
     <meta charset="utf-8" />
     <link rel="stylesheet" href="style.css">
     <title>CSC 193A Assignments</title>
+    <script src="fancifymytext.js" defer></script>
   </head>
+
+  <body>
   <main class="card">
     <nav>
       <ul>
@@ -13,6 +16,7 @@
         <li><a href="https://www.reddit.com/r/computerscience/comments/h7bb82/cs_summer_project_ideas/#">Project Ideas</a></li>
         <li><a href="#">FAQ</a></li>
       </ul>
+    </nav>
     <h1 class="assignment-4">Assignment 4</h1>
     <hr class="default">
     <p>
@@ -31,7 +35,17 @@
         <hr class="default">
         <fieldset>
             <legend>Text</legend>
-            <textarea class="classic-text" rows="4" cols="30"></textarea>
+            <textarea id="textArea" class="classic-text" rows="4" cols="30"></textarea>
+        </fieldset>
+        <fieldset>
+            <legend>Fancify</legend>
+            <button id="biggerBtn">Bigger!</button><br><br>
+            
+            <label><input type="radio" name="fancify" id="fancy"> FancyShmancy</label><br>
+            <label><input type="radio" name="fancify" id="boring"> BoringBetty</label><br><br>
+            
+            <button id="mooBtn">MOO</button>
         </fieldset>
     </main>
+  </body>
 </html>
