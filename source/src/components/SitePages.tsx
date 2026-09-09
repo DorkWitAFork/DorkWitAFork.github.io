@@ -23,7 +23,7 @@ export function PortfolioHome() {
         <p className="welcome-descriptor">Computer Science Student<br/>and Software Developer</p>
       </section>
       <section className="audience-section" aria-labelledby="audience-heading">
-        <div className="audience-prompt"><span>CHOOSE YOUR PATH</span><h2 id="audience-heading">Hello! Are you a:</h2></div>
+        <div className="audience-prompt"><h2 id="audience-heading">Hello! Are you a:</h2><span>CHOOSE YOUR PATH</span></div>
         <div className="audience-grid">
           <a href="#/student" className="audience-card audience-student"><span className="card-number">01</span><div className="audience-glyph"><AudienceGlyph type="student"/></div><div><h3>Student</h3><p>Open study guides, interactive lessons, and practice labs for my computer science courses.</p></div><span className="card-action">Explore courses <Icon name="arrow" size={18}/></span></a>
           <a href="#/professor" className="audience-card"><span className="card-number">02</span><div className="audience-glyph"><AudienceGlyph type="professor"/></div><div><h3>Professor</h3><p>Review coursework, assignment projects, and future academic work.</p></div><span className="card-action">View academic work <Icon name="arrow" size={18}/></span></a>

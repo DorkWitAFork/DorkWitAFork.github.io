@@ -143,7 +143,7 @@ button:focus-visible, input:focus-visible { outline: 3px solid #e49e15; outline-
 .welcome-title h1 em { color: var(--orange); font: italic 500 1em 'Newsreader', Georgia, serif; }
 .welcome-descriptor { border-left: 3px solid var(--gold); padding: 13px 0 13px 20px; margin: 0 0 5px; font-size: 14px; font-weight: 700; line-height: 1.6; }
 .audience-section { background: var(--green); color: white; padding: 48px max(5vw, calc((100vw - 1200px)/2)) 70px; }
-.audience-prompt { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid #376b60; padding-bottom: 24px; }
+.audience-prompt { display: flex; flex-direction: column; align-items: flex-end; gap: 12px; text-align: right; border-bottom: 1px solid #376b60; padding-bottom: 24px; }
 .audience-prompt span { font: 500 9px 'DM Mono', monospace; letter-spacing: .17em; color: #89aba2; }
 .audience-prompt h2 { margin: 0; font-size: 25px; font-weight: 600; }
 .audience-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
@@ -253,7 +253,7 @@ button:focus-visible, input:focus-visible { outline: 3px solid #e49e15; outline-
 @media (max-width: 700px) {
   .site-header { height: 65px; }.site-wordmark { padding: 0 15px; }.site-wordmark small { display: none; }.site-home-link { min-width: 72px; }
   .welcome-intro { min-height: 390px; display: block; padding: 45px 0; }.welcome-title { margin-top: 55px; }.welcome-title h1 { font-size: 74px; }.welcome-descriptor { margin-top: 38px; }
-  .audience-section { padding: 40px 5vw; }.audience-prompt { display: block; }.audience-prompt h2 { margin-top: 12px; }.audience-grid { grid-template-columns: 1fr; margin-top: 22px; }.audience-card, .audience-card:first-child { min-height: 270px; border: 1px solid #376b60; border-bottom: 0; }.audience-card:last-child { border-bottom: 1px solid #376b60; }
+  .audience-section { padding: 40px 5vw; }.audience-grid { grid-template-columns: 1fr; margin-top: 22px; }.audience-card, .audience-card:first-child { min-height: 270px; border: 1px solid #376b60; border-bottom: 0; }.audience-card:last-child { border-bottom: 1px solid #376b60; }
   .portfolio-footer { padding: 22px 5vw; gap: 20px; flex-wrap: wrap; }.portfolio-footer strong { order: -1; flex-basis: 100%; }
   .library-page { padding-top: 50px; }.library-heading { display: block; }.library-heading h1 { font-size: 65px; }.library-heading > p { margin-top: 35px; }.course-grid { grid-template-columns: 1fr; }.course-card { min-height: 520px; padding: 25px; }
   .teaser-page { padding-top: 60px; }.teaser-page h1 { font-size: 64px; margin-top: 80px; }.teaser-mark { font-size: 160px; top: 75px; }
