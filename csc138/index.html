@@ -3,13 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#063f35" />
-    <meta name="description" content="Interactive study companion for Sacramento State CSC 138 Computer Network Fundamentals." />
-    <title>CSC 138 Network Lab</title>
-    <script type="module" crossorigin src="/csc138/assets/index-Ai2iQJbw.js"></script>
-    <link rel="stylesheet" crossorigin href="/csc138/assets/index-Q4XyUeGs.css">
+    <title>CSC 138 Has Moved</title>
+    <script>
+      const views = ['dashboard', 'roadmap', 'chapter1', 'practice', 'reference'];
+      const path = window.location.hash.replace(/^#\/?/, '');
+      const requested = path.startsWith('student/csc138/') ? path.split('/')[2] : path.split('/')[0];
+      const view = views.includes(requested) ? requested : 'dashboard';
+      window.location.replace('/' + window.location.search + '#/student/csc138/' + view);
+    </script>
   </head>
   <body>
-    <div id="root"></div>
+    <p>CSC 138 is now in the <a href="/#/student/csc138/dashboard">student study hub</a>.</p>
   </body>
 </html>

@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
-import { glossary, lessons, semesterWeeks } from './data/course'
-import { emptyProgress, loadProgress, saveProgress } from './lib/progress'
-import type { Progress, View } from './types'
-import { Icon } from './components/Icons'
-import { NetworkDiagram } from './components/NetworkDiagram'
-import { Practice } from './components/Practice'
+import { glossary, lessons, semesterWeeks } from '../data/course'
+import { emptyProgress, loadProgress, saveProgress } from '../lib/progress'
+import type { Progress, View } from '../types'
+import { Icon } from './Icons'
+import { NetworkDiagram } from './NetworkDiagram'
+import { Practice } from './Practice'
 
 const views: Array<{ id: View; label: string; icon: string }> = [
   { id: 'dashboard', label: 'Dashboard', icon: 'dashboard' },
@@ -17,7 +17,7 @@ const views: Array<{ id: View; label: string; icon: string }> = [
 function useNavigation() {
   const validViews = views.map(view => view.id)
   const fromHash = (): View => {
-    const hash = window.location.hash.replace('#/', '').split('/')[0] as View
+    const hash = window.location.hash.replace('#/', '').split('/')[2] as View
     return validViews.includes(hash) ? hash : 'dashboard'
   }
   const [view, setView] = useState<View>(fromHash)
@@ -26,7 +26,7 @@ function useNavigation() {
     window.addEventListener('hashchange', update)
     return () => window.removeEventListener('hashchange', update)
   }, [])
-  const navigate = (next: View) => { window.location.hash = `/${next}`; setView(next); window.scrollTo({ top: 0, behavior: 'smooth' }) }
+  const navigate = (next: View) => { window.location.hash = `/student/csc138/${next}`; setView(next); window.scrollTo({ top: 0, behavior: 'smooth' }) }
   return [view, navigate] as const
 }
 
@@ -101,7 +101,7 @@ function Reference({ reset }: { reset: () => void }) {
   </div>
 }
 
-export default function App() {
+export function Csc138App() {
   const [view, navigate] = useNavigation()
   const [progress, setProgress] = useState<Progress>(() => loadProgress())
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -115,7 +115,7 @@ export default function App() {
   const reset = () => { if (window.confirm('Reset completed lessons, labs, and quiz scores?')) setProgress(emptyProgress) }
 
   return <div className="app-shell">
-    <header className="topbar"><button className="brand" onClick={() => navigate('dashboard')}><span className="brand-mark"><i/><i/><i/></span><span><b>NETWORK</b><small>CSC 138 FIELD LAB</small></span></button><nav className={mobileOpen ? 'open' : ''} aria-label="Primary navigation">{views.map(item => <button key={item.id} className={view === item.id ? 'active' : ''} onClick={() => navigate(item.id)}><Icon name={item.icon}/><span>{item.label}</span></button>)}</nav><div className="topbar-meta"><span>FALL</span><b>2026</b></div><button className="menu-button" aria-label="Toggle navigation" aria-expanded={mobileOpen} onClick={() => setMobileOpen(value => !value)}><i/><i/><i/></button></header>
+    <header className="topbar"><button className="brand" onClick={() => navigate('dashboard')}><span className="brand-mark"><i/><i/><i/></span><span><b>NETWORK</b><small>CSC 138 FIELD LAB</small></span></button><nav className={mobileOpen ? 'open' : ''} aria-label="Primary navigation">{views.map(item => <button key={item.id} className={view === item.id ? 'active' : ''} onClick={() => navigate(item.id)}><Icon name={item.icon}/><span>{item.label}</span></button>)}</nav><button className="course-back" onClick={() => { window.location.hash = '/student' }}>All courses</button><div className="topbar-meta"><span>FALL</span><b>2026</b></div><button className="menu-button" aria-label="Toggle navigation" aria-expanded={mobileOpen} onClick={() => setMobileOpen(value => !value)}><i/><i/><i/></button></header>
     <main>{view === 'dashboard' && <Dashboard progress={progress} navigate={navigate}/>} {view === 'roadmap' && <Roadmap navigate={navigate}/>} {view === 'chapter1' && <Chapter progress={progress} completeLesson={completeLesson} navigate={navigate}/>} {view === 'practice' && <Practice completedActivities={progress.completedActivities} completeActivity={completeActivity} recordQuiz={recordQuiz}/>} {view === 'reference' && <Reference reset={reset}/>}</main>
     <footer className="site-footer"><div><span className="brand-mark small"><i/><i/><i/></span><strong>CSC 138 NETWORK LAB</strong></div><span>Independent study companion · Sacramento State · Fall 2026</span><small>Progress stays in this browser.</small></footer>
   </div>
