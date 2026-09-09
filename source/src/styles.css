@@ -143,7 +143,7 @@ button:focus-visible, input:focus-visible { outline: 3px solid #e49e15; outline-
 .welcome-title h1 em { color: var(--orange); font: italic 500 1em 'Newsreader', Georgia, serif; }
 .welcome-descriptor { border-left: 3px solid var(--gold); padding: 13px 0 13px 20px; margin: 0 0 5px; font-size: 14px; font-weight: 700; line-height: 1.6; }
 .audience-section { background: var(--green); color: white; padding: 48px max(5vw, calc((100vw - 1200px)/2)) 70px; }
-.audience-prompt { display: flex; flex-direction: column; align-items: flex-end; gap: 12px; text-align: right; border-bottom: 1px solid #376b60; padding-bottom: 24px; }
+.audience-prompt { display: flex; flex-direction: row; justify-content: space-between; align-items: center; gap: 12px; text-align: left; border-bottom: 1px solid #376b60; padding-bottom: 24px; }
 .audience-prompt span { font: 500 9px 'DM Mono', monospace; letter-spacing: .17em; color: #89aba2; }
 .audience-prompt h2 { margin: 0; font-size: 25px; font-weight: 600; }
 .audience-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
