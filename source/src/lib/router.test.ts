@@ -2,11 +2,15 @@ import { describe, expect, it } from 'vitest'
 import { normalizeRoute, routeFromHash } from './router'
 
 describe('site routing', () => {
-  it('routes each audience from the site root', () => {
+  it('routes the portfolio and student desk from the site root', () => {
     expect(routeFromHash('#/')).toEqual({ section: 'home' })
     expect(routeFromHash('#/student')).toEqual({ section: 'student' })
-    expect(routeFromHash('#/professor')).toEqual({ section: 'professor' })
-    expect(routeFromHash('#/recruiter')).toEqual({ section: 'recruiter' })
+  })
+
+  it('retires the old audience pages into selected work', () => {
+    expect(normalizeRoute('#/professor')).toBe('#work')
+    expect(normalizeRoute('#/recruiter')).toBe('#work')
+    expect(routeFromHash('#/professor')).toEqual({ section: 'home' })
   })
 
   it('parses course and view segments', () => {

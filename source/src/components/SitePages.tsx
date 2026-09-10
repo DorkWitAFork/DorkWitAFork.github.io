@@ -1,4 +1,5 @@
 import { Icon } from './Icons'
+import { portfolioProjects, type PortfolioProject } from '../data/portfolio'
 
 function SiteHeader() {
   return <header className="site-header">
@@ -7,31 +8,114 @@ function SiteHeader() {
   </header>
 }
 
-function AudienceGlyph({ type }: { type: 'student' | 'professor' | 'recruiter' }) {
-  if (type === 'student') return <svg viewBox="0 0 100 100" aria-hidden="true"><path d="M12 38 50 18l38 20-38 20-38-20Z"/><path d="M27 48v22c13 12 33 12 46 0V48M87 40v27"/></svg>
-  if (type === 'professor') return <svg viewBox="0 0 100 100" aria-hidden="true"><rect x="15" y="20" width="70" height="55" rx="3"/><path d="M28 35h44M28 47h27M28 59h36M40 85h20M50 75v10"/></svg>
-  return <svg viewBox="0 0 100 100" aria-hidden="true"><rect x="15" y="28" width="70" height="54" rx="5"/><path d="M38 28v-8h24v8M15 48h70M42 47v7h16v-7"/></svg>
+function ProjectArtifact({ id }: Pick<PortfolioProject, 'id'>) {
+  if (id === 'linear-algebra') return <div className="wc-artifact wc-matrix" aria-hidden="true">
+    <div className="wc-matrix-input"><span>A =</span><b>2&nbsp; x<br/>1&nbsp; 3</b></div>
+    <div className="wc-operation">R2 - 1/2 R1</div>
+    <div className="wc-matrix-output"><span>RREF(A)</span><b>1&nbsp; 0<br/>0&nbsp; 1</b></div>
+    <i>EXACT ARITHMETIC</i>
+  </div>
+
+  if (id === 'network-lab') return <div className="wc-artifact wc-network" aria-hidden="true">
+    <span className="wc-node node-a">CLIENT</span><span className="wc-node node-b">R1</span><span className="wc-node node-c">R2</span><span className="wc-node node-d">SERVER</span>
+    <i className="wc-wire wire-a"/><i className="wc-wire wire-b"/><i className="wc-wire wire-c"/>
+    <b className="wc-packet">0101</b><small>PACKET PATH / 04 HOPS</small>
+  </div>
+
+  return <div className="wc-artifact wc-kernel" aria-hidden="true">
+    <div><span>USER SPACE</span><small>APP_01&nbsp;&nbsp; APP_02</small></div>
+    <b><span>KERNEL</span><small>SYSCALL 04 &gt; SCHEDULER</small></b>
+    <div><span>HARDWARE</span><small>CPU&nbsp;&nbsp; MEMORY&nbsp;&nbsp; I/O</small></div>
+    <i>SYSTEM BOUNDARY</i>
+  </div>
 }
 
 export function PortfolioHome() {
-  return <div className="portfolio-shell">
-    <SiteHeader />
-    <main className="welcome-page">
-      <section className="welcome-intro">
-        <span className="folio-index">PORTFOLIO / 2026</span>
-        <div className="welcome-title"><p>Hello, I am</p><h1>Spencer<br/><em>Le Bleu.</em></h1></div>
-        <p className="welcome-descriptor">Computer Science Student<br/>and Software Developer</p>
+  return <div className="working-copy">
+    <a className="wc-skip" href="#work">Skip to selected work</a>
+    <header className="wc-header">
+      <a className="wc-name" href="#top"><strong>Spencer Le Bleu</strong><span>CS student / software developer</span></a>
+      <nav aria-label="Portfolio navigation">
+        <a href="#work">Work</a>
+        <a href="#notes">About</a>
+        <a href="#/student">Student desk</a>
+        <a href="https://github.com/DorkWitAFork" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section className="wc-hero" aria-labelledby="wc-title">
+        <aside className="wc-margin-note">
+          <span>WORKING COPY</span>
+          <b>09 / 2026</b>
+          <small>Sacramento, CA<br/>File SLB-01</small>
+        </aside>
+        <div className="wc-hero-copy">
+          <p className="wc-pencil">Notes from the current desk.</p>
+          <h1 id="wc-title">When I want to understand something, I usually <em>build a tool for it.</em></h1>
+          <div className="wc-intro">
+            <p>I am a computer science student working across C++, TypeScript, React, and the parts in between. Most projects here began with something I wanted to understand well enough to rebuild.</p>
+            <a href="#work">Open the files <span aria-hidden="true">↓</span></a>
+          </div>
+        </div>
+        <div className="wc-registration" aria-hidden="true"><i/><i/><span>NOT FOR FILING</span></div>
       </section>
-      <section className="audience-section" aria-labelledby="audience-heading">
-        <div className="audience-prompt"><h2 id="audience-heading">Hello! Are you a:</h2><span>CHOOSE YOUR PATH</span></div>
-        <div className="audience-grid">
-          <a href="#/student" className="audience-card audience-student"><span className="card-number">01</span><div className="audience-glyph"><AudienceGlyph type="student"/></div><div><h3>Student</h3><p>Open study guides, interactive lessons, and practice labs for my computer science courses.</p></div><span className="card-action">Explore courses <Icon name="arrow" size={18}/></span></a>
-          <a href="#/professor" className="audience-card"><span className="card-number">02</span><div className="audience-glyph"><AudienceGlyph type="professor"/></div><div><h3>Professor</h3><p>Review coursework, assignment projects, and future academic work.</p></div><span className="card-action">View academic work <Icon name="arrow" size={18}/></span></a>
-          <a href="#/recruiter" className="audience-card"><span className="card-number">03</span><div className="audience-glyph"><AudienceGlyph type="recruiter"/></div><div><h3>Hiring Professional</h3><p>Discover selected software projects, technical skills, and my resume.</p></div><span className="card-action">View portfolio <Icon name="arrow" size={18}/></span></a>
+
+      <section className="wc-work" id="work" aria-labelledby="work-heading">
+        <header className="wc-section-heading">
+          <span>SELECTED FILES / 03</span>
+          <h2 id="work-heading">Three projects on my desk.</h2>
+          <p>Each file records what the project does, what it is made from, and the decisions that shaped it.</p>
+        </header>
+
+        <div className="wc-project-list">
+          {portfolioProjects.map((project) => <article className={`wc-project wc-project-${project.id}`} key={project.id}>
+            <header className="wc-project-heading">
+              <span className="wc-file-number">{project.fileNumber}</span>
+              <div><small>{project.kind}</small><h3>{project.title}</h3></div>
+            </header>
+            <ProjectArtifact id={project.id}/>
+            <div className="wc-project-copy">
+              <p className="wc-project-summary">{project.summary}</p>
+              <ul>{project.notes.map((note) => <li key={note}>{note}</li>)}</ul>
+            </div>
+            <footer className="wc-project-footer">
+              <div aria-label="Technologies used">{project.tools.map((tool) => <span key={tool}>{tool}</span>)}</div>
+              <nav aria-label={`${project.title} links`}>
+                {project.liveUrl && <a href={project.liveUrl}>{project.liveLabel} <span aria-hidden="true">→</span></a>}
+                <a href={project.sourceUrl} target="_blank" rel="noreferrer">Read the source <span aria-hidden="true">↗</span></a>
+              </nav>
+            </footer>
+          </article>)}
+        </div>
+      </section>
+
+      <section className="wc-desk" aria-labelledby="desk-heading">
+        <div className="wc-desk-index"><span>DRAWER B</span><b>STUDY<br/>MATERIAL</b><small>2 active course tools</small></div>
+        <div>
+          <span className="wc-pencil">The student desk</span>
+          <h2 id="desk-heading">The tools are open.</h2>
+          <p>The networking and operating-systems projects are also usable study spaces. Lessons, exercises, reference sheets, and progress tracking all run in the browser.</p>
+          <a className="wc-heavy-link" href="#/student">Browse the course tools <span aria-hidden="true">→</span></a>
+        </div>
+      </section>
+
+      <section className="wc-notes" id="notes" aria-labelledby="notes-heading">
+        <aside><span>DESK NOTE / 01</span><i aria-hidden="true">*</i></aside>
+        <div>
+          <h2 id="notes-heading">A little context.</h2>
+          <p>I am studying computer science in Sacramento and building alongside the coursework. I like projects that expose their machinery: algorithms that can explain their steps, diagrams that make an invisible boundary visible, and interfaces that help someone do more than look.</p>
+          <p>I update this site as the work changes. Nothing here is meant to look frozen or more finished than it really is.</p>
+        </div>
+        <div className="wc-contact">
+          <span>THE OPEN CHANNEL</span>
+          <a href="https://github.com/DorkWitAFork" target="_blank" rel="noreferrer">github.com/DorkWitAFork <span aria-hidden="true">↗</span></a>
+          <small>Code, revision history, and current experiments.</small>
         </div>
       </section>
     </main>
-    <footer className="portfolio-footer"><span>SACRAMENTO, CA</span><strong>BUILDING SYSTEMS WITH PURPOSE.</strong><span>FALL 2026</span></footer>
+
+    <footer className="wc-footer"><span>Spencer Le Bleu / Sacramento, CA</span><a href="#top">Back to first page ↑</a><span>Portfolio set in system type</span></footer>
   </div>
 }
 
@@ -44,21 +128,6 @@ export function StudentLibrary() {
         <a className="course-card network-course" href="#/student/csc138/dashboard"><div className="course-card-top"><span>CSC 138</span><i>AVAILABLE</i></div><div className="course-art network-art"><span/><span/><span/><span/></div><div className="course-card-copy"><small>COMPUTER NETWORK FUNDAMENTALS</small><h2>Follow the<br/>packet.</h2><p>Dr. Bang Tran · Chapter 1</p></div><span className="course-launch">Open Network Lab <Icon name="arrow"/></span></a>
         <a className="course-card os-course" href="#/student/csc139/dashboard"><div className="course-card-top"><span>CSC 139</span><i>NEW</i></div><div className="course-art os-art"><span>USER</span><b>KERNEL</b><span>HARDWARE</span></div><div className="course-card-copy"><small>OPERATING SYSTEM PRINCIPLES</small><h2>Trust the<br/>kernel.</h2><p>Prof. Tarek Sakakini · Chapter 1</p></div><span className="course-launch">Open OS Lab <Icon name="arrow"/></span></a>
       </section>
-    </main>
-  </div>
-}
-
-export function AudiencePage({ audience }: { audience: 'professor' | 'recruiter' }) {
-  const professor = audience === 'professor'
-  return <div className="portfolio-shell teaser-shell">
-    <SiteHeader />
-    <main className="teaser-page">
-      <span className="folio-index">{professor ? 'ACADEMIC WORK' : 'PROFESSIONAL PORTFOLIO'} / IN PROGRESS</span>
-      <div className="teaser-mark">{professor ? '02' : '03'}</div>
-      <h1>{professor ? <>Projects worth<br/><em>reviewing.</em></> : <>Work built to<br/><em>be useful.</em></>}</h1>
-      <p>{professor ? 'Homework implementations, technical write-ups, and course projects will be collected here as they are completed.' : 'Selected software projects, case studies, and resume materials are being prepared for this space.'}</p>
-      <div className="teaser-status"><span/><strong>Portfolio section in development</strong></div>
-      <a className="button button-gold" href="#/">Return home <Icon name="arrow"/></a>
     </main>
   </div>
 }
