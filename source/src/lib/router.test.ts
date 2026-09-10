@@ -17,14 +17,20 @@ describe('site routing', () => {
   it('parses course and view segments', () => {
     expect(routeFromHash('#/student/csc139/practice')).toEqual({ section: 'course', course: 'csc139', view: 'practice' })
     expect(routeFromHash('#/student/csc138/chapter1')).toEqual({ section: 'course', course: 'csc138', view: 'chapter1' })
+    expect(routeFromHash('#/student/csc138/chapter2')).toEqual({ section: 'course', course: 'csc138', view: 'chapter2' })
+    expect(routeFromHash('#/student/csc138/practice/chapter2')).toEqual({ section: 'course', course: 'csc138', view: 'practice', chapter: 'chapter2' })
+    expect(routeFromHash('#/student/csc138/reference/chapter2')).toEqual({ section: 'course', course: 'csc138', view: 'reference', chapter: 'chapter2' })
   })
 
   it('defaults unknown course views to the dashboard', () => {
     expect(routeFromHash('#/student/csc139/not-a-view')).toEqual({ section: 'course', course: 'csc139', view: 'dashboard' })
+    expect(routeFromHash('#/student/csc139/chapter2')).toEqual({ section: 'course', course: 'csc139', view: 'dashboard' })
+    expect(routeFromHash('#/student/csc138/practice/not-a-chapter')).toEqual({ section: 'course', course: 'csc138', view: 'practice' })
   })
 
   it('migrates legacy CSC 138 hashes', () => {
     expect(normalizeRoute('#/dashboard')).toBe('#/student/csc138/dashboard')
     expect(normalizeRoute('#/reference')).toBe('#/student/csc138/reference')
+    expect(normalizeRoute('#/chapter2')).toBe('#/student/csc138/chapter2')
   })
 })

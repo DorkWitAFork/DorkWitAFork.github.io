@@ -1,5 +1,8 @@
 export type View = 'dashboard' | 'roadmap' | 'chapter1' | 'practice' | 'reference'
 
+export type Csc138ChapterId = 'chapter1' | 'chapter2'
+export type Csc138View = View | 'chapter2'
+
 export type Lesson = {
   id: string
   number: string
@@ -32,4 +35,14 @@ export type Progress = {
   quizAttempts: number
   bestQuizScore: number
   lastVisited: string
+}
+
+export type ChapterQuizProgress = {
+  attempts: number
+  bestScore: number
+  total: number
+}
+
+export type Csc138Progress = Progress & {
+  chapterQuizzes: Record<Csc138ChapterId, ChapterQuizProgress>
 }

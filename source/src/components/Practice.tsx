@@ -1,12 +1,16 @@
 import { useEffect, useState } from 'react'
-import { quizQuestions } from '../data/course'
+import type { Csc138Chapter } from '../data/csc138Course'
+import type { Csc138ChapterId } from '../types'
 import { calculateDelayMs } from '../lib/progress'
+import { Csc138Chapter2Practice } from './Csc138Chapter2Practice'
 import { Icon } from './Icons'
 
 type Props = {
+  chapter: Csc138Chapter
   completedActivities: string[]
   completeActivity: (id: string) => void
   recordQuiz: (score: number) => void
+  selectChapter: (chapter: Csc138ChapterId) => void
 }
 
 const protocolSteps = ['TCP connection request', 'TCP connection response', 'HTTP GET request', 'File response']
@@ -83,15 +87,15 @@ function ProtocolSequencer({ complete }: { complete: () => void }) {
   </section>
 }
 
-function ChapterQuiz({ recordQuiz }: { recordQuiz: (score: number) => void }) {
+function ChapterQuiz({ chapter, recordQuiz }: { chapter: Csc138Chapter; recordQuiz: (score: number) => void }) {
   const [answers, setAnswers] = useState<Record<string, number>>({})
   const [submitted, setSubmitted] = useState(false)
-  const score = quizQuestions.filter(question => answers[question.id] === question.answer).length
+  const score = chapter.quizQuestions.filter(question => answers[question.id] === question.answer).length
   const submit = () => { setSubmitted(true); recordQuiz(score) }
   const retry = () => { setAnswers({}); setSubmitted(false) }
   return <section className="quiz-panel" aria-labelledby="quiz-title">
-    <div className="quiz-intro"><span>CHAPTER CHECK</span><h2 id="quiz-title">Test the big picture</h2><p>Ten questions covering the concepts in slides 3-45. Each answer includes an explanation after submission.</p></div>
-    {quizQuestions.map((question, questionIndex) => <fieldset className="question-card" key={question.id} disabled={submitted}>
+    <div className="quiz-intro"><span>CHAPTER {chapter.number} CHECK</span><h2 id="quiz-title">Test the big picture</h2><p>{chapter.quizQuestions.length} questions covering the chapter's major concepts. Each answer includes an explanation after submission.</p></div>
+    {chapter.quizQuestions.map((question, questionIndex) => <fieldset className="question-card" key={question.id} disabled={submitted}>
       <legend><span>{String(questionIndex + 1).padStart(2, '0')}</span>{question.prompt}</legend>
       <div className="answer-list">{question.choices.map((choice, choiceIndex) => {
         const state = submitted ? choiceIndex === question.answer ? 'right' : answers[question.id] === choiceIndex ? 'wrong' : '' : ''
@@ -99,15 +103,17 @@ function ChapterQuiz({ recordQuiz }: { recordQuiz: (score: number) => void }) {
       })}</div>
       {submitted && <p className="answer-explanation">{question.explanation}</p>}
     </fieldset>)}
-    {!submitted ? <button className="button" disabled={Object.keys(answers).length !== quizQuestions.length} onClick={submit}>Submit answers</button> : <div className="quiz-result"><div><span>Your score</span><strong>{score}<small>/10</small></strong></div><p>{score >= 8 ? 'Strong work. You have the Chapter 1 foundation.' : 'Review the explanations and revisit the lessons that need reinforcement.'}</p><button className="button button-ghost" onClick={retry}>Try again</button></div>}
+    {!submitted ? <button className="button" disabled={Object.keys(answers).length !== chapter.quizQuestions.length} onClick={submit}>Submit answers</button> : <div className="quiz-result"><div><span>Your score</span><strong>{score}<small>/{chapter.quizQuestions.length}</small></strong></div><p>{score >= Math.ceil(chapter.quizQuestions.length * 0.8) ? `Strong work. You have the Chapter ${chapter.number} foundation.` : 'Review the explanations and revisit the lessons that need reinforcement.'}</p><button className="button button-ghost" onClick={retry}>Try again</button></div>}
   </section>
 }
 
-export function Practice({ completedActivities, completeActivity, recordQuiz }: Props) {
+export function Practice({ chapter, completedActivities, completeActivity, recordQuiz, selectChapter }: Props) {
   const [tab, setTab] = useState<'labs' | 'quiz'>('labs')
+  const completedCount = chapter.activityIds.filter(id => completedActivities.includes(id)).length
   return <div className="page practice-page">
-    <header className="page-heading"><div><span className="kicker">Practice center</span><h1>Learn by moving packets.</h1><p>Change the inputs, watch the system react, and use feedback to correct your mental model.</p></div><div className="practice-score"><b>{completedActivities.length}/3</b><span>labs complete</span></div></header>
+    <header className="page-heading"><div><span className="kicker">Chapter {chapter.number} practice center</span><h1>{chapter.id === 'chapter1' ? 'Learn by moving packets.' : 'Learn by tracing requests.'}</h1><p>Change the inputs, watch the system react, and use feedback to correct your mental model.</p></div><div className="practice-score"><b>{completedCount}/{chapter.activityIds.length}</b><span>labs complete</span></div></header>
+    <div className="chapter-switch" aria-label="Practice chapter"><button className={chapter.id === 'chapter1' ? 'active' : ''} onClick={() => selectChapter('chapter1')}>Chapter 1</button><button className={chapter.id === 'chapter2' ? 'active' : ''} onClick={() => selectChapter('chapter2')}>Chapter 2</button></div>
     <div className="tab-bar" role="tablist"><button role="tab" aria-selected={tab === 'labs'} onClick={() => setTab('labs')}>Interactive labs</button><button role="tab" aria-selected={tab === 'quiz'} onClick={() => setTab('quiz')}>Chapter quiz</button></div>
-    {tab === 'labs' ? <div className="labs-stack"><DelayCalculator complete={() => completeActivity('delay')}/><QueueSimulator complete={() => completeActivity('queue')}/><ProtocolSequencer complete={() => completeActivity('protocol')}/></div> : <ChapterQuiz recordQuiz={recordQuiz}/>} 
+    {tab === 'labs' ? chapter.id === 'chapter1' ? <div className="labs-stack"><DelayCalculator complete={() => completeActivity('delay')}/><QueueSimulator complete={() => completeActivity('queue')}/><ProtocolSequencer complete={() => completeActivity('protocol')}/></div> : <Csc138Chapter2Practice completeActivity={completeActivity}/> : <ChapterQuiz chapter={chapter} recordQuiz={recordQuiz}/>}
   </div>
 }

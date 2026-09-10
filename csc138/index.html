@@ -5,11 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CSC 138 Has Moved</title>
     <script>
-      const views = ['dashboard', 'roadmap', 'chapter1', 'practice', 'reference'];
+      const views = ['dashboard', 'roadmap', 'chapter1', 'chapter2', 'practice', 'reference'];
       const path = window.location.hash.replace(/^#\/?/, '');
-      const requested = path.startsWith('student/csc138/') ? path.split('/')[2] : path.split('/')[0];
+      const parts = path.startsWith('student/csc138/') ? path.split('/').slice(2) : path.split('/');
+      const requested = parts[0];
       const view = views.includes(requested) ? requested : 'dashboard';
-      window.location.replace('/' + window.location.search + '#/student/csc138/' + view);
+      const chapter = (view === 'practice' || view === 'reference') && parts[1] === 'chapter2' ? '/chapter2' : '';
+      window.location.replace('/' + window.location.search + '#/student/csc138/' + view + chapter);
     </script>
   </head>
   <body>

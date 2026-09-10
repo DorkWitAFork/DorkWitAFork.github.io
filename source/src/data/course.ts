@@ -92,7 +92,7 @@ export const quizQuestions: QuizQuestion[] = [
 
 export const semesterWeeks = [
   ['01-02', 'Internet foundations', 'Chapter 1', 'Available', 'Hosts, protocols, access networks, physical media, switching, and ISP structure'],
-  ['03-05', 'Application layer', 'Chapter 2', 'Provisional', 'HTTP, email, DNS, peer-to-peer systems, and socket programming'],
+  ['03-05', 'Application principles and the Web', 'Chapter 2', 'Available', 'Application architectures, transport needs, HTTP, cookies, caching, and modern HTTP'],
   ['06-07', 'Transport layer', 'Chapter 3', 'Provisional', 'UDP, TCP, reliable transfer, flow control, and congestion control'],
   ['08', 'Midterm checkpoint', 'Review', 'Provisional', 'Concept synthesis, calculations, packet analysis, and exam preparation'],
   ['09-11', 'Network layer', 'Chapters 4-5', 'Provisional', 'IP, forwarding, NAT, IPv6, routing, OSPF, BGP, and SDN'],
@@ -101,7 +101,7 @@ export const semesterWeeks = [
   ['15', 'Security and review', 'Chapter 8', 'Provisional', 'Security across the stack and cumulative final preparation'],
 ]
 
-export const glossary = [
+export const glossary: Array<[string, string]> = [
   ['Access network', 'The network connecting an end system to its first router.'],
   ['Bandwidth', 'A link’s transmission rate or capacity, measured in bits per second.'],
   ['End system', 'A host at the network edge that runs applications.'],

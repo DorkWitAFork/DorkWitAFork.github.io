@@ -1,17 +1,20 @@
-import type { View } from '../types'
+import type { Csc138ChapterId, Csc138View, View } from '../types'
 
 export type SiteRoute =
   | { section: 'home' }
   | { section: 'student' }
   | { section: 'teacher' }
   | { section: 'hiring' }
-  | { section: 'course'; course: 'csc138' | 'csc139'; view: View }
+  | { section: 'course'; course: 'csc138'; view: Csc138View; chapter?: Csc138ChapterId }
+  | { section: 'course'; course: 'csc139'; view: View }
 
 const courseViews: View[] = ['dashboard', 'roadmap', 'chapter1', 'practice', 'reference']
+const csc138Views: Csc138View[] = [...courseViews, 'chapter2']
+const chapterIds: Csc138ChapterId[] = ['chapter1', 'chapter2']
 
 export function normalizeRoute(hash: string) {
   const path = hash.replace(/^#\/?/, '')
-  if (courseViews.includes(path as View)) return `#/student/csc138/${path}`
+  if (csc138Views.includes(path as Csc138View)) return `#/student/csc138/${path}`
   if (path === 'professor') return '#/teacher'
   if (path === 'recruiter') return '#/hiring'
   return hash || '#/'
@@ -19,8 +22,15 @@ export function normalizeRoute(hash: string) {
 
 export function routeFromHash(hash: string): SiteRoute {
   const normalized = normalizeRoute(hash).replace(/^#\/?/, '')
-  const [section, course, requestedView] = normalized.split('/')
-  if (section === 'student' && (course === 'csc138' || course === 'csc139')) {
+  const [section, course, requestedView, requestedChapter] = normalized.split('/')
+  if (section === 'student' && course === 'csc138') {
+    const view = csc138Views.includes(requestedView as Csc138View) ? requestedView as Csc138View : 'dashboard'
+    const chapter = (view === 'practice' || view === 'reference') && chapterIds.includes(requestedChapter as Csc138ChapterId)
+      ? requestedChapter as Csc138ChapterId
+      : undefined
+    return chapter ? { section: 'course', course, view, chapter } : { section: 'course', course, view }
+  }
+  if (section === 'student' && course === 'csc139') {
     const view = courseViews.includes(requestedView as View) ? requestedView as View : 'dashboard'
     return { section: 'course', course, view }
   }
