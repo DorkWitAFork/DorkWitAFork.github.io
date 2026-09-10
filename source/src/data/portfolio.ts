@@ -1,5 +1,5 @@
 export type PortfolioProject = {
-  id: 'linear-algebra' | 'network-lab' | 'os-lab'
+  id: 'poker-app' | 'asteroids' | 'course-labs'
   fileNumber: string
   title: string
   kind: string
@@ -13,49 +13,47 @@ export type PortfolioProject = {
 
 export const portfolioProjects: PortfolioProject[] = [
   {
-    id: 'linear-algebra',
+    id: 'poker-app',
     fileNumber: '01',
-    title: 'Linear Algebra Helper',
-    kind: 'Desktop application / 2026',
-    summary: 'I wanted a matrix calculator that could show the work instead of returning only an answer.',
+    title: 'PokerApp',
+    kind: 'Desktop application / In progress',
+    summary: 'A Java desktop application for recording poker games, players, buy-ins, cash-outs, and table history.',
     notes: [
-      'Rewritten in C++17 and Qt 6 from an earlier Python application.',
-      'Handles symbolic expressions, row-operation reports, system solving, factorizations, and eigenspaces with SymEngine.',
-      'Includes a restricted expression parser and regression tests for the core algorithms.',
+      'Uses Swing screens for game setup, player lookup, reports, statistics, and leaderboards.',
+      'Stores players, games, and participants in a relational SQLite schema.',
+      'Separates models, database access, services, and interface code while the service operations are being completed.',
     ],
-    tools: ['C++17', 'Qt 6', 'SymEngine', 'CMake'],
-    sourceUrl: 'https://github.com/DorkWitAFork/Linear-Algebra-Helper',
+    tools: ['Java', 'Swing', 'SQLite', 'Maven'],
+    sourceUrl: 'https://github.com/DorkWitAFork/PokerApp',
   },
   {
-    id: 'network-lab',
+    id: 'asteroids',
     fileNumber: '02',
-    title: 'Network Lab',
-    kind: 'Interactive study tool / CSC 138',
-    summary: 'My CSC 138 notes kept growing, so I reorganized them into a study tool I would actually use.',
+    title: 'Asteroids',
+    kind: 'Game project / Python',
+    summary: 'My version of the arcade game, built to practice object-oriented game loops, vectors, and collision behavior.',
     notes: [
-      'Turns networking notes into a focused browser-based study sequence.',
-      'Includes queue, delay, and protocol-order exercises alongside chapter quizzes.',
-      'Keeps lesson and quiz progress in the browser without requiring an account.',
+      'Runs a 60 FPS loop with delta-time movement and separate drawable, update, asteroid, and shot groups.',
+      'Handles player rotation, thrust, firing cooldowns, collisions, and asteroid splitting.',
+      'Spawns randomized asteroid sizes and trajectories from all four screen edges.',
     ],
-    tools: ['TypeScript', 'React', 'SVG', 'Vitest'],
-    sourceUrl: 'https://github.com/DorkWitAFork/DorkWitAFork.github.io',
-    liveUrl: '#/student/csc138/dashboard',
-    liveLabel: 'Open Network Lab',
+    tools: ['Python', 'Pygame', 'Vector math', 'OOP'],
+    sourceUrl: 'https://github.com/DorkWitAFork/Asteroids',
   },
   {
-    id: 'os-lab',
+    id: 'course-labs',
     fileNumber: '03',
-    title: 'Operating Systems Lab',
-    kind: 'Interactive study tool / CSC 139',
-    summary: 'I built a second course tool to trace what happens between a user program, the kernel, and the hardware.',
+    title: 'Course Labs',
+    kind: 'Bundled study tools / CSC 138 + CSC 139',
+    summary: 'Two browser-based course companions collected behind one student desk.',
     notes: [
-      'Organizes operating-system principles into lessons, a roadmap, practice, and reference material.',
-      'Uses original diagrams to make privilege boundaries and system-call paths visible.',
-      'Shares the learning architecture of Network Lab while keeping its own visual system and course data.',
+      'Network Lab covers lessons, packet diagrams, queue exercises, quizzes, and networking reference material.',
+      'Operating Systems Lab traces user space, kernel behavior, system calls, scheduling, and storage concepts.',
+      'Both tools save lesson and quiz progress locally in the browser without requiring an account.',
     ],
     tools: ['TypeScript', 'React', 'SVG', 'Local storage'],
     sourceUrl: 'https://github.com/DorkWitAFork/DorkWitAFork.github.io',
-    liveUrl: '#/student/csc139/dashboard',
-    liveLabel: 'Open OS Lab',
+    liveUrl: '#/student',
+    liveLabel: 'Choose a Course Lab',
   },
 ]

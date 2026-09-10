@@ -22,8 +22,10 @@ describe('audience pages', () => {
   it('keeps project records in the hiring section', () => {
     render(<HiringPortfolio />)
 
-    expect(screen.getByRole('link', { name: /Open Network Lab/ })).toHaveAttribute('href', '#/student/csc138/dashboard')
-    expect(screen.getByRole('link', { name: /Open OS Lab/ })).toHaveAttribute('href', '#/student/csc139/dashboard')
+    expect(screen.getByRole('heading', { name: 'PokerApp' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Asteroids' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Course Labs' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /Choose a Course Lab/ })).toHaveAttribute('href', '#/student')
     expect(screen.getAllByRole('link', { name: /Read the source/ })).toHaveLength(3)
   })
 

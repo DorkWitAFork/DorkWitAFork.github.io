@@ -27,24 +27,26 @@ function AudienceGlyph({ type }: { type: 'student' | 'teacher' | 'hiring' }) {
 }
 
 function ProjectArtifact({ id }: Pick<PortfolioProject, 'id'>) {
-  if (id === 'linear-algebra') return <div className="wc-artifact wc-matrix" aria-hidden="true">
-    <div className="wc-matrix-input"><span>A =</span><b>2&nbsp; x<br/>1&nbsp; 3</b></div>
-    <div className="wc-operation">R2 - 1/2 R1</div>
-    <div className="wc-matrix-output"><span>RREF(A)</span><b>1&nbsp; 0<br/>0&nbsp; 1</b></div>
-    <i>EXACT ARITHMETIC</i>
+  if (id === 'poker-app') return <div className="wc-artifact wc-poker" aria-hidden="true">
+    <span className="wc-playing-card wc-card-one"><b>A</b><i>♠</i></span>
+    <span className="wc-playing-card wc-card-two"><b>K</b><i>♦</i></span>
+    <div className="wc-chip-stack"><i/><i/><i/><i/></div>
+    <small>SESSION 014 / 6 PLAYERS</small>
+    <strong>+$240</strong>
   </div>
 
-  if (id === 'network-lab') return <div className="wc-artifact wc-network" aria-hidden="true">
-    <span className="wc-node node-a">CLIENT</span><span className="wc-node node-b">R1</span><span className="wc-node node-c">R2</span><span className="wc-node node-d">SERVER</span>
-    <i className="wc-wire wire-a"/><i className="wc-wire wire-b"/><i className="wc-wire wire-c"/>
-    <b className="wc-packet">0101</b><small>PACKET PATH / 04 HOPS</small>
+  if (id === 'asteroids') return <div className="wc-artifact wc-asteroids" aria-hidden="true">
+    <span className="wc-ship">△</span>
+    <i className="wc-rock rock-one"/><i className="wc-rock rock-two"/><i className="wc-rock rock-three"/>
+    <b className="wc-shot shot-one"/><b className="wc-shot shot-two"/>
+    <small>FIELD 02 / VELOCITY ACTIVE</small>
   </div>
 
-  return <div className="wc-artifact wc-kernel" aria-hidden="true">
-    <div><span>USER SPACE</span><small>APP_01&nbsp;&nbsp; APP_02</small></div>
-    <b><span>KERNEL</span><small>SYSCALL 04 &gt; SCHEDULER</small></b>
-    <div><span>HARDWARE</span><small>CPU&nbsp;&nbsp; MEMORY&nbsp;&nbsp; I/O</small></div>
-    <i>SYSTEM BOUNDARY</i>
+  return <div className="wc-artifact wc-course-bundle" aria-hidden="true">
+    <div><span>CSC 138</span><b>NETWORK LAB</b><small>PACKETS / PROTOCOLS / QUEUES</small></div>
+    <i>+</i>
+    <div><span>CSC 139</span><b>OS LAB</b><small>KERNEL / PROCESSES / STORAGE</small></div>
+    <strong>ONE STUDENT DESK</strong>
   </div>
 }
 
