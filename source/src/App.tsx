@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Csc138App } from './components/Csc138App'
 import { OsApp } from './components/OsApp'
-import { PortfolioHome, StudentLibrary } from './components/SitePages'
+import { HiringPortfolio, PortfolioHome, StudentLibrary, TeacherPage } from './components/SitePages'
 import { normalizeRoute, routeFromHash } from './lib/router'
 
 export default function App() {
@@ -19,12 +19,14 @@ export default function App() {
   useEffect(() => {
     const title = route.section === 'course'
       ? `${route.course === 'csc139' ? 'CSC 139 OS Lab' : 'CSC 138 Network Lab'} | Spencer Le Bleu`
-      : `${route.section === 'home' ? 'Spencer Le Bleu' : 'Student Desk | Spencer Le Bleu'}`
+      : `${route.section === 'home' ? 'Spencer Le Bleu' : route.section === 'student' ? 'Student Desk | Spencer Le Bleu' : route.section === 'teacher' ? 'Academic Work | Spencer Le Bleu' : 'Selected Projects | Spencer Le Bleu'}`
     document.title = title
   }, [route])
 
   if (route.section === 'course' && route.course === 'csc138') return <Csc138App />
   if (route.section === 'course' && route.course === 'csc139') return <OsApp />
   if (route.section === 'student') return <StudentLibrary />
+  if (route.section === 'teacher') return <TeacherPage />
+  if (route.section === 'hiring') return <HiringPortfolio />
   return <PortfolioHome />
 }

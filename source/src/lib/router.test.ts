@@ -5,12 +5,13 @@ describe('site routing', () => {
   it('routes the portfolio and student desk from the site root', () => {
     expect(routeFromHash('#/')).toEqual({ section: 'home' })
     expect(routeFromHash('#/student')).toEqual({ section: 'student' })
+    expect(routeFromHash('#/teacher')).toEqual({ section: 'teacher' })
+    expect(routeFromHash('#/hiring')).toEqual({ section: 'hiring' })
   })
 
-  it('retires the old audience pages into selected work', () => {
-    expect(normalizeRoute('#/professor')).toBe('#work')
-    expect(normalizeRoute('#/recruiter')).toBe('#work')
-    expect(routeFromHash('#/professor')).toEqual({ section: 'home' })
+  it('maps old audience names to their replacement sections', () => {
+    expect(normalizeRoute('#/professor')).toBe('#/teacher')
+    expect(normalizeRoute('#/recruiter')).toBe('#/hiring')
   })
 
   it('parses course and view segments', () => {
