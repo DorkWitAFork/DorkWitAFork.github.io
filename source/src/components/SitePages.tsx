@@ -106,7 +106,7 @@ export function PortfolioHome() {
         <div className="wc-home-index"><span>HELLO / 2026</span><small>Sacramento, CA<br/>File SLB-01</small></div>
         <div className="wc-home-title">
           <p>Hello, I am</p>
-          <h1 id="wc-title">Spencer <em>Le Bleu.</em></h1>
+          <h1 id="wc-title">Spencer <em>LeBleu.</em></h1>
         </div>
         <div className="wc-home-intro">
           <strong>Computer science student<br/>and software developer</strong>
