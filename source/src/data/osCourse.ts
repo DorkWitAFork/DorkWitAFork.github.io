@@ -6,9 +6,10 @@ export const osLessons: Lesson[] = [
     summary: 'Define the operating system by its responsibilities and distinguish its privileged core from the software distributed around it.',
     objectives: ['Place the OS within the four-part computer system', 'Compare the user and system viewpoints', 'Distinguish the kernel, system programs, and middleware'],
     sections: [
-      { title: 'The system in four layers', body: 'Hardware supplies CPU time, memory, and I/O devices. The operating system coordinates those resources for applications, while users or other systems direct the applications. The OS is therefore an enabling layer rather than an end-user task by itself.' },
+      { title: 'The system in four layers', body: 'Hardware supplies CPU time, memory, and I/O devices. The operating system coordinates those resources for applications, while users or other systems direct the applications. The same hardware can therefore support many workloads without each application having to understand every controller or arbitrate every conflict itself.' },
       { title: 'Two viewpoints', body: 'From a user viewpoint, the OS should make the machine convenient and responsive. From a system viewpoint, it is both a resource allocator that decides who receives scarce resources and a control program that prevents incorrect or harmful use.' },
       { title: 'A practical boundary', body: 'There is no universal boundary around an operating system. This course uses the kernel, the privileged program that remains active, as the core definition. Shells, utilities, and daemons are system programs, while middleware provides higher-level services to applications.' },
+      { title: 'Efficiency and fairness are different goals', body: 'A resource allocator may maximize throughput by favoring work that finishes quickly, yet a shared system must also prevent starvation and honor priorities. A control program complements allocation by supervising execution and I/O, detecting misuse, and preserving a stable environment when applications fail.' },
     ],
     keyTerms: ['operating system', 'resource allocator', 'control program', 'kernel', 'system program', 'middleware'], source: 'Chapter 1 slides 3-8',
   },
@@ -20,6 +21,7 @@ export const osLessons: Lesson[] = [
       { title: 'Boot, interrupts, and traps', body: 'Firmware runs a bootstrap program that initializes hardware and loads the kernel. After boot, hardware interrupts asynchronously report events such as completed I/O, while synchronous traps arise from the executing instruction through an error or deliberate system call. An interrupt number indexes a vector so the CPU can jump directly to the correct handler.' },
       { title: 'Moving and retaining data', body: 'Registers, caches, and main memory are fast but volatile; secondary and tertiary storage retain data at lower speed and cost per byte. Caching bridges speed gaps between levels. For block I/O, DMA lets a controller transfer data directly between a device and memory, interrupting the CPU once when the block is complete.', points: ['A device driver gives the kernel a uniform interface to a particular controller.', 'Interrupt-driven I/O is appropriate when transfers are small or infrequent.', 'Main memory cannot replace secondary storage because it is limited and volatile.'] },
       { title: 'More than one execution unit', body: 'A processor is a physical chip, while a core is a computation unit that executes instructions. SMP treats general-purpose CPUs as peers sharing memory. NUMA preserves one address space but makes local memory faster than remote memory. A cluster instead joins separate machines over a network, often for availability or parallel work.' },
+      { title: 'An event from device to handler', body: 'A controller records status, raises an interrupt request, and causes the processor to save enough execution state to enter a kernel handler. The handler acknowledges the device, completes bookkeeping or wakes waiting work, and restores the interrupted context. Masking and prioritization let critical events be handled without uncontrolled nesting.' },
     ],
     keyTerms: ['bootstrap', 'interrupt', 'trap', 'interrupt vector', 'DMA', 'storage hierarchy', 'SMP', 'NUMA', 'cluster'], source: 'Chapter 1 slides 9-33',
   },
@@ -31,6 +33,7 @@ export const osLessons: Lesson[] = [
       { title: 'Keeping the CPU productive', body: 'Multiprogramming keeps several processes resident and switches when one blocks, using I/O wait time to run another. Multitasking extends that mechanism with frequent switches to improve interactive response even when the current process has not blocked.' },
       { title: 'Two modes, one guarded doorway', body: 'User code runs without permission to execute privileged instructions. An interrupt, exception, or system call transfers control to kernel mode. For a system call, the kernel identifies the requested service, validates its parameters, performs the operation, and returns control in user mode.' },
       { title: 'The timer closes the loop', body: 'Before dispatching user code, the OS programs a hardware timer. Its later interrupt guarantees that control returns to the kernel even if the process loops forever or never requests a service. Timer management must itself be privileged, or a program could disable this safeguard.' },
+      { title: 'Protection depends on hardware', body: 'The mode bit, privileged-instruction checks, memory protection, and timer all enforce boundaries below application code. The kernel still has to validate system-call numbers, pointers, lengths, permissions, and return values; entering kernel mode authorizes the kernel to act, not the caller to bypass policy.' },
     ],
     keyTerms: ['process', 'multiprogramming', 'multitasking', 'user mode', 'kernel mode', 'privileged instruction', 'system call', 'timer'], source: 'Chapter 1 slides 34-49',
   },
@@ -42,6 +45,7 @@ export const osLessons: Lesson[] = [
       { title: 'Active work and its resources', body: 'A program is passive code stored in a file; a process is one execution of that code with a program counter, allocated resources, and CPU time. The OS creates, schedules, coordinates, and removes processes and threads, reclaiming reusable resources when execution ends.' },
       { title: 'Memory, files, storage, and I/O', body: 'Memory management tracks ownership and decides what data moves in or out. File systems provide logical persistent objects over physical media. Mass-storage management allocates space and schedules device access, while the I/O subsystem uses buffering, caching, and drivers to hide device-specific details.' },
       { title: 'Correct copies and controlled access', body: 'Caching can leave several copies of a value at different levels; cache coherency keeps private CPU caches consistent after an update. Protection enforces specified access rules inside the system. Security addresses deliberate threats, so valid protection rules alone cannot stop an attacker who has stolen valid credentials.', points: ['User and group IDs attach access identity to processes and threads.', 'Setuid can temporarily run a program with the file owner\'s effective user ID.', 'Protection mechanisms also isolate failures at subsystem boundaries.'] },
+      { title: 'Coordination across managers', body: 'The management areas are interdependent: loading a process consumes memory, executable-file data, storage I/O, and CPU scheduling decisions. The OS maintains accounting and ownership metadata so that failure or termination can trigger orderly cleanup rather than leak resources or expose another process\'s data.' },
     ],
     keyTerms: ['program', 'process', 'memory management', 'file system', 'cache coherency', 'protection', 'security', 'user ID', 'setuid'], source: 'Chapter 1 slides 50-63',
   },
@@ -52,6 +56,7 @@ export const osLessons: Lesson[] = [
     sections: [
       { title: 'Virtualization versus emulation', body: 'Virtualization runs a guest built for the same underlying CPU architecture, avoiding instruction-by-instruction translation and approaching native speed. Emulation reproduces a different target architecture in software, translating instructions and usually paying a substantial performance cost.' },
       { title: 'Many environments, one host', body: 'A virtual machine manager divides physical resources among guest kernels, each of which behaves as though it owns a private computer. The underlying system is the host, and each virtualized system is a guest. The VMM preserves isolation while sharing the real processor, memory, and devices.' },
+      { title: 'Where the abstraction pays', body: 'Virtual machines support consolidation, snapshots, testing, and isolation because each guest receives virtual processors, memory, disks, and devices. The VMM must intercept or safely virtualize sensitive operations and schedule guests over finite hardware, so overcommitment and I/O virtualization can still introduce contention even when CPU instructions run natively.' },
     ],
     keyTerms: ['emulation', 'virtualization', 'virtual machine manager', 'host', 'guest', 'native execution'], source: 'Chapter 1 slides 64-67',
   },
@@ -72,7 +77,7 @@ export const osQuizQuestions: QuizQuestion[] = [
 
 export const osSemesterWeeks = [
   ['Sep 01-08', 'Operating-system foundations', 'Chapter 1', 'Available', 'OS roles, hardware, control, resource management, and execution environments'],
-  ['Sep 15-17', 'Operating-system structures', 'Chapter 2', 'Provisional', 'Services, interfaces, system calls, design, and implementation structures'],
+  ['Sep 15-17', 'Operating-system structures', 'Chapter 2', 'Available', 'Services, interfaces, system calls, design, implementation structures, booting, and debugging'],
   ['Sep 22-Oct 01', 'Processes and concurrency', 'Chapters 3-4', 'Provisional', 'Processes, interprocess communication, threads, and concurrency'],
   ['Oct 06-08', 'CPU scheduling', 'Chapter 5', 'Provisional', 'Scheduling criteria, algorithms, and multicore considerations'],
   ['Oct 13', 'Midterm I', 'Chapters 1-5', 'Provisional', 'First exam checkpoint during class'],
@@ -83,7 +88,7 @@ export const osSemesterWeeks = [
   ['TBD', 'Cumulative final', 'All covered chapters', 'Provisional', 'Comprehensive final examination'],
 ]
 
-export const osGlossary = [
+export const osGlossary: Array<[string, string]> = [
   ['Cache coherency', 'The requirement that multiple cached copies reflect updates consistently.'],
   ['Cluster', 'Separate computers connected to cooperate, often sharing storage or a service.'],
   ['Direct memory access', 'Block transfer between a device and memory without CPU handling of each unit.'],
@@ -102,3 +107,5 @@ export const osGlossary = [
   ['Virtualization', 'Running same-architecture guest systems on abstracted physical hardware.'],
   ['Virtual machine manager', 'The layer that allocates host hardware among isolated guest systems.'],
 ]
+
+export const osActivityIds = ['events', 'storage', 'system-call'] as const

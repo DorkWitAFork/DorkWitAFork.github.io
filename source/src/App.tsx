@@ -24,7 +24,7 @@ export default function App() {
   }, [route])
 
   if (route.section === 'course' && route.course === 'csc138') return <Csc138App route={route} />
-  if (route.section === 'course' && route.course === 'csc139') return <OsApp />
+  if (route.section === 'course' && route.course === 'csc139') return <OsApp route={route} />
   if (route.section === 'student') return <StudentLibrary />
   if (route.section === 'teacher') return <TeacherPage />
   if (route.section === 'hiring') return <HiringPortfolio />

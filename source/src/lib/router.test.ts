@@ -20,11 +20,14 @@ describe('site routing', () => {
     expect(routeFromHash('#/student/csc138/chapter2')).toEqual({ section: 'course', course: 'csc138', view: 'chapter2' })
     expect(routeFromHash('#/student/csc138/practice/chapter2')).toEqual({ section: 'course', course: 'csc138', view: 'practice', chapter: 'chapter2' })
     expect(routeFromHash('#/student/csc138/reference/chapter2')).toEqual({ section: 'course', course: 'csc138', view: 'reference', chapter: 'chapter2' })
+    expect(routeFromHash('#/student/csc139/chapter2')).toEqual({ section: 'course', course: 'csc139', view: 'chapter2' })
+    expect(routeFromHash('#/student/csc139/practice/chapter2')).toEqual({ section: 'course', course: 'csc139', view: 'practice', chapter: 'chapter2' })
+    expect(routeFromHash('#/student/csc139/reference/chapter2')).toEqual({ section: 'course', course: 'csc139', view: 'reference', chapter: 'chapter2' })
   })
 
   it('defaults unknown course views to the dashboard', () => {
     expect(routeFromHash('#/student/csc139/not-a-view')).toEqual({ section: 'course', course: 'csc139', view: 'dashboard' })
-    expect(routeFromHash('#/student/csc139/chapter2')).toEqual({ section: 'course', course: 'csc139', view: 'dashboard' })
+    expect(routeFromHash('#/student/csc139/practice/not-a-chapter')).toEqual({ section: 'course', course: 'csc139', view: 'practice' })
     expect(routeFromHash('#/student/csc138/practice/not-a-chapter')).toEqual({ section: 'course', course: 'csc138', view: 'practice' })
   })
 

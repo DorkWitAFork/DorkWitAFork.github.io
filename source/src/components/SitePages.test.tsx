@@ -8,7 +8,7 @@ describe('portfolio home', () => {
   it('introduces Spencer and offers three audience choices', () => {
     render(<PortfolioHome />)
 
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Spencer Le Bleu')
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Spencer LeBleu.')
     expect(screen.getByRole('heading', { name: 'Hello! Are you a:' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /01 Student/ })).toHaveAttribute('href', '#/student')
     expect(screen.getByRole('link', { name: /02 Teacher/ })).toHaveAttribute('href', '#/teacher')

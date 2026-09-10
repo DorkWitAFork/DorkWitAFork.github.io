@@ -247,6 +247,12 @@ button:focus-visible, input:focus-visible { outline: 3px solid #e49e15; outline-
 .mode-sequence { display: grid; grid-template-columns: 90px 1fr 90px; min-height: 280px; }
 .mode-label { display: grid; place-items: center; writing-mode: vertical-rl; font: 500 9px 'DM Mono', monospace; letter-spacing: .15em; border: 1px solid var(--green); }.mode-label.user { background: #e8edf1; }.mode-label.kernel { background: var(--orange); color: #172333; border-color: var(--orange); }
 .mode-sequence .sequence-lane { padding: 18px; border-color: #aab3be; }.mode-sequence .sequence-lane button { grid-template-columns: 28px 1fr 30px; }
+.chapter2-sequence { grid-template-columns: 1fr; }
+.architecture-matcher { display: grid; gap: 8px; margin-bottom: 22px; }
+.architecture-matcher label { display: grid; grid-template-columns: minmax(220px, 1fr) 180px 70px; align-items: center; gap: 14px; min-height: 62px; padding: 12px 16px; border: 1px solid var(--line); background: #f8f7f2; }
+.architecture-matcher label > span { font-size: 12px; line-height: 1.55; }
+.architecture-matcher select { width: 100%; padding: 9px; border: 1px solid #9ca7b3; background: white; color: var(--ink); }
+.architecture-matcher i { font: normal 500 8px 'DM Mono', monospace; text-transform: uppercase; }.architecture-matcher i.correct { color: #38704a; }.architecture-matcher i.incorrect { color: #a44932; }
 
 @media (max-width: 1000px) {
   .welcome-intro, .library-page, .teaser-page { margin-left: 5vw; margin-right: 5vw; }
@@ -267,4 +273,6 @@ button:focus-visible, input:focus-visible { outline: 3px solid #e49e15; outline-
   .os-assessment { grid-template-columns: 1fr 1fr; }.os-assessment div:last-child { grid-column: auto; }
   .classifier-row { align-items: stretch; flex-direction: column; }.classifier-row div { display: grid; grid-template-columns: 1fr 1fr; }
   .mode-sequence { grid-template-columns: 45px 1fr 45px; }.mode-reference { grid-template-columns: 1fr; }.mode-reference > i { text-align: center; }
+  .os-chapter-header .os-diagram { display: none; }
+  .architecture-matcher label { grid-template-columns: 1fr; gap: 8px; }
 }

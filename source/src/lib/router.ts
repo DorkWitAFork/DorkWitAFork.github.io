@@ -1,4 +1,4 @@
-import type { Csc138ChapterId, Csc138View, View } from '../types'
+import type { Csc138ChapterId, Csc138View, Csc139ChapterId, Csc139View, View } from '../types'
 
 export type SiteRoute =
   | { section: 'home' }
@@ -6,11 +6,13 @@ export type SiteRoute =
   | { section: 'teacher' }
   | { section: 'hiring' }
   | { section: 'course'; course: 'csc138'; view: Csc138View; chapter?: Csc138ChapterId }
-  | { section: 'course'; course: 'csc139'; view: View }
+  | { section: 'course'; course: 'csc139'; view: Csc139View; chapter?: Csc139ChapterId }
 
 const courseViews: View[] = ['dashboard', 'roadmap', 'chapter1', 'practice', 'reference']
 const csc138Views: Csc138View[] = [...courseViews, 'chapter2']
 const chapterIds: Csc138ChapterId[] = ['chapter1', 'chapter2']
+const csc139Views: Csc139View[] = [...courseViews, 'chapter2']
+const csc139ChapterIds: Csc139ChapterId[] = ['chapter1', 'chapter2']
 
 export function normalizeRoute(hash: string) {
   const path = hash.replace(/^#\/?/, '')
@@ -31,8 +33,11 @@ export function routeFromHash(hash: string): SiteRoute {
     return chapter ? { section: 'course', course, view, chapter } : { section: 'course', course, view }
   }
   if (section === 'student' && course === 'csc139') {
-    const view = courseViews.includes(requestedView as View) ? requestedView as View : 'dashboard'
-    return { section: 'course', course, view }
+    const view = csc139Views.includes(requestedView as Csc139View) ? requestedView as Csc139View : 'dashboard'
+    const chapter = (view === 'practice' || view === 'reference') && csc139ChapterIds.includes(requestedChapter as Csc139ChapterId)
+      ? requestedChapter as Csc139ChapterId
+      : undefined
+    return chapter ? { section: 'course', course, view, chapter } : { section: 'course', course, view }
   }
   if (section === 'student' || section === 'teacher' || section === 'hiring') return { section }
   return { section: 'home' }
