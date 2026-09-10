@@ -86,11 +86,11 @@ function ContextSection() {
         <aside><span>DESK NOTE / 01</span><i aria-hidden="true">*</i></aside>
         <div>
           <h2 id="notes-heading">A little context.</h2>
-          <p>I am studying computer science in Sacramento and building alongside the coursework. I like projects that expose their machinery: algorithms that can explain their steps, diagrams that make an invisible boundary visible, and interfaces that help someone do more than look.</p>
+          <p>I am studying computer science in Sacramento and building alongside the coursework. I like to build projects alongside my coursework that help me apply real world concepts to my lessons!  </p>
           <p>I update this site as the work changes. Nothing here is meant to look frozen or more finished than it really is.</p>
         </div>
         <div className="wc-contact">
-          <span>THE OPEN CHANNEL</span>
+          <span>MY PERSONAL GITHUB</span>
           <a href="https://github.com/DorkWitAFork" target="_blank" rel="noreferrer">github.com/DorkWitAFork <span aria-hidden="true">↗</span></a>
           <small>Code, revision history, and current experiments.</small>
         </div>
