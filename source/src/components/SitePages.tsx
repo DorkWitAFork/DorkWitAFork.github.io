@@ -142,7 +142,7 @@ export function HiringPortfolio() {
     <main id="top">
       <header className="wc-page-intro">
         <span>FOR HIRING PROFESSIONALS / FILE H</span>
-        <div><p>Selected work</p><h1>Projects, with the machinery showing.</h1></div>
+        <div><p>Selected work</p><h1>Some of my recent projects, ready to explore.</h1></div>
         <p>Three current projects, documented with the problem I was solving, the tools I used, and links to inspect the result.</p>
       </header>
       <ProjectRecords />
