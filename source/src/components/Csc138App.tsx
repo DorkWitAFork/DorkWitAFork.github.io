@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { csc138ChapterList, csc138Chapters, type Csc138Chapter } from '../data/csc138Course'
 import { semesterWeeks } from '../data/course'
-import { emptyProgress, loadProgress, saveProgress } from '../lib/progress'
+import { emptyProgress, loadProgress, recordQuizAttempt, saveProgress } from '../lib/progress'
 import type { SiteRoute } from '../lib/router'
 import type { Csc138ChapterId, Csc138Progress, Csc138View } from '../types'
 import { Icon } from './Icons'
+import { LessonVisual } from './LessonVisual'
 import { NetworkDiagram } from './NetworkDiagram'
 import { Practice } from './Practice'
 
@@ -14,8 +15,6 @@ type Navigate = (view: Csc138View, chapter?: Csc138ChapterId) => void
 const views: Array<{ id: Csc138View; label: string; icon: string }> = [
   { id: 'dashboard', label: 'Dashboard', icon: 'dashboard' },
   { id: 'roadmap', label: 'Semester plan', icon: 'roadmap' },
-  { id: 'chapter1', label: 'Chapter 1', icon: 'book' },
-  { id: 'chapter2', label: 'Chapter 2', icon: 'book' },
   { id: 'practice', label: 'Practice', icon: 'practice' },
   { id: 'reference', label: 'Reference', icon: 'reference' },
 ]
@@ -78,10 +77,11 @@ function Chapter({ chapter, progress, completeLesson, navigate }: { chapter: Csc
   return <div className="page chapter-page">
     <header className="chapter-header"><div><span className="kicker light">{chapter.moduleLabel}</span><h1>{chapter.tagline}</h1><p>{chapter.summary}</p></div><NetworkDiagram compact/></header>
     <div className="chapter-layout">
-      <aside className="lesson-sidebar"><div className="sidebar-title"><span>CHAPTER {chapter.number}</span><b>{completedCount}/{chapter.lessons.length}</b></div>{chapter.lessons.map(lesson => <button key={lesson.id} className={`${selected.id === lesson.id ? 'active' : ''} ${progress.completedLessons.includes(lesson.id) ? 'complete' : ''}`} onClick={() => { setSelectedId(lesson.id); window.scrollTo({ top: 300, behavior: 'smooth' }) }}><span>{lesson.number}</span><div><strong>{lesson.title}</strong><small><Icon name="clock" size={13}/>{lesson.minutes} min</small></div>{progress.completedLessons.includes(lesson.id) && <Icon name="check" size={18}/>}</button>)}</aside>
+      <aside className="lesson-sidebar" aria-label={`Chapter ${chapter.number} lessons`}><div className="sidebar-title"><span>CHAPTER {chapter.number}</span><b>{completedCount}/{chapter.lessons.length}</b></div>{chapter.lessons.map(lesson => <button key={lesson.id} className={`${selected.id === lesson.id ? 'active' : ''} ${progress.completedLessons.includes(lesson.id) ? 'complete' : ''}`} onClick={() => { setSelectedId(lesson.id); window.scrollTo({ top: 300, behavior: 'smooth' }) }}><span>{lesson.number}</span><div><strong>{lesson.title}</strong></div>{progress.completedLessons.includes(lesson.id) && <Icon name="check" size={18}/>}</button>)}</aside>
       <main className="lesson-content">
         <header className="lesson-header"><span>{selected.eyebrow}</span><h2>{selected.title}</h2><p>{selected.summary}</p><div className="source-pill">SOURCE · {selected.source.toUpperCase()}</div></header>
         <section className="objectives"><span>AFTER THIS LESSON, YOU CAN</span><ul>{selected.objectives.map(objective => <li key={objective}><Icon name="check" size={17}/>{objective}</li>)}</ul></section>
+        <LessonVisual lessonId={selected.id}/>
         {selected.sections.map((section, index) => <section className="reading-section" key={section.title}><div className="reading-number">{String(index + 1).padStart(2, '0')}</div><div><h3>{section.title}</h3><p>{section.body}</p>{section.points && <ul>{section.points.map(point => <li key={point}>{point}</li>)}</ul>}</div></section>)}
         <section className="terms-block"><span>KEY TERMS</span><div>{selected.keyTerms.map(term => <i key={term}>{term}</i>)}</div></section>
         <footer className="lesson-footer"><button className={`button ${isComplete ? 'button-complete' : ''}`} onClick={() => completeLesson(selected.id)}><Icon name="check"/>{isComplete ? 'Lesson complete' : 'Mark lesson complete'}</button><button className="button button-ghost" onClick={() => navigate('practice', chapter.id)}>Open practice lab <Icon name="arrow"/></button></footer>
@@ -95,10 +95,10 @@ function Reference({ chapter, selectChapter, reset }: { chapter: Csc138Chapter; 
   return <div className="page reference-page">
     <header className="page-heading"><div><span className="kicker">Chapter {chapter.number} quick reference</span><h1>Terms, formulas,<br/>and source notes.</h1></div><p>Use this compact reference while solving exercises. Definitions follow the terminology in the uploaded Chapter {chapter.number} deck.</p></header>
     <div className="chapter-switch" aria-label="Reference chapter"><button className={!isChapter2 ? 'active' : ''} onClick={() => selectChapter('chapter1')}>Chapter 1</button><button className={isChapter2 ? 'active' : ''} onClick={() => selectChapter('chapter2')}>Chapter 2</button></div>
-    {!isChapter2 ? <section className="reference-grid"><article><span className="section-label-text">ESSENTIAL FORMULA</span><div className="big-formula"><i>d<sub>trans</sub></i><b>=</b><span>L<em>R</em></span></div><p><strong>L</strong> is packet length in bits. <strong>R</strong> is link rate in bits per second. The result is measured in seconds.</p></article><article><span className="section-label-text">UNIT LADDER</span><div className="unit-list"><span><b>1 Kbit</b>1,000 bits</span><span><b>1 Mbit</b>1,000,000 bits</span><span><b>1 Gbit</b>1,000,000,000 bits</span><span><b>1 ms</b>0.001 seconds</span></div></article></section> : <section className="reference-grid"><article><span className="section-label-text">HTTP RESPONSE TIME</span><div className="reference-equation">2RTT + transmission time</div><p>For one object over non-persistent HTTP: one RTT establishes TCP, a second carries the request and initial response, then the object is transmitted.</p></article><article><span className="section-label-text">CACHE RELATIONSHIPS</span><div className="unit-list"><span><b>Miss traffic</b>(1 - hit rate) × offered rate</span><span><b>Utilization</b>miss traffic / access rate</span><span><b>Average delay</b>miss × origin + hit × cache</span><span><b>Fresh object</b>304 Not Modified</span></div></article></section>}
-    {isChapter2 && <section className="protocol-reference"><article><span>HTTP METHODS</span><p><b>GET</b> retrieve · <b>POST</b> submit body · <b>HEAD</b> headers only · <b>PUT</b> replace resource</p></article><article><span>COMMON STATUS</span><p><b>200</b> success · <b>301</b> moved · <b>400</b> bad request · <b>404</b> missing · <b>505</b> unsupported version</p></article></section>}
+    {!isChapter2 ? <section className="reference-grid"><article><span className="section-label-text">ESSENTIAL FORMULA</span><div className="big-formula"><i>d<sub>trans</sub></i><b>=</b><span>L<em>R</em></span></div><p><strong>L</strong> is packet length in bits. <strong>R</strong> is link rate in bits per second. The result is measured in seconds.</p></article><article><span className="section-label-text">UNIT LADDER</span><div className="unit-list"><span><b>1 Kbit</b>1,000 bits</span><span><b>1 Mbit</b>1,000,000 bits</span><span><b>1 Gbit</b>1,000,000,000 bits</span><span><b>1 ms</b>0.001 seconds</span></div></article></section> : <section className="reference-grid"><article><span className="section-label-text">HTTP RESPONSE TIME</span><div className="reference-equation">2RTT + transmission time</div><p>For one object over non-persistent HTTP: one RTT establishes TCP, a second carries the request and initial response, then the object is transmitted.</p></article><article><span className="section-label-text">CACHE RELATIONSHIPS</span><div className="unit-list"><span><b>Miss traffic</b>(1 - hit rate) × offered rate</span><span><b>Utilization</b>miss traffic / access rate</span><span><b>Average delay</b>miss × origin + hit × cache</span><span><b>Validated unchanged</b>304 Not Modified</span></div></article></section>}
+    {isChapter2 && <section className="protocol-reference"><article><span>HTTP METHODS</span><p><b>GET</b> retrieve · <b>POST</b> submit body · <b>HEAD</b> headers only · <b>PUT</b> replace resource</p></article><article><span>MAIL AND FTP</span><p><b>SMTP</b> TCP 25 server-to-server · <b>IMAP</b> stored-mail access · <b>FTP control</b> TCP 21 · <b>Active FTP data</b> server port 20 in the deck model</p></article><article><span>DNS PATH</span><p><b>Local resolver</b> → <b>root</b> → <b>TLD</b> → <b>authoritative server</b>. Cached answers remain reusable until their TTL expires.</p></article><article><span>DNS RECORDS</span><p><b>A</b> IPv4 address · <b>NS</b> authoritative server · <b>CNAME</b> canonical target · <b>MX</b> mail server</p></article></section>}
     <section className="glossary"><div className="section-title"><span>CHAPTER {chapter.number}</span><h2>Core vocabulary</h2></div><div className="glossary-list">{chapter.glossary.map(([term, definition], index) => <article key={term}><span>{String(index + 1).padStart(2, '0')}</span><strong>{term}</strong><p>{definition}</p></article>)}</div></section>
-    <section className="sources"><div><span className="section-label-text">COURSE SOURCES</span><h2>Built from your materials.</h2></div><ul><li><strong>{isChapter2 ? 'Chapter2-Application-Principles of network applications-Web.pdf' : 'Chapter1-Introduction.pdf'}</strong><span>Primary source for lesson scope, terminology, formulas, and sequence.</span></li><li><strong>CSC138 Computer Network Fundamentals - SECTION 02.pdf</strong><span>Course details, outcomes, grading weights, dates, and semester-level topic list.</span></li><li><strong>Computer Networking: A Top-Down Approach</strong><span>Kurose and Ross, 8th edition. Supporting context only; lesson text is original.</span></li></ul></section>
+    <section className="sources"><div><span className="section-label-text">COURSE SOURCES</span><h2>Built from your materials.</h2></div><ul><li><strong>{isChapter2 ? 'Chapter2-Application-Principles of network applications-Web.pdf' : 'Chapter1-Introduction.pdf'}</strong><span>Primary source for lesson scope, terminology, formulas, and sequence.</span></li>{isChapter2 && <li><strong>Chapter2-Mail-DNS.pdf</strong><span>Primary source for email, SMTP, FTP, DNS hierarchy, records, messages, and security.</span></li>}<li><strong>CSC138 Computer Network Fundamentals - SECTION 02.pdf</strong><span>Course details, outcomes, grading weights, dates, and semester-level topic list.</span></li><li><strong>Computer Networking: A Top-Down Approach</strong><span>Kurose and Ross, 8th edition. Supporting context only; lesson text is original.</span></li></ul></section>
     <button className="reset-button" onClick={reset}><Icon name="reset"/> Reset all browser progress</button>
   </div>
 }
@@ -109,6 +109,8 @@ export function Csc138App({ route }: { route: Csc138Route }) {
   const activeChapter = csc138Chapters[activeChapterId]
   const [progress, setProgress] = useState<Csc138Progress>(() => loadProgress())
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [chaptersOpen, setChaptersOpen] = useState(false)
+  const chapterNavRef = useRef<HTMLDivElement>(null)
   const navigate: Navigate = (next, chapter) => {
     const suffix = (next === 'practice' || next === 'reference') && chapter === 'chapter2' ? '/chapter2' : ''
     window.location.hash = `/student/csc138/${next}${suffix}`
@@ -120,13 +122,21 @@ export function Csc138App({ route }: { route: Csc138Route }) {
     const location = route.chapter ? `${view}/${route.chapter}` : view
     setProgress(current => ({ ...current, lastVisited: location }))
     setMobileOpen(false)
+    setChaptersOpen(false)
   }, [route.chapter, view])
+  useEffect(() => {
+    const closeOnOutsideClick = (event: PointerEvent) => {
+      if (!chapterNavRef.current?.contains(event.target as Node)) setChaptersOpen(false)
+    }
+    document.addEventListener('pointerdown', closeOnOutsideClick)
+    return () => document.removeEventListener('pointerdown', closeOnOutsideClick)
+  }, [])
 
   const completeLesson = (id: string) => setProgress(current => current.completedLessons.includes(id) ? current : { ...current, completedLessons: [...current.completedLessons, id] })
   const completeActivity = (id: string) => setProgress(current => current.completedActivities.includes(id) ? current : { ...current, completedActivities: [...current.completedActivities, id] })
   const recordQuiz = (score: number) => setProgress(current => {
     const quiz = current.chapterQuizzes[activeChapterId]
-    const nextQuiz = { attempts: quiz.attempts + 1, bestScore: Math.max(quiz.bestScore, score), total: activeChapter.quizQuestions.length }
+    const nextQuiz = recordQuizAttempt(quiz, score, activeChapter.quizQuestions.length)
     return {
       ...current,
       quizAttempts: activeChapterId === 'chapter1' ? nextQuiz.attempts : current.quizAttempts,
@@ -138,8 +148,10 @@ export function Csc138App({ route }: { route: Csc138Route }) {
   const selectPracticeChapter = (chapter: Csc138ChapterId) => navigate('practice', chapter)
   const selectReferenceChapter = (chapter: Csc138ChapterId) => navigate('reference', chapter)
 
+  const renderNavButton = (item: (typeof views)[number]) => <button key={item.id} className={`nav-item ${view === item.id ? 'active' : ''}`} aria-current={view === item.id ? 'page' : undefined} onClick={() => navigate(item.id, (item.id === 'practice' || item.id === 'reference') ? activeChapterId : undefined)}><Icon name={item.icon}/><span>{item.label}</span></button>
+
   return <div className="app-shell">
-    <header className="topbar"><button className="brand" onClick={() => navigate('dashboard')}><span className="brand-mark"><i/><i/><i/></span><span><b>NETWORK</b><small>CSC 138 FIELD LAB</small></span></button><nav className={mobileOpen ? 'open' : ''} aria-label="Primary navigation">{views.map(item => <button key={item.id} className={view === item.id ? 'active' : ''} onClick={() => navigate(item.id, (item.id === 'practice' || item.id === 'reference') ? activeChapterId : undefined)}><Icon name={item.icon}/><span>{item.label}</span></button>)}</nav><button className="course-back" onClick={() => { window.location.hash = '/student' }}>All courses</button><div className="topbar-meta"><span>FALL</span><b>2026</b></div><button className="menu-button" aria-label="Toggle navigation" aria-expanded={mobileOpen} onClick={() => setMobileOpen(value => !value)}><i/><i/><i/></button></header>
+    <header className="topbar"><button className="brand" onClick={() => navigate('dashboard')}><span className="brand-mark"><i/><i/><i/></span><span><b>NETWORK</b><small>CSC 138 FIELD LAB</small></span></button><nav id="csc138-primary-navigation" className={mobileOpen ? 'open' : ''} aria-label="Primary navigation">{views.slice(0, 2).map(renderNavButton)}<div className="chapter-nav" ref={chapterNavRef} onKeyDown={event => { if (event.key === 'Escape') { setChaptersOpen(false); chapterNavRef.current?.querySelector<HTMLButtonElement>('.chapter-trigger')?.focus() } }}><button type="button" className={`nav-item chapter-trigger ${view === 'chapter1' || view === 'chapter2' ? 'active' : ''}`} aria-expanded={chaptersOpen} aria-controls="csc138-chapter-navigation" onClick={() => setChaptersOpen(open => !open)}><Icon name="book"/><span>Chapters</span><Icon name="chevronDown" size={14}/></button><ul id="csc138-chapter-navigation" className="chapter-menu" hidden={!chaptersOpen}>{csc138ChapterList.map(chapter => <li key={chapter.id}><button type="button" aria-current={view === chapter.id ? 'page' : undefined} onClick={() => { setChaptersOpen(false); setMobileOpen(false); navigate(chapter.id) }}><span>Chapter {chapter.number}</span><small>{chapter.title}</small></button></li>)}</ul></div>{views.slice(2).map(renderNavButton)}</nav><button className="course-back" onClick={() => { window.location.hash = '/student' }}>All courses</button><div className="topbar-meta"><span>FALL</span><b>2026</b></div><button className="menu-button" aria-label="Toggle navigation" aria-controls="csc138-primary-navigation" aria-expanded={mobileOpen} onClick={() => setMobileOpen(value => !value)}><i/><i/><i/></button></header>
     <main>{view === 'dashboard' && <Dashboard progress={progress} navigate={navigate}/>} {view === 'roadmap' && <Roadmap navigate={navigate}/>} {(view === 'chapter1' || view === 'chapter2') && <Chapter key={activeChapter.id} chapter={activeChapter} progress={progress} completeLesson={completeLesson} navigate={navigate}/>} {view === 'practice' && <Practice key={activeChapter.id} chapter={activeChapter} completedActivities={progress.completedActivities} completeActivity={completeActivity} recordQuiz={recordQuiz} selectChapter={selectPracticeChapter}/>} {view === 'reference' && <Reference chapter={activeChapter} selectChapter={selectReferenceChapter} reset={reset}/>}</main>
     <footer className="site-footer"><div><span className="brand-mark small"><i/><i/><i/></span><strong>CSC 138 NETWORK LAB</strong></div><span>Independent study companion · Sacramento State · Fall 2026</span><small>Progress stays in this browser.</small></footer>
   </div>
