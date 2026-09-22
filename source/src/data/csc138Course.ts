@@ -34,7 +34,7 @@ export const csc138Chapters: Record<Csc138ChapterId, Csc138Chapter> = {
     moduleLabel: 'Module 02 · Application Layer',
     title: 'Application Principles and HTTP',
     tagline: 'Follow the request.',
-    summary: 'Trace application messages from processes and sockets through HTTP, cookies, caches, and modern Web transport.',
+    summary: 'Trace application messages through sockets, HTTP and Web state, email and FTP delivery, and hierarchical DNS resolution.',
     lessons: chapter2Lessons,
     quizQuestions: chapter2QuizQuestions,
     glossary: chapter2Glossary,

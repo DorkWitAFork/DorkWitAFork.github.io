@@ -9,6 +9,7 @@ const paths: Record<string, React.ReactNode> = {
   clock: <><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></>,
   check: <path d="m5 12 4 4L19 6"/>,
   arrow: <path d="m9 18 6-6-6-6"/>,
+  chevronDown: <path d="m6 9 6 6 6-6"/>,
   reset: <><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></>,
 }
 

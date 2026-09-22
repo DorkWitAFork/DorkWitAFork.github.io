@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { calculateDelayMs, emptyProgress, loadProgress, saveProgress, STORAGE_KEY } from './progress'
+import { calculateDelayMs, emptyProgress, loadProgress, recordQuizAttempt, saveProgress, STORAGE_KEY } from './progress'
 
 function memoryStorage(initial?: string) {
   const values = new Map<string, string>()
@@ -19,6 +19,16 @@ describe('calculateDelayMs', () => {
   it('rejects non-positive inputs', () => {
     expect(calculateDelayMs(0, 100)).toBe(0)
     expect(calculateDelayMs(1000, -1)).toBe(0)
+  })
+})
+
+describe('recordQuizAttempt', () => {
+  it('keeps a stronger historical result with its original denominator', () => {
+    expect(recordQuizAttempt({ attempts: 1, bestScore: 10, total: 10 }, 9, 18)).toEqual({ attempts: 2, bestScore: 10, total: 10 })
+  })
+
+  it('replaces a historical result when the new percentage is higher', () => {
+    expect(recordQuizAttempt({ attempts: 1, bestScore: 6, total: 10 }, 14, 18)).toEqual({ attempts: 2, bestScore: 14, total: 18 })
   })
 })
 
@@ -58,7 +68,7 @@ describe('progress storage', () => {
     })
     const loaded = loadProgress(memoryStorage(oldProgress))
     expect(loaded.chapterQuizzes.chapter1).toEqual({ attempts: 3, bestScore: 8, total: 10 })
-    expect(loaded.chapterQuizzes.chapter2).toEqual({ attempts: 0, bestScore: 0, total: 10 })
+    expect(loaded.chapterQuizzes.chapter2).toEqual({ attempts: 0, bestScore: 0, total: 18 })
     expect(loaded.completedLessons).toEqual(['protocols'])
   })
 
