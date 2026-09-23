@@ -3,7 +3,7 @@ import type { ChapterQuizProgress, Csc138Progress } from '../types'
 export const STORAGE_KEY = 'csc138-progress-v1'
 
 const emptyChapter1Quiz: ChapterQuizProgress = { attempts: 0, bestScore: 0, total: 10 }
-const emptyChapter2Quiz: ChapterQuizProgress = { attempts: 0, bestScore: 0, total: 18 }
+const emptyChapter2Quiz: ChapterQuizProgress = { attempts: 0, bestScore: 0, total: 22 }
 
 export const emptyProgress: Csc138Progress = {
   version: 1,

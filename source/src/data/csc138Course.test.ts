@@ -5,9 +5,10 @@ describe('CSC 138 chapter registry', () => {
   it('registers two complete chapters', () => {
     expect(csc138ChapterList.map(chapter => chapter.id)).toEqual(['chapter1', 'chapter2'])
     expect(csc138Chapters.chapter1.lessons).toHaveLength(7)
-    expect(csc138Chapters.chapter2.lessons).toHaveLength(11)
-    expect(csc138Chapters.chapter2.quizQuestions).toHaveLength(18)
-    expect(csc138Chapters.chapter2.activityIds).toHaveLength(7)
+    expect(csc138Chapters.chapter2.lessons).toHaveLength(13)
+    expect(csc138Chapters.chapter2.quizQuestions).toHaveLength(22)
+    expect(csc138Chapters.chapter2.activityIds).toHaveLength(9)
+    expect(csc138Chapters.chapter2.lessons.map(lesson => lesson.id)).toEqual(expect.arrayContaining(['ch2-p2p-distribution', 'ch2-bittorrent-swarm']))
   })
 
   it('uses unique IDs across chapters and valid quiz answers', () => {

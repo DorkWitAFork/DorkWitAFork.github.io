@@ -68,7 +68,7 @@ describe('progress storage', () => {
     })
     const loaded = loadProgress(memoryStorage(oldProgress))
     expect(loaded.chapterQuizzes.chapter1).toEqual({ attempts: 3, bestScore: 8, total: 10 })
-    expect(loaded.chapterQuizzes.chapter2).toEqual({ attempts: 0, bestScore: 0, total: 18 })
+    expect(loaded.chapterQuizzes.chapter2).toEqual({ attempts: 0, bestScore: 0, total: 22 })
     expect(loaded.completedLessons).toEqual(['protocols'])
   })
 
