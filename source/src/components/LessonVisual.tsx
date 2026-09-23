@@ -73,5 +73,23 @@ export function LessonVisual({ lessonId }: VisualProps) {
     <figcaption id="dns-record-visual-caption"><strong>Type gives the value meaning</strong>Every resource record also carries a TTL that limits how long cached copies may be reused.</figcaption>
   </figure>
 
+  if (lessonId === 'ch2-p2p-distribution') return <figure className="lesson-visual" aria-labelledby="p2p-scale-visual-caption">
+    <div className="p2p-scale-visual" role="img" aria-label="The client-server lower bound is the maximum of N F divided by server upload and F divided by minimum download. The peer-to-peer lower bound is the maximum of F divided by server upload, F divided by minimum download, and N F divided by server upload plus the sum of peer uploads.">
+      <article><span>CLIENT-SERVER</span><strong>max(NF/u<sub>s</sub>, F/d<sub>min</sub>)</strong><div><i/><i/><i/><i/></div><small>One server emits every copy</small></article>
+      <b>versus</b>
+      <article><span>PEER-TO-PEER</span><strong>max(F/u<sub>s</sub>, F/d<sub>min</sub>, NF/(u<sub>s</sub> + sum u<sub>i</sub>))</strong><div className="peer-capacity"><i/><i/><i/><i/></div><small>Each peer can add upload capacity</small></article>
+    </div>
+    <figcaption id="p2p-scale-visual-caption"><strong>Demand grows in both models; service capacity can grow in P2P</strong>The largest unavoidable time term sets the ideal lower bound.</figcaption>
+  </figure>
+
+  if (lessonId === 'ch2-bittorrent-swarm') return <figure className="lesson-visual" aria-labelledby="swarm-visual-caption">
+    <div className="swarm-visual" role="img" aria-label="A tracker returns peer discovery information to new peer NEW. File pieces travel directly among selected peer neighbors A, B, C, D, and NEW rather than through the tracker.">
+      <div className="tracker-node"><span>TRACKER</span><small>peer discovery</small></div>
+      <div className="swarm-peers"><i>A</i><i>B</i><i className="new-peer">NEW</i><i>C</i><i>D</i></div>
+      <div className="swarm-legend"><span>--- coordination</span><b>piece exchange between neighbors</b></div>
+    </div>
+    <figcaption id="swarm-visual-caption"><strong>Coordination and content take different paths</strong>The tracker helps peers find one another; it does not carry every file piece.</figcaption>
+  </figure>
+
   return null
 }

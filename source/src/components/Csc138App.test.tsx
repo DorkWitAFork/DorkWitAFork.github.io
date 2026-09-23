@@ -15,6 +15,8 @@ describe('CSC 138 Chapter 2', () => {
     render(<Csc138App route={{ section: 'course', course: 'csc138', view: 'chapter2' }}/>)
     expect(screen.getByRole('heading', { name: 'Follow the request.' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /Building Network Applications/ })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Distributing Files at Scale/ })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Inside a BitTorrent Swarm/ })).toBeInTheDocument()
     expect(screen.getByText('CHAPTER 2')).toBeInTheDocument()
     expect(within(screen.getByRole('complementary', { name: 'Chapter 2 lessons' })).queryByText(/\d+ min/i)).not.toBeInTheDocument()
   })
@@ -47,7 +49,47 @@ describe('CSC 138 Chapter 2', () => {
     expect(screen.getByRole('heading', { name: 'Sort FTP control and data' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Trace iterative DNS resolution' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Match DNS records and DNSSEC scope' })).toBeInTheDocument()
-    expect(screen.getByText('0/7')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Compare file distribution time' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Operate a BitTorrent swarm' })).toBeInTheDocument()
+    expect(screen.getByText('0/9')).toBeInTheDocument()
+  })
+
+  it('validates the P2P calculator and accepts tied bottlenecks', () => {
+    render(<Csc138App route={{ section: 'course', course: 'csc138', view: 'practice', chapter: 'chapter2' }}/>)
+    const lab = within(screen.getByRole('region', { name: 'Compare file distribution time' }))
+    const bottleneck = lab.getByLabelText(/Which term currently limits/)
+    const complete = lab.getByRole('button', { name: 'Mark activity complete' })
+
+    fireEvent.change(lab.getByLabelText(/File size F/), { target: { value: '100' } })
+    fireEvent.change(lab.getByLabelText(/Receiving peers N/), { target: { value: '1' } })
+    fireEvent.change(lab.getByLabelText(/Server upload/), { target: { value: '10' } })
+    fireEvent.change(lab.getByLabelText(/Slowest download/), { target: { value: '10' } })
+    fireEvent.change(lab.getByLabelText(/Each peer upload/), { target: { value: '0' } })
+    fireEvent.change(bottleneck, { target: { value: 'minimumDownload' } })
+    expect(complete).toBeEnabled()
+    expect(lab.getByText(/are tied as the largest constraints/)).toBeInTheDocument()
+
+    fireEvent.change(lab.getByLabelText(/Server upload/), { target: { value: '0' } })
+    expect(bottleneck).toBeDisabled()
+    expect(complete).toBeDisabled()
+    expect(lab.getAllByText('Check inputs')).toHaveLength(2)
+  })
+
+  it('requires every BitTorrent strategy to be matched before completion', () => {
+    render(<Csc138App route={{ section: 'course', course: 'csc138', view: 'practice', chapter: 'chapter2' }}/>)
+    const lab = within(screen.getByRole('region', { name: 'Operate a BitTorrent swarm' }))
+    const matches = [
+      ['Tracker', 'Helps a new participant discover peers'],
+      ['Rarest first', 'Replicates a scarce needed piece'],
+      ['Preferred peers', 'Rewards neighbors currently providing useful upload rates'],
+      ['Optimistic unchoke', 'Tries a new exchange partner periodically'],
+      ['Choke', 'Pauses regular uploads to a particular peer'],
+    ]
+    const complete = lab.getByRole('button', { name: 'Mark activity complete' })
+    expect(complete).toBeDisabled()
+    for (const [label, value] of matches) fireEvent.change(lab.getByLabelText(label), { target: { value } })
+    expect(complete).toBeEnabled()
+    expect(lab.getByText(/Swarm strategy matched/)).toBeInTheDocument()
   })
 
   it('renders the Chapter 2 reference', () => {
@@ -55,7 +97,9 @@ describe('CSC 138 Chapter 2', () => {
     expect(screen.getByText('2RTT + transmission time')).toBeInTheDocument()
     expect(screen.getByText('HTTP METHODS')).toBeInTheDocument()
     expect(screen.getByText('DNS RECORDS')).toBeInTheDocument()
+    expect(screen.getByText('BITTORRENT STRATEGY')).toBeInTheDocument()
     expect(screen.getByText('Chapter2-Mail-DNS.pdf')).toBeInTheDocument()
+    expect(screen.getByText('Chapter2-P2P.pdf')).toBeInTheDocument()
     expect(screen.getByText('Application-layer protocol')).toBeInTheDocument()
   })
 })

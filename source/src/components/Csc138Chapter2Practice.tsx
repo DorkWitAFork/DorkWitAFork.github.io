@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { calculateDistributionTimes, type DistributionInputs } from '../lib/p2p'
 import { Icon } from './Icons'
 
 type Props = {
@@ -182,6 +183,83 @@ function DnsRecordsAndSecurity({ complete }: { complete: () => void }) {
   </section>
 }
 
+const distributionDefaults: DistributionInputs = {
+  fileSizeMbits: 20_480,
+  peers: 1_000,
+  serverUploadMbps: 30,
+  minimumDownloadMbps: 2,
+  peerUploadMbps: 2,
+}
+
+const bottleneckLabels = {
+  initialServerCopy: 'Initial server copy',
+  minimumDownload: 'Slowest peer download',
+  aggregateUpload: 'Aggregate swarm upload',
+} as const
+
+function formatDuration(seconds: number) {
+  if (seconds >= 86_400) return `${(seconds / 86_400).toFixed(2)} days`
+  if (seconds >= 3_600) return `${(seconds / 3_600).toFixed(2)} hours`
+  if (seconds >= 60) return `${(seconds / 60).toFixed(2)} minutes`
+  return `${seconds.toFixed(2)} seconds`
+}
+
+function P2pDistributionCalculator({ complete }: { complete: () => void }) {
+  const [inputs, setInputs] = useState(distributionDefaults)
+  const [bottleneck, setBottleneck] = useState('')
+  const result = calculateDistributionTimes(inputs)
+  const p2pTerms = Object.entries(result.p2pLimits) as Array<[keyof typeof result.p2pLimits, number]>
+  const largestP2pTime = Math.max(...p2pTerms.map(([, seconds]) => seconds))
+  const limitingP2pTerms = result.valid ? p2pTerms.filter(([, seconds]) => Math.abs(seconds - largestP2pTime) < 0.001).map(([term]) => term) : []
+  const ready = result.valid && limitingP2pTerms.includes(bottleneck as keyof typeof result.p2pLimits)
+  const update = (key: keyof DistributionInputs, value: number) => {
+    setInputs(current => ({ ...current, [key]: value }))
+    setBottleneck('')
+  }
+
+  return <section className="lab-panel" aria-labelledby="p2p-distribution-title">
+    <div className="lab-heading"><span className="lab-number">LAB 08</span><div><h2 id="p2p-distribution-title">Compare file distribution time</h2><p>Change endpoint capacities, compare the ideal lower bounds, and identify the active P2P bottleneck.</p></div></div>
+    <div className="p2p-calculator">
+      <div className="p2p-inputs">
+        <label>File size F <span>Mbits</span><input type="number" min="1" value={inputs.fileSizeMbits} onChange={event => update('fileSizeMbits', Number(event.target.value))}/></label>
+        <label>Receiving peers N <span>peers</span><input type="number" min="1" value={inputs.peers} onChange={event => update('peers', Number(event.target.value))}/></label>
+        <label>Server upload u<sub>s</sub> <span>Mbps</span><input type="number" min="1" value={inputs.serverUploadMbps} onChange={event => update('serverUploadMbps', Number(event.target.value))}/></label>
+        <label>Slowest download d<sub>min</sub> <span>Mbps</span><input type="number" min="1" value={inputs.minimumDownloadMbps} onChange={event => update('minimumDownloadMbps', Number(event.target.value))}/></label>
+        <label>Each peer upload u <span>Mbps</span><input type="number" min="0" value={inputs.peerUploadMbps} onChange={event => update('peerUploadMbps', Number(event.target.value))}/></label>
+      </div>
+      <div className="p2p-results" aria-live="polite"><article><span>CLIENT-SERVER LOWER BOUND</span><strong>{result.valid ? formatDuration(result.clientServerSeconds) : 'Check inputs'}</strong><small>max(NF/u<sub>s</sub>, F/d<sub>min</sub>)</small></article><article><span>P2P LOWER BOUND</span><strong>{result.valid ? formatDuration(result.p2pSeconds) : 'Check inputs'}</strong><small>max(F/u<sub>s</sub>, F/d<sub>min</sub>, NF/(u<sub>s</sub> + sum u<sub>i</sub>))</small></article></div>
+    </div>
+    <label className="bottleneck-check">Which term currently limits P2P distribution?<select value={bottleneck} disabled={!result.valid} onChange={event => setBottleneck(event.target.value)}><option value="">Choose the largest bound</option>{Object.entries(bottleneckLabels).map(([value, label]) => <option value={value} key={value}>{label}</option>)}</select></label>
+    {!result.valid && <p role="status" className="feedback incorrect">Use a positive file size, a positive whole number of peers, positive server and download rates, and a non-negative peer upload rate.</p>}
+    {result.valid && bottleneck && <p role="status" className={`feedback ${ready ? 'correct' : 'incorrect'}`}>{ready ? `${limitingP2pTerms.map(term => bottleneckLabels[term]).join(' and ')} ${limitingP2pTerms.length > 1 ? 'are tied as the largest constraints' : 'is the largest time constraint'} for these inputs.` : 'Compare the three P2P terms. The largest time is the active lower bound.'}</p>}
+    <p className="lab-note">The default values reproduce the deck exercise after its stated conversion of 20 Gbits to 20,480 Mbits. These are ideal lower bounds, not measured transfer times.</p>
+    <CompletionButton ready={ready} complete={complete}/>
+  </section>
+}
+
+const bittorrentItems = [
+  ['Tracker', 'Helps a new participant discover peers'],
+  ['Rarest first', 'Replicates a scarce needed piece'],
+  ['Preferred peers', 'Rewards neighbors currently providing useful upload rates'],
+  ['Optimistic unchoke', 'Tries a new exchange partner periodically'],
+  ['Choke', 'Pauses regular uploads to a particular peer'],
+] as const
+
+const bittorrentChoices = bittorrentItems.map(([, answer]) => answer)
+
+function BitTorrentStrategy({ complete }: { complete: () => void }) {
+  const [answers, setAnswers] = useState<Record<number, string>>({})
+  const attempted = Object.keys(answers).length === bittorrentItems.length
+  const correct = bittorrentItems.every(([, answer], index) => answers[index] === answer)
+
+  return <section className="lab-panel" aria-labelledby="bittorrent-strategy-title">
+    <div className="lab-heading"><span className="lab-number">LAB 09</span><div><h2 id="bittorrent-strategy-title">Operate a BitTorrent swarm</h2><p>Match each coordination, availability, or incentive mechanism to the job it performs.</p></div></div>
+    <div className="architecture-matcher">{bittorrentItems.map(([item, answer], index) => <label key={item}><span>{item}</span><select value={answers[index] ?? ''} onChange={event => setAnswers(current => ({ ...current, [index]: event.target.value }))}><option value="">Choose its purpose</option>{bittorrentChoices.map(choice => <option key={choice}>{choice}</option>)}</select>{answers[index] && <i className={answers[index] === answer ? 'correct' : 'incorrect'}>{answers[index] === answer ? 'Matched' : 'Try again'}</i>}</label>)}</div>
+    {attempted && <p role="status" className={`feedback ${correct ? 'correct' : 'incorrect'}`}>{correct ? 'Swarm strategy matched. Discovery finds neighbors, rarest first protects availability, and upload choices encourage useful exchange.' : 'Separate discovery, piece availability, and upload incentives, then try the unmatched rows again.'}</p>}
+    <CompletionButton ready={correct} complete={complete}/>
+  </section>
+}
+
 export function Csc138Chapter2Practice({ completeActivity }: Props) {
   return <div className="labs-stack">
     <TransportMatcher complete={() => completeActivity('ch2-transport-match')}/>
@@ -191,5 +269,7 @@ export function Csc138Chapter2Practice({ completeActivity }: Props) {
     <FtpConnectionSorter complete={() => completeActivity('ch2-ftp-connections')}/>
     <DnsResolution complete={() => completeActivity('ch2-dns-resolution')}/>
     <DnsRecordsAndSecurity complete={() => completeActivity('ch2-dns-records-security')}/>
+    <P2pDistributionCalculator complete={() => completeActivity('ch2-p2p-distribution')}/>
+    <BitTorrentStrategy complete={() => completeActivity('ch2-bittorrent-strategy')}/>
   </div>
 }

@@ -118,7 +118,7 @@ export const quizQuestions: QuizQuestion[] = [
 
 export const semesterWeeks = [
   ['01-02', 'Internet foundations', 'Chapter 1', 'Available', 'Hosts, protocols, access networks, physical media, switching, and ISP structure'],
-  ['03-05', 'Application principles and the Web', 'Chapter 2', 'Available', 'Application architectures, HTTP, email, FTP, DNS, caching, and modern Web transport'],
+  ['03-05', 'Application principles and the Web', 'Chapter 2', 'Available', 'Application architectures, HTTP, email, FTP, DNS, caching, P2P distribution, and BitTorrent'],
   ['06-07', 'Transport layer', 'Chapter 3', 'Provisional', 'UDP, TCP, reliable transfer, flow control, and congestion control'],
   ['08', 'Midterm checkpoint', 'Review', 'Provisional', 'Concept synthesis, calculations, packet analysis, and exam preparation'],
   ['09-11', 'Network layer', 'Chapters 4-5', 'Provisional', 'IP, forwarding, NAT, IPv6, routing, OSPF, BGP, and SDN'],
