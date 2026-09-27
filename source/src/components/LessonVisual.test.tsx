@@ -14,6 +14,10 @@ describe('LessonVisual', () => {
     expect(screen.getByRole('img', { name: /peer-to-peer lower bound is the maximum/ })).toBeInTheDocument()
     rerender(<LessonVisual lessonId="ch2-bittorrent-swarm"/>)
     expect(screen.getByRole('img', { name: /tracker returns peer discovery information/ })).toBeInTheDocument()
+    rerender(<LessonVisual lessonId="ch2-udp-sockets"/>)
+    expect(screen.getByRole('img', { name: /UDP server binds a datagram socket/ })).toBeInTheDocument()
+    rerender(<LessonVisual lessonId="ch2-tcp-sockets"/>)
+    expect(screen.getByRole('img', { name: /accept returns a separate connection socket/ })).toBeInTheDocument()
   })
 
   it('renders nothing when a lesson has no dedicated figure', () => {
