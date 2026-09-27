@@ -260,6 +260,32 @@ function BitTorrentStrategy({ complete }: { complete: () => void }) {
   </section>
 }
 
+const socketApiItems = [
+  ['socket(AF_INET, SOCK_DGRAM)', 'Create an IPv4 UDP socket'],
+  ['sendto(data, address)', 'Send one datagram to an explicit destination'],
+  ['recvfrom(size)', 'Receive one datagram and its sender address'],
+  ['socket(AF_INET, SOCK_STREAM)', 'Create an IPv4 TCP socket'],
+  ['connect(address)', 'Establish the client TCP connection'],
+  ['listen()', 'Make a bound TCP socket welcome connections'],
+  ['accept()', 'Return a new socket for one connected client'],
+  ['recv(size)', 'Read available bytes from a connected TCP stream'],
+] as const
+
+const socketApiChoices = socketApiItems.map(([, answer]) => answer)
+
+function SocketApiMatcher({ complete }: { complete: () => void }) {
+  const [answers, setAnswers] = useState<Record<number, string>>({})
+  const attempted = Object.keys(answers).length === socketApiItems.length
+  const correct = socketApiItems.every(([, answer], index) => answers[index] === answer)
+
+  return <section className="lab-panel" aria-labelledby="socket-api-title">
+    <div className="lab-heading"><span className="lab-number">LAB 10</span><div><h2 id="socket-api-title">Read the socket API</h2><p>Match each Python call to its UDP or TCP job, including the two different server-side TCP sockets.</p></div></div>
+    <div className="architecture-matcher">{socketApiItems.map(([item, answer], index) => <label key={item}><span>{item}</span><select value={answers[index] ?? ''} onChange={event => setAnswers(current => ({ ...current, [index]: event.target.value }))}><option value="">Choose its behavior</option>{socketApiChoices.map(choice => <option key={choice}>{choice}</option>)}</select>{answers[index] && <i className={answers[index] === answer ? 'correct' : 'incorrect'}>{answers[index] === answer ? 'Matched' : 'Try again'}</i>}</label>)}</div>
+    {attempted && <p role="status" className={`feedback ${correct ? 'correct' : 'incorrect'}`}>{correct ? 'Socket calls matched. UDP addresses each datagram; TCP connects a stream and gives the server a separate socket for each accepted client.' : 'Recheck which UDP calls carry addresses and which TCP calls prepare or create a connection.'}</p>}
+    <CompletionButton ready={correct} complete={complete}/>
+  </section>
+}
+
 export function Csc138Chapter2Practice({ completeActivity }: Props) {
   return <div className="labs-stack">
     <TransportMatcher complete={() => completeActivity('ch2-transport-match')}/>
@@ -271,5 +297,6 @@ export function Csc138Chapter2Practice({ completeActivity }: Props) {
     <DnsRecordsAndSecurity complete={() => completeActivity('ch2-dns-records-security')}/>
     <P2pDistributionCalculator complete={() => completeActivity('ch2-p2p-distribution')}/>
     <BitTorrentStrategy complete={() => completeActivity('ch2-bittorrent-strategy')}/>
+    <SocketApiMatcher complete={() => completeActivity('ch2-socket-api')}/>
   </div>
 }
