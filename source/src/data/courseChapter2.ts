@@ -230,6 +230,82 @@ export const chapter2Lessons: Lesson[] = [
     ],
     keyTerms: ['BitTorrent', 'torrent', 'swarm', 'tracker', 'peer', 'neighbor', 'piece', 'chunk', 'piece availability', 'peer churn', 'rarest first', 'choke', 'unchoke', 'optimistic unchoke', 'preferred peer', 'seeder', 'reciprocity'], source: 'Chapter2-P2P.pdf pages 9-11',
   },
+  {
+    id: 'ch2-udp-sockets', number: '14', title: 'Socket Programming with UDP', eyebrow: 'One datagram at a time', minutes: 27,
+    summary: 'Build and trace a Python UDP client and server that exchange one datagram without first establishing a connection.',
+    objectives: ['Create an IPv4 UDP socket with AF_INET and SOCK_DGRAM', 'Trace sendto and recvfrom calls through a client-server exchange', 'Explain why each UDP send identifies a destination and each receive reports a sender', 'Convert between Python strings and the bytes carried by sockets', 'Identify the delivery and ordering behavior that the sample does not guarantee'],
+    sections: [
+      { title: 'UDP exchanges independent datagrams', body: 'UDP gives an application groups of bytes called datagrams. The client does not establish a transport connection before sending. Instead, each sendto call includes the destination IP address and port. A receiver uses recvfrom to obtain both one datagram and the address that sent it, which gives the server the return address for its reply.', points: ['SOCK_DGRAM selects UDP semantics for the socket.', 'One send corresponds to one datagram, so UDP preserves application message boundaries.', 'Delivery, ordering, and duplicate suppression are not guaranteed by UDP.'] },
+      { title: 'The server binds a known endpoint', body: 'The server creates an IPv4 datagram socket and binds it to local port 12000. An empty host string tells Python to accept datagrams addressed to any local interface. The loop blocks in recvfrom until a datagram arrives, decodes its bytes to text, converts the text to uppercase, and sends a new datagram to the client address returned by recvfrom.',
+        code: { label: 'UDP server', language: 'Python', content: `from socket import AF_INET, SOCK_DGRAM, socket
+
+serverPort = 12000
+serverSocket = socket(AF_INET, SOCK_DGRAM)
+serverSocket.bind(('', serverPort))
+print('The server is ready to receive')
+
+while True:
+    message, clientAddress = serverSocket.recvfrom(2048)
+    modifiedMessage = message.decode().upper()
+    serverSocket.sendto(modifiedMessage.encode(), clientAddress)` } },
+      { title: 'The client names the server on every send', body: 'The client also creates a datagram socket, but it does not need to bind a fixed port for this exchange. The operating system can choose a temporary local port when the client sends. sendto attaches the server endpoint to the outgoing datagram. recvfrom then blocks for a reply and also returns the address that supplied that reply.',
+        code: { label: 'UDP client', language: 'Python', content: `from socket import AF_INET, SOCK_DGRAM, socket
+
+serverName = 'localhost'
+serverPort = 12000
+clientSocket = socket(AF_INET, SOCK_DGRAM)
+
+message = input('Input lowercase sentence: ')
+clientSocket.sendto(message.encode(), (serverName, serverPort))
+modifiedMessage, serverAddress = clientSocket.recvfrom(2048)
+print(modifiedMessage.decode())
+clientSocket.close()` } },
+      { title: 'Sockets carry bytes, not Python strings', body: 'Keyboard input and upper return text are Python strings, while sendto expects bytes. encode converts a string to bytes using UTF-8 by default, and decode reverses that conversion after receipt. Both endpoints must agree on an encoding and on the meaning of the bytes; UDP itself does not describe the application message format.', points: ['The value 2048 is the maximum receive buffer size supplied by this example.', 'If a datagram is larger than the supplied buffer, the excess can be discarded rather than returned by a later recvfrom.', 'The application protocol still must define valid text, fields, and error behavior.'] },
+      { title: 'Run the server before the client', body: 'Start the UDP server in one terminal, then run the client in another. The client sends to localhost port 12000, the server prints its ready message, and a lowercase line returns in uppercase. UDP has no connection handshake, so a client can technically send before the server is ready, but that datagram may be discarded and the client can then wait forever for a reply.', points: ['Blocking calls pause the program until data arrives unless a timeout or nonblocking mode is configured.', 'The example has no timeout, retry, authentication, or validation.', 'A production protocol must decide how to detect and recover from missing or repeated datagrams.'] },
+      { title: 'Read the complete call path', body: 'On the server the path is socket, bind, recvfrom, transform, and sendto. On the client it is socket, sendto, recvfrom, and close. The same UDP server socket can receive independent datagrams from many clients because every recvfrom reports a sender address and every sendto explicitly identifies the intended destination.' },
+    ],
+    keyTerms: ['AF_INET', 'SOCK_DGRAM', 'UDP socket', 'datagram', 'bind', 'sendto', 'recvfrom', 'client address', 'encode', 'decode', 'blocking call'], source: 'Chapter2-Socket Programming.pdf pages 3-8',
+  },
+  {
+    id: 'ch2-tcp-sockets', number: '15', title: 'Socket Programming with TCP', eyebrow: 'A connected byte stream', minutes: 30,
+    summary: 'Build and trace a Python TCP client and server while separating the welcoming socket from each client connection socket.',
+    objectives: ['Create an IPv4 TCP socket with AF_INET and SOCK_STREAM', 'Order bind, listen, accept, connect, send, receive, and close operations', 'Distinguish a server welcoming socket from a per-client connection socket', 'Explain why connected TCP calls do not repeat the peer address', 'Recognize that TCP preserves byte order but not application message boundaries'],
+    sections: [
+      { title: 'TCP establishes a connection', body: 'TCP provides reliable, in-order delivery as a byte stream. The server must be running with a socket listening at a known port before the client can successfully connect. connect identifies that server endpoint and performs TCP connection setup. Afterward, each endpoint uses its connected socket without attaching the peer address to every send or receive.', points: ['SOCK_STREAM selects TCP stream semantics for the socket.', 'Reliable delivery does not guarantee a maximum delay or a minimum throughput.', 'The connection identifies both endpoint addresses and ports.'] },
+      { title: 'The server has two kinds of sockets', body: 'The server creates, binds, and listens on a welcoming socket. accept blocks until a client connection is ready, then returns a new connection socket plus the client address. Data for that client travels through the connection socket. Closing it ends that client exchange, while the welcoming socket remains open so the loop can accept another client.',
+        code: { label: 'TCP server', language: 'Python', content: `from socket import AF_INET, SOCK_STREAM, socket
+
+serverPort = 12000
+serverSocket = socket(AF_INET, SOCK_STREAM)
+serverSocket.bind(('', serverPort))
+serverSocket.listen(1)
+print('The server is ready to receive')
+
+while True:
+    connectionSocket, clientAddress = serverSocket.accept()
+    sentence = connectionSocket.recv(1024).decode()
+    capitalizedSentence = sentence.upper()
+    connectionSocket.sendall(capitalizedSentence.encode())
+    connectionSocket.close()` } },
+      { title: 'The client connects before exchanging bytes', body: 'The client creates a stream socket and calls connect with the server name and port. Once setup succeeds, sendall writes the complete small request buffer to TCP, recv reads available reply bytes, and close ends the client side. Unlike UDP sendto and recvfrom, these calls do not repeat an address because the socket already names its peer.',
+        code: { label: 'TCP client', language: 'Python', content: `from socket import AF_INET, SOCK_STREAM, socket
+
+serverName = 'localhost'
+serverPort = 12000
+clientSocket = socket(AF_INET, SOCK_STREAM)
+clientSocket.connect((serverName, serverPort))
+
+sentence = input('Input lowercase sentence: ')
+clientSocket.sendall(sentence.encode())
+modifiedSentence = clientSocket.recv(1024)
+print('From server:', modifiedSentence.decode())
+clientSocket.close()` } },
+      { title: 'TCP is a stream, not a message service', body: 'TCP preserves the order of bytes but does not preserve the boundaries between send calls. One recv may return fewer bytes than expected, combine bytes written by several sends, or stop at the supplied buffer size. This classroom example works with one short request and reply, but a general application must define framing with a delimiter, a length field, a fixed size, or connection closure and must receive in a loop.', points: ['sendall retries until Python has handed all supplied bytes to the socket or an error occurs.', 'sendall does not make one matching recv return the entire logical message.', 'A recv result of empty bytes indicates that the peer closed its sending side.'] },
+      { title: 'One accepted socket identifies one client', body: 'The welcoming socket stays associated with server port 12000, while each successful accept creates a distinct connection socket. TCP can therefore distinguish simultaneous clients by their source and destination addresses and ports. The shown program still handles clients one at a time because it completes recv, sendall, and close before returning to accept; concurrency would require threads, processes, asynchronous I/O, or another event-driven design.' },
+      { title: 'Read the complete call path', body: 'The server path is socket, bind, listen, accept, recv, transform, sendall, and close the connection socket. The client path is socket, connect, sendall, recv, and close. Keeping the welcoming socket separate from the accepted connection socket is the central server-side idea: one waits for new clients while the other carries one client conversation.' },
+    ],
+    keyTerms: ['AF_INET', 'SOCK_STREAM', 'TCP socket', 'byte stream', 'connect', 'listen', 'accept', 'welcoming socket', 'connection socket', 'sendall', 'recv', 'message framing'], source: 'Chapter2-Socket Programming.pdf pages 9-12',
+  },
 ]
 
 export const chapter2QuizQuestions: QuizQuestion[] = [
@@ -255,6 +331,10 @@ export const chapter2QuizQuestions: QuizQuestion[] = [
   { id: 'ch2-q20', prompt: 'For P2P distribution, what capacity appears under NF in the aggregate-transfer bound?', choices: ['Only the slowest peer download rate', 'Only the server upload rate', 'The server upload plus the sum of peer uploads', 'The fastest peer download multiplied by N'], answer: 2, explanation: 'The swarm can use server upload and peer upload together, so the modeled aggregate capacity is u_s + sum(u_i). This growing denominator expresses self-scalability.' },
   { id: 'ch2-q21', prompt: 'Why does BitTorrent use rarest-first piece selection?', choices: ['To send every request through the tracker', 'To prioritize scarce observed pieces and preserve their availability', 'To guarantee that the fastest neighbor receives every upload', 'To replace transport-layer reliability'], answer: 1, explanation: 'Rarest first replicates pieces with few observed copies before churn can remove them from a peer\'s neighborhood. It concerns piece availability, not tracker routing or transport reliability.' },
   { id: 'ch2-q22', prompt: 'What is the purpose of optimistic unchoking in the classic BitTorrent model?', choices: ['Encrypt a randomly chosen piece', 'Delete inactive peers from the tracker', 'Try a new upload partner that may become a useful reciprocal peer', 'Guarantee that four peers always hold the complete file'], answer: 2, explanation: 'An optimistic unchoke temporarily serves another peer so a potentially better exchange relationship can be discovered and newcomers have an opportunity to participate.' },
+  { id: 'ch2-q23', prompt: 'Why does a UDP server use the address returned by recvfrom when replying?', choices: ['UDP requires the sender address to become the server port', 'The socket closes before each reply', 'UDP datagrams are encrypted with the sender address', 'UDP has no established peer, so sendto needs the destination for this reply'], answer: 3, explanation: 'recvfrom returns both the datagram bytes and the sender endpoint. Because the UDP socket is not connected to one peer in this example, the server supplies that endpoint to sendto for the reply.' },
+  { id: 'ch2-q24', prompt: 'Which call sequence prepares the TCP server to receive a client connection?', choices: ['socket, bind, listen, accept', 'socket, sendto, recvfrom, close', 'connect, bind, decode, listen', 'accept, socket, connect, sendall'], answer: 0, explanation: 'The server creates a stream socket, binds it to a local endpoint, marks it as listening, and calls accept to obtain a connection socket for one client.' },
+  { id: 'ch2-q25', prompt: 'What does TCP serverSocket.accept() return in the Python example?', choices: ['One UDP datagram and its checksum', 'A new connection socket and the client address', 'The complete application message and its length', 'A second welcoming port shared by every client'], answer: 1, explanation: 'accept leaves the welcoming socket available for later clients and returns a separate connected socket for this client, along with address information.' },
+  { id: 'ch2-q26', prompt: 'Why can a TCP application need several recv calls for one logical message?', choices: ['TCP deliberately reorders delivered bytes', 'recv can only read one character at a time', 'TCP is a byte stream and does not preserve application send boundaries', 'Every recv creates a new TCP connection'], answer: 2, explanation: 'TCP reliably preserves byte order, but it exposes a stream rather than records. An application must define framing and continue reading until that framing says its complete message has arrived.' },
 ]
 
 export const chapter2Glossary: Array<[string, string]> = [
@@ -295,6 +375,17 @@ export const chapter2Glossary: Array<[string, string]> = [
   ['Tracker', 'A BitTorrent coordination service that helps participating peers discover one another without carrying the bulk file pieces.'],
   ['Unchoke', 'A BitTorrent peer-selection state that permits piece uploads to another peer.'],
   ['Socket', 'The application-facing operating-system interface used by a process to send and receive through transport services.'],
+  ['AF_INET', 'The Python socket address family used for IPv4 endpoints.'],
+  ['SOCK_DGRAM', 'The Python socket type that selects datagram service, normally UDP.'],
+  ['SOCK_STREAM', 'The Python socket type that selects reliable byte-stream service, normally TCP.'],
+  ['Bind', 'Association of a socket with a local address and port so incoming traffic can reach it.'],
+  ['Listen', 'The TCP server operation that marks a bound stream socket as a welcoming socket for connection requests.'],
+  ['Accept', 'The TCP server operation that waits for a connection and returns a new socket dedicated to that client.'],
+  ['Sendto', 'A datagram send operation that includes the destination address for the outgoing data.'],
+  ['Recvfrom', 'A datagram receive operation that returns both received bytes and the sender address.'],
+  ['Byte stream', 'TCP\'s ordered sequence of bytes, which does not preserve application message boundaries.'],
+  ['Welcoming socket', 'A listening TCP server socket used to accept new connections rather than exchange one client\'s application data.'],
+  ['Connection socket', 'A TCP socket returned by accept and used for communication with one connected client.'],
   ['Stateless protocol', 'A protocol whose requests can be interpreted without protocol memory of earlier requests.'],
   ['Status code', 'A three-digit value in an HTTP response status line that communicates the outcome category and specific result.'],
   ['Transport Layer Security', 'A security protocol used by applications to provide confidentiality, integrity, and endpoint authentication.'],
@@ -341,4 +432,5 @@ export const chapter2ActivityIds = [
   'ch2-dns-records-security',
   'ch2-p2p-distribution',
   'ch2-bittorrent-strategy',
+  'ch2-socket-api',
 ] as const
