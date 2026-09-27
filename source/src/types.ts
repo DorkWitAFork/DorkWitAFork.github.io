@@ -17,6 +17,11 @@ export type Lesson = {
     title: string
     body: string
     points?: string[]
+    code?: {
+      label: string
+      language: string
+      content: string
+    }
   }>
   keyTerms: string[]
   source: string

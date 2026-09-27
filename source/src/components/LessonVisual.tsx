@@ -38,6 +38,24 @@ export function LessonVisual({ lessonId }: VisualProps) {
     <figcaption id="socket-visual-caption"><strong>Deliver to the right process</strong>The IP address locates the host; the port identifies a transport endpoint used by the application process.</figcaption>
   </figure>
 
+  if (lessonId === 'ch2-udp-sockets') return <figure className="lesson-visual" aria-labelledby="udp-socket-visual-caption">
+    <div className="socket-sequence" role="img" aria-label="A UDP server binds a datagram socket and waits in recvfrom. A client sends a datagram with the server address, the server receives both data and client address, and the server sends a reply to that client address.">
+      <div className="socket-lane"><b>UDP SERVER</b><span>socket(SOCK_DGRAM)</span><span>bind(('', 12000))</span><span>recvfrom(2048)</span><span>sendto(reply, client)</span></div>
+      <div className="socket-exchange"><span>datagram + server address &lt;-</span><span>-&gt; reply + client address</span></div>
+      <div className="socket-lane"><b>UDP CLIENT</b><span>socket(SOCK_DGRAM)</span><span>sendto(data, server)</span><span>recvfrom(2048)</span><span>close()</span></div>
+    </div>
+    <figcaption id="udp-socket-visual-caption"><strong>Address every datagram</strong>There is no setup handshake in this exchange. The destination accompanies each send, and recvfrom reports who sent the datagram.</figcaption>
+  </figure>
+
+  if (lessonId === 'ch2-tcp-sockets') return <figure className="lesson-visual" aria-labelledby="tcp-socket-visual-caption">
+    <div className="socket-sequence tcp-sequence" role="img" aria-label="A TCP server binds and listens on a welcoming socket. A client connects, accept returns a separate connection socket, and that connection socket exchanges bytes with the client before closing while the welcoming socket remains open.">
+      <div className="socket-lane"><b>TCP SERVER</b><span>socket + bind</span><span className="socket-emphasis">listen: welcoming socket</span><span>accept()</span><span className="socket-emphasis">connection socket</span><span>recv / sendall / close</span></div>
+      <div className="socket-exchange"><span>TCP connection setup &lt;-</span><span>&lt;- request bytes</span><span>-&gt; reply bytes</span></div>
+      <div className="socket-lane"><b>TCP CLIENT</b><span>socket(SOCK_STREAM)</span><span>connect(server)</span><span>sendall(request)</span><span>recv(1024)</span><span>close()</span></div>
+    </div>
+    <figcaption id="tcp-socket-visual-caption"><strong>Keep the two server sockets separate</strong>The welcoming socket accepts clients. Each returned connection socket carries one client byte stream.</figcaption>
+  </figure>
+
   if (lessonId === 'ch2-http-messages') return <figure className="lesson-visual" aria-labelledby="http-visual-caption">
     <div className="message-visual" role="img" aria-label="An HTTP request contains a request line, header fields, a required blank line, and an optional message body.">
       <code><b>GET /notes.html HTTP/1.1</b><span>Request line</span>{'\n'}<b>Host: example.edu</b><span>Header</span>{'\n'}<b>Accept: text/html</b><span>Header</span>{'\n'}<em>[blank line]</em><span>Ends headers</span></code>
