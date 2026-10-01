@@ -1,7 +1,7 @@
 export type View = 'dashboard' | 'roadmap' | 'chapter1' | 'practice' | 'reference'
 
-export type Csc138ChapterId = 'chapter1' | 'chapter2'
-export type Csc138View = View | 'chapter2'
+export type Csc138ChapterId = 'chapter1' | 'chapter2' | 'chapter3'
+export type Csc138View = View | 'chapter2' | 'chapter3'
 export type Csc139ChapterId = 'chapter1' | 'chapter2'
 export type Csc139View = View | 'chapter2'
 

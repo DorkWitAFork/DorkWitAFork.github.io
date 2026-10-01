@@ -20,6 +20,21 @@ describe('LessonVisual', () => {
     expect(screen.getByRole('img', { name: /accept returns a separate connection socket/ })).toBeInTheDocument()
   })
 
+  it('describes representative Chapter 3 instructional visuals', () => {
+    const { rerender } = render(<LessonVisual lessonId="ch3-transport-services"/>)
+    expect(screen.getByRole('img', { name: /IP provides host-to-host delivery/ })).toBeInTheDocument()
+    rerender(<LessonVisual lessonId="ch3-demultiplexing"/>)
+    expect(screen.getByRole('img', { name: /TCP instead selects separate connection sockets using source IP/ })).toBeInTheDocument()
+    rerender(<LessonVisual lessonId="ch3-checksum"/>)
+    expect(screen.getByRole('img', { name: /wrapping the carry to the low end/ })).toBeInTheDocument()
+    rerender(<LessonVisual lessonId="ch3-alternating-bit"/>)
+    expect(screen.getByRole('img', { name: /recognizes sequence 0 as a duplicate/ })).toBeInTheDocument()
+    rerender(<LessonVisual lessonId="ch3-rdt3"/>)
+    expect(screen.getByRole('img', { name: /ACK-loss trace/ })).toBeInTheDocument()
+    rerender(<LessonVisual lessonId="ch3-stop-wait"/>)
+    expect(screen.getByRole('img', { name: /Pipelining keeps multiple packets in flight/ })).toBeInTheDocument()
+  })
+
   it('renders nothing when a lesson has no dedicated figure', () => {
     const { container } = render(<LessonVisual lessonId="unknown"/>)
     expect(container).toBeEmptyDOMElement()

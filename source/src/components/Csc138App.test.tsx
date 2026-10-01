@@ -141,3 +141,58 @@ describe('CSC 138 Chapter 2', () => {
     expect(screen.getByText('Application-layer protocol')).toBeInTheDocument()
   })
 })
+
+describe('CSC 138 Chapter 3', () => {
+  it('renders the lecture-aligned transport lesson collection and chapter navigation', () => {
+    render(<Csc138App route={{ section: 'course', course: 'csc138', view: 'chapter3' }}/>)
+    expect(screen.getByRole('heading', { name: 'Make delivery reliable.' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Transport Services Between Processes/ })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /The Internet Checksum/ })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /rdt3.0: Handling Loss/ })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Stop-and-Wait Performance/ })).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Chapters' }))
+    expect(screen.getByRole('button', { name: /Chapter 3 Transport Layer/ })).toHaveAttribute('aria-current', 'page')
+  })
+
+  it('preserves Chapter 3 context when opening practice from a lesson', () => {
+    render(<Csc138App route={{ section: 'course', course: 'csc138', view: 'chapter3' }}/>)
+    fireEvent.click(screen.getByRole('button', { name: /Open practice lab/ }))
+    expect(window.location.hash).toBe('#/student/csc138/practice/chapter3')
+  })
+
+  it('renders all Chapter 3 corrective labs and validates the checksum exercise', () => {
+    render(<Csc138App route={{ section: 'course', course: 'csc138', view: 'practice', chapter: 'chapter3' }}/>)
+    expect(screen.getByRole('heading', { name: 'Demultiplex transport traffic' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Build a UDP length and checksum' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Match RDT problems to mechanisms' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Trace rdt3.0 through ACK loss' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Calculate stop-and-wait utilization' })).toBeInTheDocument()
+    expect(screen.getByText('0/5')).toBeInTheDocument()
+
+    const lab = within(screen.getByRole('region', { name: 'Build a UDP length and checksum' }))
+    const complete = lab.getByRole('button', { name: 'Mark activity complete' })
+    expect(complete).toBeDisabled()
+    fireEvent.change(lab.getByLabelText(/UDP length/), { target: { value: '12' } })
+    fireEvent.change(lab.getByLabelText(/One's-complement checksum/), { target: { value: '0x7b5b' } })
+    expect(complete).toBeEnabled()
+    expect(lab.getByText(/The UDP length is 12 bytes/)).toBeInTheDocument()
+  })
+
+  it('renders the 20-question Chapter 3 quiz', () => {
+    render(<Csc138App route={{ section: 'course', course: 'csc138', view: 'practice', chapter: 'chapter3' }}/>)
+    fireEvent.click(screen.getByRole('tab', { name: 'Chapter quiz' }))
+    expect(screen.getByText(/20 questions covering the chapter/)).toBeInTheDocument()
+    expect(screen.getAllByRole('radio')).toHaveLength(80)
+  })
+
+  it('renders Chapter 3 formulas, mechanisms, glossary, and sources', () => {
+    render(<Csc138App route={{ section: 'course', course: 'csc138', view: 'reference', chapter: 'chapter3' }}/>)
+    expect(screen.getByText('(L/R) / (RTT + L/R)')).toBeInTheDocument()
+    expect(screen.getByText('RDT PROGRESSION')).toBeInTheDocument()
+    expect(screen.getByText('PIPELINING MOTIVATION')).toBeInTheDocument()
+    expect(screen.getByText('Alternating-bit protocol')).toBeInTheDocument()
+    expect(screen.getByText('Chapter3-Transport Layer-Intro-MUX-UDP.pdf')).toBeInTheDocument()
+    expect(screen.getByText('Chapter3-Principle of reliable data transfer.pdf')).toBeInTheDocument()
+  })
+})
