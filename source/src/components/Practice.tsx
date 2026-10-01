@@ -3,6 +3,7 @@ import type { Csc138Chapter } from '../data/csc138Course'
 import type { Csc138ChapterId } from '../types'
 import { calculateDelayMs } from '../lib/progress'
 import { Csc138Chapter2Practice } from './Csc138Chapter2Practice'
+import { Csc138Chapter3Practice } from './Csc138Chapter3Practice'
 import { Icon } from './Icons'
 
 type Props = {
@@ -111,9 +112,9 @@ export function Practice({ chapter, completedActivities, completeActivity, recor
   const [tab, setTab] = useState<'labs' | 'quiz'>('labs')
   const completedCount = chapter.activityIds.filter(id => completedActivities.includes(id)).length
   return <div className="page practice-page">
-    <header className="page-heading"><div><span className="kicker">Chapter {chapter.number} practice center</span><h1>{chapter.id === 'chapter1' ? 'Learn by moving packets.' : 'Learn by tracing requests.'}</h1><p>Change the inputs, watch the system react, and use feedback to correct your mental model.</p></div><div className="practice-score"><b>{completedCount}/{chapter.activityIds.length}</b><span>labs complete</span></div></header>
-    <div className="chapter-switch" aria-label="Practice chapter"><button className={chapter.id === 'chapter1' ? 'active' : ''} onClick={() => selectChapter('chapter1')}>Chapter 1</button><button className={chapter.id === 'chapter2' ? 'active' : ''} onClick={() => selectChapter('chapter2')}>Chapter 2</button></div>
+    <header className="page-heading"><div><span className="kicker">Chapter {chapter.number} practice center</span><h1>{chapter.id === 'chapter1' ? 'Learn by moving packets.' : chapter.id === 'chapter2' ? 'Learn by tracing requests.' : 'Learn by recovering delivery.'}</h1><p>Change the inputs, watch the system react, and use feedback to correct your mental model.</p></div><div className="practice-score"><b>{completedCount}/{chapter.activityIds.length}</b><span>labs complete</span></div></header>
+    <div className="chapter-switch" aria-label="Practice chapter">{(['chapter1', 'chapter2', 'chapter3'] as const).map((id, index) => <button key={id} className={chapter.id === id ? 'active' : ''} onClick={() => selectChapter(id)}>Chapter {index + 1}</button>)}</div>
     <div className="tab-bar" role="tablist"><button role="tab" aria-selected={tab === 'labs'} onClick={() => setTab('labs')}>Interactive labs</button><button role="tab" aria-selected={tab === 'quiz'} onClick={() => setTab('quiz')}>Chapter quiz</button></div>
-    {tab === 'labs' ? chapter.id === 'chapter1' ? <div className="labs-stack"><DelayCalculator complete={() => completeActivity('delay')}/><QueueSimulator complete={() => completeActivity('queue')}/><ProtocolSequencer complete={() => completeActivity('protocol')}/></div> : <Csc138Chapter2Practice completeActivity={completeActivity}/> : <ChapterQuiz chapter={chapter} recordQuiz={recordQuiz}/>}
+    {tab === 'labs' ? chapter.id === 'chapter1' ? <div className="labs-stack"><DelayCalculator complete={() => completeActivity('delay')}/><QueueSimulator complete={() => completeActivity('queue')}/><ProtocolSequencer complete={() => completeActivity('protocol')}/></div> : chapter.id === 'chapter2' ? <Csc138Chapter2Practice completeActivity={completeActivity}/> : <Csc138Chapter3Practice completeActivity={completeActivity}/> : <ChapterQuiz chapter={chapter} recordQuiz={recordQuiz}/>}
   </div>
 }

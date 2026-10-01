@@ -8,7 +8,7 @@ const html = readFileSync(new URL('../../../csc138/index.html', import.meta.url)
 const script = html.match(/<script>([\s\S]*?)<\/script>/)![1]
 
 describe('published CSC 138 redirect', () => {
-  const views = ['dashboard', 'roadmap', 'chapter1', 'chapter2', 'practice', 'reference']
+  const views = ['dashboard', 'roadmap', 'chapter1', 'chapter2', 'chapter3', 'practice', 'reference']
   for (const view of views) {
     it.each([`#/${view}`, `#${view}`, `#/${view}/detail`, `#/student/csc138/${view}`])('preserves %s', hash => {
       let destination = ''
@@ -24,6 +24,14 @@ describe('published CSC 138 redirect', () => {
     runInNewContext(script, { window: { location: { hash, search: '', replace: (url: string) => { destination = url } } } })
     expect(destination).toBe(`/#/student/csc138/${view}/chapter2`)
     expect(routeFromHash(new URL(destination, 'https://example.com').hash)).toEqual({ section: 'course', course: 'csc138', view, chapter: 'chapter2' })
+  })
+
+  it.each(['practice', 'reference'])('preserves Chapter 3 context for %s', view => {
+    let destination = ''
+    const hash = `#/student/csc138/${view}/chapter3`
+    runInNewContext(script, { window: { location: { hash, search: '', replace: (url: string) => { destination = url } } } })
+    expect(destination).toBe(`/#/student/csc138/${view}/chapter3`)
+    expect(routeFromHash(new URL(destination, 'https://example.com').hash)).toEqual({ section: 'course', course: 'csc138', view, chapter: 'chapter3' })
   })
 
   it.each(['', '#/', '#/unknown'])('defaults %s to dashboard', hash => {

@@ -36,7 +36,7 @@ For a local production preview, serve the repository root with
 
 - `/#/` is the portfolio hub; `/#/student` lists both study guides.
 - `/#/student/csc138/dashboard` and `/#/student/csc139/dashboard` open the courses.
-- Course views are `dashboard`, `roadmap`, `chapter1`, `practice`, and `reference`.
+- CSC 138 course views include `dashboard`, `roadmap`, `chapter1`, `chapter2`, `chapter3`, `practice`, and `reference`.
 - `/csc138/` and `/csc138/index.html` redirect legacy hashes such as `#/practice`
   to `/#/student/csc138/practice`; missing or invalid views open the dashboard.
 - Existing CSC 173 pages, assignment files, and legacy CSC 138 assets are retained.
