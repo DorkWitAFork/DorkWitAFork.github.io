@@ -4,7 +4,7 @@ export const STORAGE_KEY = 'csc138-progress-v1'
 
 const emptyChapter1Quiz: ChapterQuizProgress = { attempts: 0, bestScore: 0, total: 10 }
 const emptyChapter2Quiz: ChapterQuizProgress = { attempts: 0, bestScore: 0, total: 26 }
-const emptyChapter3Quiz: ChapterQuizProgress = { attempts: 0, bestScore: 0, total: 20 }
+const emptyChapter3Quiz: ChapterQuizProgress = { attempts: 0, bestScore: 0, total: 24 }
 
 export const emptyProgress: Csc138Progress = {
   version: 1,

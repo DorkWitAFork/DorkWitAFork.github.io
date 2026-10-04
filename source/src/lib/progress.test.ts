@@ -51,7 +51,7 @@ describe('progress storage', () => {
       chapterQuizzes: {
         chapter1: { attempts: 1, bestScore: 8, total: 10 },
         chapter2: { attempts: 2, bestScore: 9, total: 10 },
-        chapter3: { attempts: 1, bestScore: 15, total: 20 },
+        chapter3: { attempts: 1, bestScore: 15, total: 24 },
       },
     }
     saveProgress(progress, storage)
@@ -70,7 +70,7 @@ describe('progress storage', () => {
     const loaded = loadProgress(memoryStorage(oldProgress))
     expect(loaded.chapterQuizzes.chapter1).toEqual({ attempts: 3, bestScore: 8, total: 10 })
     expect(loaded.chapterQuizzes.chapter2).toEqual({ attempts: 0, bestScore: 0, total: 26 })
-    expect(loaded.chapterQuizzes.chapter3).toEqual({ attempts: 0, bestScore: 0, total: 20 })
+    expect(loaded.chapterQuizzes.chapter3).toEqual({ attempts: 0, bestScore: 0, total: 24 })
     expect(loaded.completedLessons).toEqual(['protocols'])
   })
 
@@ -91,7 +91,7 @@ describe('progress storage', () => {
     expect(loaded.completedActivities).toEqual(['delay'])
     expect(loaded.chapterQuizzes.chapter1).toEqual({ attempts: 1, bestScore: 4, total: 10 })
     expect(loaded.chapterQuizzes.chapter2).toEqual({ attempts: 2, bestScore: 7, total: 10 })
-    expect(loaded.chapterQuizzes.chapter3).toEqual({ attempts: 0, bestScore: 0, total: 20 })
+    expect(loaded.chapterQuizzes.chapter3).toEqual({ attempts: 0, bestScore: 0, total: 24 })
   })
 
   it('backfills Chapter 3 without changing an older two-chapter save', () => {
@@ -108,7 +108,7 @@ describe('progress storage', () => {
     expect(loaded.completedLessons).toEqual(['ch2-http-connections'])
     expect(loaded.completedActivities).toEqual(['ch2-cache-calculator'])
     expect(loaded.chapterQuizzes.chapter2).toEqual({ attempts: 2, bestScore: 20, total: 26 })
-    expect(loaded.chapterQuizzes.chapter3).toEqual({ attempts: 0, bestScore: 0, total: 20 })
+    expect(loaded.chapterQuizzes.chapter3).toEqual({ attempts: 0, bestScore: 0, total: 24 })
   })
 
   it('ignores data from an unknown schema version', () => {
