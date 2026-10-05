@@ -6,3 +6,4 @@ vite.config.d.ts
 *.local
 .DS_Store
 archive/
+**/AGENTS.md
