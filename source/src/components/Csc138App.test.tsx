@@ -164,26 +164,39 @@ describe('CSC 138 Chapter 3', () => {
   it('renders all Chapter 3 corrective labs and validates the checksum exercise', () => {
     render(<Csc138App route={{ section: 'course', course: 'csc138', view: 'practice', chapter: 'chapter3' }}/>)
     expect(screen.getByRole('heading', { name: 'Demultiplex transport traffic' })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'Build a UDP length and checksum' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Solve UDP word problems' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Match RDT problems to mechanisms' })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'Trace rdt3.0 through ACK loss' })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'Calculate stop-and-wait utilization' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Trace RDT recovery scenarios' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Solve the lecture stop-and-wait problem' })).toBeInTheDocument()
     expect(screen.getByText('0/5')).toBeInTheDocument()
 
-    const lab = within(screen.getByRole('region', { name: 'Build a UDP length and checksum' }))
+    const lab = within(screen.getByRole('region', { name: 'Solve UDP word problems' }))
     const complete = lab.getByRole('button', { name: 'Mark activity complete' })
     expect(complete).toBeDisabled()
+    fireEvent.change(lab.getByLabelText(/Payload length/), { target: { value: '4' } })
     fireEvent.change(lab.getByLabelText(/UDP length/), { target: { value: '12' } })
-    fireEvent.change(lab.getByLabelText(/One's-complement checksum/), { target: { value: '0x7b5b' } })
+    fireEvent.change(lab.getByLabelText(/One's-complement checksum/), { target: { value: '0x4443' } })
     expect(complete).toBeEnabled()
     expect(lab.getByText(/The UDP length is 12 bytes/)).toBeInTheDocument()
   })
 
-  it('renders the 20-question Chapter 3 quiz', () => {
+  it('supports the complete lecture stop-and-wait calculation', () => {
+    render(<Csc138App route={{ section: 'course', course: 'csc138', view: 'practice', chapter: 'chapter3' }}/>)
+    const lab = within(screen.getByRole('region', { name: 'Solve the lecture stop-and-wait problem' }))
+    fireEvent.change(lab.getByLabelText(/Transmission time L\/R/), { target: { value: '8' } })
+    fireEvent.change(lab.getByLabelText(/Round-trip time/), { target: { value: '30' } })
+    fireEvent.change(lab.getByLabelText(/Sender utilization/), { target: { value: '0.02666' } })
+    fireEvent.change(lab.getByLabelText(/Useful throughput/), { target: { value: '266.6' } })
+    fireEvent.change(lab.getByLabelText(/How does pipelining/), { target: { value: 'Keep multiple unacknowledged packets in flight' } })
+    expect(lab.getByRole('button', { name: 'Mark activity complete' })).toBeEnabled()
+    expect(lab.getByText(/L\/R is 8.000 microseconds/)).toBeInTheDocument()
+  })
+
+  it('renders the 24-question Chapter 3 quiz', () => {
     render(<Csc138App route={{ section: 'course', course: 'csc138', view: 'practice', chapter: 'chapter3' }}/>)
     fireEvent.click(screen.getByRole('tab', { name: 'Chapter quiz' }))
-    expect(screen.getByText(/20 questions covering the chapter/)).toBeInTheDocument()
-    expect(screen.getAllByRole('radio')).toHaveLength(80)
+    expect(screen.getByText(/24 questions covering the chapter/)).toBeInTheDocument()
+    expect(screen.getAllByRole('radio')).toHaveLength(96)
   })
 
   it('renders Chapter 3 formulas, mechanisms, glossary, and sources', () => {
