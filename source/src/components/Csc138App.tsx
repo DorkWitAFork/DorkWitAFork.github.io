@@ -104,9 +104,12 @@ function Reference({ chapter, selectChapter, reset }: { chapter: Csc138Chapter; 
           ['Chapter2-Socket Programming.pdf', 'Primary source for UDP and TCP socket lifecycles and the Python client-server examples.'],
         ]
       : [
-          ['Chapter3-Transport Layer-Intro-MUX-UDP.pdf', 'Primary source for transport services, multiplexing, demultiplexing, UDP, and checksums.'],
-          ['Chapter3-Principle of reliable data transfer.pdf', 'Primary source for rdt1.0 through rdt3.0, stop-and-wait performance, and the introduction to pipelining.'],
-        ]
+           ['Chapter3-Transport Layer-Intro-MUX-UDP.pdf', 'Primary source for transport services, multiplexing, demultiplexing, UDP, and checksums.'],
+           ['Chapter3-Principle of reliable data transfer.pdf', 'Primary source for rdt1.0 through rdt3.0, stop-and-wait performance, and the introduction to pipelining.'],
+           ['Chapter3-Principle of reliable data transfer-2.pdf', 'Primary source for pipelining, Go-Back-N, Selective Repeat, and sequence-space safety.'],
+           ['Chapter3-Connection-oriented transport TCP.pdf', 'Primary source for TCP segments, byte sequence numbers, RTT estimation, flow control, and connection management.'],
+           ['Chapter3-TCP congestion control and transport functionality.pdf', 'Primary source for congestion control, ECN, fairness, delay-based control, and QUIC.'],
+         ]
   return <div className="page reference-page">
     <header className="page-heading"><div><span className="kicker">Chapter {chapter.number} quick reference</span><h1>Terms, formulas,<br/>and source notes.</h1></div><p>Use this compact reference while solving exercises. Definitions follow the terminology in the uploaded Chapter {chapter.number} deck.</p></header>
     <div className="chapter-switch" aria-label="Reference chapter">{csc138ChapterList.map(item => <button key={item.id} className={chapter.id === item.id ? 'active' : ''} onClick={() => selectChapter(item.id)}>Chapter {item.number}</button>)}</div>

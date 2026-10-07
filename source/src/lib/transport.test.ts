@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { calculateOnesComplementChecksum, calculateRoundTripTimeSeconds, calculateStopAndWaitThroughputBps, calculateStopAndWaitUtilization, calculateTransmissionTimeSeconds, calculateUdpLength } from './transport'
+import { advanceCongestionWindow, calculateEffectiveTcpWindow, calculateOnesComplementChecksum, calculatePipelinedUtilization, calculateRequiredPipelineWindow, calculateRoundTripTimeSeconds, calculateRttEstimate, calculateSelectiveRepeatWindow, calculateStopAndWaitThroughputBps, calculateStopAndWaitUtilization, calculateTcpAck, calculateTransmissionTimeSeconds, calculateUdpLength } from './transport'
 
 describe('calculateOnesComplementChecksum', () => {
   it('computes a UDP checksum with repeated end-around carries', () => {
@@ -95,5 +95,32 @@ describe('calculateStopAndWaitUtilization', () => {
 
   it('rejects finite inputs whose intermediate transmission time overflows', () => {
     expect(() => calculateStopAndWaitUtilization(Number.MAX_VALUE, Number.MIN_VALUE, 1)).toThrow(RangeError)
+  })
+})
+
+describe('advanced transport helpers', () => {
+  it('calculates pipeline utilization and required window', () => {
+    expect(calculatePipelinedUtilization(4, 8_000, 1_000_000_000, 0.03)).toBeCloseTo(0.001066)
+    expect(calculateRequiredPipelineWindow(8_000, 1_000_000_000, 0.03)).toBe(3751)
+  })
+
+  it('enforces Selective Repeat half-space safety', () => {
+    expect(calculateSelectiveRepeatWindow(4)).toBe(8)
+    expect(() => calculateSelectiveRepeatWindow(0)).toThrow(RangeError)
+  })
+
+  it('handles TCP byte ACK arithmetic, RTT smoothing, and window limits', () => {
+    expect(calculateTcpAck(1000, 500)).toBe(1500)
+    expect(calculateTcpAck(1000, 0, true)).toBe(1001)
+    const estimate = calculateRttEstimate(0.12, 0.1, 0.02)
+    expect(estimate.estimatedRttSeconds).toBeCloseTo(0.1025)
+    expect(estimate.devRttSeconds).toBeCloseTo(0.019375)
+    expect(estimate.timeoutSeconds).toBeCloseTo(0.18)
+    expect(calculateEffectiveTcpWindow(12_000, 8_000)).toBe(8_000)
+  })
+
+  it('models simplified congestion-control events', () => {
+    expect(advanceCongestionWindow(4, 8, 'ack')).toEqual({ cwnd: 8, ssthresh: 8, phase: 'slow start' })
+    expect(advanceCongestionWindow(10, 8, 'timeout')).toEqual({ cwnd: 1, ssthresh: 5, phase: 'slow start' })
   })
 })

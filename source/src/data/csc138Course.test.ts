@@ -9,9 +9,9 @@ describe('CSC 138 chapter registry', () => {
     expect(csc138Chapters.chapter2.quizQuestions).toHaveLength(26)
     expect(csc138Chapters.chapter2.activityIds).toHaveLength(10)
     expect(csc138Chapters.chapter2.lessons.map(lesson => lesson.id)).toEqual(expect.arrayContaining(['ch2-p2p-distribution', 'ch2-bittorrent-swarm', 'ch2-udp-sockets', 'ch2-tcp-sockets']))
-    expect(csc138Chapters.chapter3.lessons).toHaveLength(10)
-    expect(csc138Chapters.chapter3.quizQuestions).toHaveLength(24)
-    expect(csc138Chapters.chapter3.activityIds).toHaveLength(5)
+    expect(csc138Chapters.chapter3.lessons).toHaveLength(21)
+    expect(csc138Chapters.chapter3.quizQuestions).toHaveLength(36)
+    expect(csc138Chapters.chapter3.activityIds).toHaveLength(12)
     expect(csc138Chapters.chapter3.lessons.map(lesson => lesson.id)).toEqual(expect.arrayContaining(['ch3-demultiplexing', 'ch3-checksum', 'ch3-rdt3', 'ch3-stop-wait']))
   })
 
