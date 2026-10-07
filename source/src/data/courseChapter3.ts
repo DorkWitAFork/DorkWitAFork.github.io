@@ -1,4 +1,5 @@
 import type { Lesson, QuizQuestion } from '../types'
+import { chapter3AdvancedLessons, chapter3AdvancedQuizQuestions, chapter3AdvancedGlossary } from './courseChapter3Advanced'
 
 const transportDeck = 'Chapter3-Transport Layer-Intro-MUX-UDP.pdf'
 const reliableDeck = 'Chapter3-Principle of reliable data transfer.pdf'
@@ -144,6 +145,7 @@ export const chapter3Lessons: Lesson[] = [
     keyTerms: ['stop-and-wait', 'packet length', 'link rate', 'transmission time', 'L/R', 'round-trip time', 'RTT', 'sender utilization', 'in-flight packet', 'buffering'],
     source: `${reliableDeck} pages 28-31`,
   },
+  ...chapter3AdvancedLessons,
 ]
 
 export const chapter3QuizQuestions: QuizQuestion[] = [
@@ -171,6 +173,7 @@ export const chapter3QuizQuestions: QuizQuestion[] = [
   { id: 'ch3-q22', prompt: 'Using the lecture checksum words 0xE666 and 0xD555, what checksum results after end-around carry and complementation?', choices: ['0xBBBB', '0x4443', '0x1BBBB', '0xD555'], answer: 1, explanation: 'The raw sum is 0x1BBBB. Wrap the carry to obtain 0xBBBC, then complement the 16-bit result to obtain 0x4443.' },
   { id: 'ch3-q23', prompt: 'A packet is 8,000 bits, the link rate is 1 Gbps, and one-way propagation delay is 15 ms. What is the approximate sender utilization?', choices: ['0.027%', '2.7%', '27%', '80%'], answer: 0, explanation: 'L/R = 8 microseconds = 0.008 ms. RTT is approximately 30 ms, so U = 0.008/(30 + 0.008) ≈ 0.00027 = 0.027%.' },
   { id: 'ch3-q24', prompt: 'Using the same lecture values and the simplified model, what useful sender rate does that utilization represent on a 1 Gbps link?', choices: ['Approximately 266 kbps', 'Approximately 2.66 Mbps', 'Approximately 266 Mbps', 'Exactly 1 Gbps'], answer: 0, explanation: 'Useful rate is link rate multiplied by utilization: 1,000,000,000 × 0.0002666 ≈ 266,600 bits/s, or about 266 kbps. This is a simplified stop-and-wait model.' },
+  ...chapter3AdvancedQuizQuestions,
 ]
 
 export const chapter3Glossary: Array<[string, string]> = [
@@ -222,6 +225,7 @@ export const chapter3Glossary: Array<[string, string]> = [
   ['UDP length', 'The UDP field giving the total number of bytes in the UDP header and payload.'],
   ['Udt_send', 'The conceptual call by rdt that sends a packet through the underlying unreliable channel.'],
   ['Unreliable channel', 'An underlying communication path whose assumed behavior may include corruption, loss, or reordering.'],
+  ...chapter3AdvancedGlossary,
 ]
 
 export const chapter3ActivityIds = [
@@ -230,4 +234,11 @@ export const chapter3ActivityIds = [
   'ch3-rdt-mechanisms',
   'ch3-rdt-trace',
   'ch3-stop-wait',
+  'ch3-pipeline-window',
+  'ch3-gbn-sr',
+  'ch3-tcp-ack',
+  'ch3-congestion-window',
+  'ch3-sequence-space',
+  'ch3-rtt-rto',
+  'ch3-tcp-flow',
 ] as const

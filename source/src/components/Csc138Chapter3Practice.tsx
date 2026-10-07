@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { calculateOnesComplementChecksum, calculateRoundTripTimeSeconds, calculateStopAndWaitThroughputBps, calculateStopAndWaitUtilization, calculateTransmissionTimeSeconds, calculateUdpLength } from '../lib/transport'
+import { advanceCongestionWindow, calculateEffectiveTcpWindow, calculateOnesComplementChecksum, calculatePipelinedUtilization, calculateRequiredPipelineWindow, calculateRoundTripTimeSeconds, calculateRttEstimate, calculateSelectiveRepeatWindow, calculateStopAndWaitThroughputBps, calculateStopAndWaitUtilization, calculateTcpAck, calculateTransmissionTimeSeconds, calculateUdpLength } from '../lib/transport'
 import { Icon } from './Icons'
 
 type Props = {
@@ -207,6 +207,71 @@ function StopAndWaitLab({ complete }: { complete: () => void }) {
   </section>
 }
 
+function PipelineLab({ complete }: { complete: () => void }) {
+  const [window, setWindow] = useState('4')
+  const [answer, setAnswer] = useState('')
+  const [required, setRequired] = useState('')
+  const valid = Number(window) > 0 && Number.isInteger(Number(window))
+  const utilization = valid ? calculatePipelinedUtilization(Number(window), 8_000, 1_000_000_000, 0.03) * 100 : 0
+  const requiredWindow = calculateRequiredPipelineWindow(8_000, 1_000_000_000, 0.03)
+  const correct = Math.abs(Number(answer) - utilization) < 0.001 && Number(required) === requiredWindow
+  return <section className="lab-panel" aria-labelledby="pipeline-title"><div className="lab-heading"><span className="lab-number">LAB 06</span><div><h2 id="pipeline-title">Fill the pipeline</h2><p>Use 8,000-bit packets, a 1 Gbps link, and a 30 ms RTT. The model ignores ACK transmission and processing time.</p></div></div><div className="p2p-calculator"><div className="p2p-inputs"><label>Window size <span>packets</span><input type="number" min="1" value={window} onChange={e => { setWindow(e.target.value); setAnswer(''); setRequired('') }}/></label><label>Utilization <span>percent, within 0.001</span><input type="number" step="any" value={answer} onChange={e => setAnswer(e.target.value)}/></label><label>Window for approximately full use <span>packets</span><input type="number" min="1" value={required} onChange={e => setRequired(e.target.value)}/></label></div><p className="lab-note">U = min(1, N × L/R ÷ (RTT + L/R)). Required window = ceil(RTT ÷ (L/R) + 1).</p></div>{answer && required && <p role="status" className={`feedback ${correct ? 'correct' : 'incorrect'}`}>{correct ? `Correct. A window of ${window} gives ${utilization.toFixed(3)}% utilization, and ${requiredWindow} packets fill the modeled path.` : 'Use seconds consistently. Multiply the packet transmission time by the window before dividing by RTT plus one transmission time.'}</p>}<CompletionButton ready={correct} complete={complete}/></section>
+}
+
+function PipelineRecoveryLab({ complete }: { complete: () => void }) {
+  const [strategy, setStrategy] = useState('')
+  const [loss, setLoss] = useState('')
+  const correct = strategy === 'Selective Repeat' && loss === 'Retransmit only packet 2 and buffer later packets'
+  return <section className="lab-panel" aria-labelledby="recovery-title"><div className="lab-heading"><span className="lab-number">LAB 07</span><div><h2 id="recovery-title">Choose a pipelined recovery</h2><p>Packet 2 is lost, while packets 3 and 4 arrive correctly. Compare the two classic strategies.</p></div></div><label className="bottleneck-check">Protocol<select value={strategy} onChange={e => setStrategy(e.target.value)}><option value="">Choose a protocol</option><option>Go-Back-N</option><option>Selective Repeat</option></select></label><label className="bottleneck-check">Most efficient recovery<select value={loss} onChange={e => setLoss(e.target.value)}><option value="">Choose the behavior</option><option>Retransmit packet 2 and every later packet</option><option>Retransmit only packet 2 and buffer later packets</option></select></label>{strategy && loss && <p role="status" className={`feedback ${correct ? 'correct' : 'incorrect'}`}>{correct ? 'Correct. Selective Repeat acknowledges and buffers packets 3 and 4, then retransmits only the missing packet.' : 'Selective Repeat can buffer out-of-order packets and retransmit only the missing packet; Go-Back-N retransmits a suffix.'}</p>}<CompletionButton ready={correct} complete={complete}/></section>
+}
+
+function TcpAckLab({ complete }: { complete: () => void }) {
+  const [sequence, setSequence] = useState('7001')
+  const [payload, setPayload] = useState('500')
+  const [ack, setAck] = useState('')
+  const [syn, setSyn] = useState(false)
+  const expected = Number.isInteger(Number(sequence)) && Number.isInteger(Number(payload)) ? calculateTcpAck(Number(sequence), Number(payload), syn) : Number.NaN
+  const correct = Number(ack) === expected
+  return <section className="lab-panel" aria-labelledby="tcp-ack-title"><div className="lab-heading"><span className="lab-number">LAB 08</span><div><h2 id="tcp-ack-title">Calculate the next TCP ACK</h2><p>Find the next byte expected after an in-order segment. Toggle SYN to include its one sequence-space position.</p></div></div><div className="p2p-calculator"><div className="p2p-inputs"><label>Starting sequence <span>byte number</span><input type="number" min="0" value={sequence} onChange={e => setSequence(e.target.value)}/></label><label>Payload <span>bytes</span><input type="number" min="0" value={payload} onChange={e => setPayload(e.target.value)}/></label><label>Expected ACK <span>byte number</span><input type="number" min="0" value={ack} onChange={e => setAck(e.target.value)}/></label></div><label className="bottleneck-check"><input type="checkbox" checked={syn} onChange={e => setSyn(e.target.checked)}/> Segment also carries SYN</label><p className="lab-note">ACK = sequence + payload bytes + 1 when SYN is present. FIN uses the same one-position rule.</p></div>{ack && <p role="status" className={`feedback ${correct ? 'correct' : 'incorrect'}`}>{correct ? `Correct. The next expected byte is ${expected}.` : 'Add the payload length to the starting sequence number. Add one more only when SYN or FIN consumes sequence space.'}</p>}<CompletionButton ready={correct} complete={complete}/></section>
+}
+
+function SequenceSpaceLab({ complete }: { complete: () => void }) {
+  const [bits, setBits] = useState('4')
+  const [window, setWindow] = useState('8')
+  const [checked, setChecked] = useState(false)
+  const limit = Number.isInteger(Number(bits)) && Number(bits) > 0 ? calculateSelectiveRepeatWindow(Number(bits)) : 0
+  const correct = Number(window) <= limit && checked
+  return <section className="lab-panel" aria-labelledby="sequence-space-title"><div className="lab-heading"><span className="lab-number">LAB 10</span><div><h2 id="sequence-space-title">Check sequence-space safety</h2><p>For Selective Repeat, choose a window no larger than half the sequence space.</p></div></div><div className="p2p-calculator"><div className="p2p-inputs"><label>Sequence bits <span>m</span><input type="number" min="1" max="30" value={bits} onChange={e => setBits(e.target.value)}/></label><label>SR window <span>packets</span><input type="number" min="1" value={window} onChange={e => setWindow(e.target.value)}/></label></div><p className="lab-note">Safe maximum for {bits} bits: {limit || 'invalid input'} packets. Rule: W &lt;= 2^(m - 1).</p><label className="bottleneck-check"><input type="checkbox" checked={checked} onChange={e => setChecked(e.target.checked)}/> I can explain why an old wrapped value must not look new</label></div>{checked && <p role="status" className={`feedback ${correct ? 'correct' : 'incorrect'}`}>{correct ? 'Safe. The current acceptance window leaves enough unused sequence values to separate delayed duplicates.' : 'Reduce the window to the half-space limit for the selected sequence size.'}</p>}<CompletionButton ready={correct} complete={complete}/></section>
+}
+
+function RttLab({ complete }: { complete: () => void }) {
+  const [sample, setSample] = useState('120')
+  const [estimate, setEstimate] = useState('100')
+  const [deviation, setDeviation] = useState('20')
+  const [answer, setAnswer] = useState('')
+  const result = calculateRttEstimate(Number(sample) / 1000, Number(estimate) / 1000, Number(deviation) / 1000)
+  const correct = Math.abs(Number(answer) - result.timeoutSeconds * 1000) < 0.01
+  return <section className="lab-panel" aria-labelledby="rtt-title"><div className="lab-heading"><span className="lab-number">LAB 11</span><div><h2 id="rtt-title">Estimate a TCP timeout</h2><p>Use one SampleRTT of 120 ms, prior EstimatedRTT of 100 ms, and prior DevRTT of 20 ms.</p></div></div><div className="p2p-calculator"><div className="p2p-inputs"><label>SampleRTT <span>milliseconds</span><input type="number" min="0" value={sample} onChange={e => setSample(e.target.value)}/></label><label>Prior EstimatedRTT <span>milliseconds</span><input type="number" min="0" value={estimate} onChange={e => setEstimate(e.target.value)}/></label><label>Prior DevRTT <span>milliseconds</span><input type="number" min="0" value={deviation} onChange={e => setDeviation(e.target.value)}/></label><label>TimeoutInterval <span>milliseconds</span><input type="number" min="0" step="any" value={answer} onChange={e => setAnswer(e.target.value)}/></label></div><p className="lab-note">Use alpha = 0.125, beta = 0.25, then TimeoutInterval = EstimatedRTT + 4 DevRTT.</p></div>{answer && <p role="status" className={`feedback ${correct ? 'correct' : 'incorrect'}`}>{correct ? `Correct. The modeled timeout is ${result.timeoutSeconds * 1000} ms.` : 'Smooth the sample first, update deviation using the new estimate, then add four deviations.'}</p>}<CompletionButton ready={correct} complete={complete}/></section>
+}
+
+function FlowWindowLab({ complete }: { complete: () => void }) {
+  const [rwnd, setRwnd] = useState('12000')
+  const [cwnd, setCwnd] = useState('8000')
+  const [answer, setAnswer] = useState('')
+  const correct = Number(answer) === calculateEffectiveTcpWindow(Number(rwnd), Number(cwnd))
+  return <section className="lab-panel" aria-labelledby="flow-title"><div className="lab-heading"><span className="lab-number">LAB 12</span><div><h2 id="flow-title">Find the effective TCP window</h2><p>The receiver advertises 12,000 bytes and congestion control allows 8,000 bytes.</p></div></div><div className="p2p-calculator"><div className="p2p-inputs"><label>rwnd <span>bytes</span><input type="number" min="0" value={rwnd} onChange={e => setRwnd(e.target.value)}/></label><label>cwnd <span>bytes</span><input type="number" min="0" value={cwnd} onChange={e => setCwnd(e.target.value)}/></label><label>Effective window <span>bytes</span><input type="number" min="0" value={answer} onChange={e => setAnswer(e.target.value)}/></label></div><p className="lab-note">Effective sending window = min(rwnd, cwnd). Flow control and congestion control impose independent limits.</p></div>{answer && <p role="status" className={`feedback ${correct ? 'correct' : 'incorrect'}`}>{correct ? 'Correct. The smaller path limit controls how many bytes may be outstanding.' : 'Take the smaller of the advertised receive window and congestion window.'}</p>}<CompletionButton ready={correct} complete={complete}/></section>
+}
+
+function CongestionLab({ complete }: { complete: () => void }) {
+  const [cwnd, setCwnd] = useState(1)
+  const [ssthresh, setSsthresh] = useState(8)
+  const [event, setEvent] = useState<'ack' | 'timeout' | 'triple-duplicate-ack'>('ack')
+  const next = advanceCongestionWindow(cwnd, ssthresh, event)
+  const [checked, setChecked] = useState(false)
+  const correct = event === 'timeout' && next.cwnd === 1 && next.ssthresh === 4 && checked
+  return <section className="lab-panel" aria-labelledby="congestion-title"><div className="lab-heading"><span className="lab-number">LAB 09</span><div><h2 id="congestion-title">Step the congestion window</h2><p>Start with cwnd 8 and ssthresh 8, then model a timeout. This is an intentionally simplified round-based exercise.</p></div></div><div className="p2p-calculator"><div className="p2p-inputs"><label>cwnd <span>segments</span><input type="number" min="1" value={cwnd} onChange={e => setCwnd(Number(e.target.value))}/></label><label>ssthresh <span>segments</span><input type="number" min="2" value={ssthresh} onChange={e => setSsthresh(Number(e.target.value))}/></label></div><label className="bottleneck-check">Event<select value={event} onChange={e => setEvent(e.target.value as typeof event)}><option value="ack">ACK round</option><option value="timeout">Timeout</option><option value="triple-duplicate-ack">Triple duplicate ACK</option></select></label><p className="lab-note">Next modeled state: cwnd {next.cwnd}, ssthresh {next.ssthresh}, phase {next.phase}.</p><label className="bottleneck-check"><input type="checkbox" checked={checked} onChange={e => setChecked(e.target.checked)}/> I can explain why timeout is stronger congestion evidence</label></div>{checked && <p role="status" className={`feedback ${correct ? 'correct' : 'incorrect'}`}>{correct ? 'Correct. A timeout resets cwnd to 1 and halves the previous congestion window for ssthresh.' : 'Set cwnd to 8, choose Timeout, and observe the conservative reduction.'}</p>}<CompletionButton ready={correct} complete={complete}/></section>
+}
+
 export function Csc138Chapter3Practice({ completeActivity }: Props) {
   return <div className="labs-stack">
     <DemultiplexingLab complete={() => completeActivity('ch3-demultiplexing')}/>
@@ -214,5 +279,12 @@ export function Csc138Chapter3Practice({ completeActivity }: Props) {
     <RdtMechanismsLab complete={() => completeActivity('ch3-rdt-mechanisms')}/>
     <RdtTraceLab complete={() => completeActivity('ch3-rdt-trace')}/>
     <StopAndWaitLab complete={() => completeActivity('ch3-stop-wait')}/>
+    <PipelineLab complete={() => completeActivity('ch3-pipeline-window')}/>
+    <PipelineRecoveryLab complete={() => completeActivity('ch3-gbn-sr')}/>
+    <TcpAckLab complete={() => completeActivity('ch3-tcp-ack')}/>
+    <CongestionLab complete={() => completeActivity('ch3-congestion-window')}/>
+    <SequenceSpaceLab complete={() => completeActivity('ch3-sequence-space')}/>
+    <RttLab complete={() => completeActivity('ch3-rtt-rto')}/>
+    <FlowWindowLab complete={() => completeActivity('ch3-tcp-flow')}/>
   </div>
 }

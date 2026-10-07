@@ -168,7 +168,9 @@ describe('CSC 138 Chapter 3', () => {
     expect(screen.getByRole('heading', { name: 'Match RDT problems to mechanisms' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Trace RDT recovery scenarios' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Solve the lecture stop-and-wait problem' })).toBeInTheDocument()
-    expect(screen.getByText('0/5')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Fill the pipeline' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Choose a pipelined recovery' })).toBeInTheDocument()
+    expect(screen.getByText('0/12')).toBeInTheDocument()
 
     const lab = within(screen.getByRole('region', { name: 'Solve UDP word problems' }))
     const complete = lab.getByRole('button', { name: 'Mark activity complete' })
@@ -192,11 +194,11 @@ describe('CSC 138 Chapter 3', () => {
     expect(lab.getByText(/L\/R is 8.000 microseconds/)).toBeInTheDocument()
   })
 
-  it('renders the 24-question Chapter 3 quiz', () => {
+  it('renders the expanded Chapter 3 quiz', () => {
     render(<Csc138App route={{ section: 'course', course: 'csc138', view: 'practice', chapter: 'chapter3' }}/>)
     fireEvent.click(screen.getByRole('tab', { name: 'Chapter quiz' }))
-    expect(screen.getByText(/24 questions covering the chapter/)).toBeInTheDocument()
-    expect(screen.getAllByRole('radio')).toHaveLength(96)
+    expect(screen.getByText(/36 questions covering the chapter/)).toBeInTheDocument()
+    expect(screen.getAllByRole('radio')).toHaveLength(144)
   })
 
   it('renders Chapter 3 formulas, mechanisms, glossary, and sources', () => {
