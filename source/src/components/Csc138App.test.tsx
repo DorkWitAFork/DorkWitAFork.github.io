@@ -142,6 +142,18 @@ describe('CSC 138 Chapter 2', () => {
   })
 })
 
+describe('CSC 138 midterm', () => {
+  it('renders the review and full practice tabs', () => {
+    render(<Csc138App route={{ section: 'course', course: 'csc138', view: 'midterm' }}/>)
+    expect(screen.getByRole('heading', { name: 'Practice the whole path.' })).toBeInTheDocument()
+    expect(screen.getByText('Packet timing')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('tab', { name: 'Practice midterm' }))
+    expect(screen.getByRole('heading', { name: 'Show your calculations and reasoning.' })).toBeInTheDocument()
+    expect(screen.getAllByRole('radio')).toHaveLength(160)
+    expect(screen.getByRole('button', { name: 'Submit practice midterm' })).toBeDisabled()
+  })
+})
+
 describe('CSC 138 Chapter 3', () => {
   it('renders the lecture-aligned transport lesson collection and chapter navigation', () => {
     render(<Csc138App route={{ section: 'course', course: 'csc138', view: 'chapter3' }}/>)
