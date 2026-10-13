@@ -19,6 +19,7 @@ describe('site routing', () => {
     expect(routeFromHash('#/student/csc138/chapter1')).toEqual({ section: 'course', course: 'csc138', view: 'chapter1' })
     expect(routeFromHash('#/student/csc138/chapter2')).toEqual({ section: 'course', course: 'csc138', view: 'chapter2' })
     expect(routeFromHash('#/student/csc138/chapter3')).toEqual({ section: 'course', course: 'csc138', view: 'chapter3' })
+    expect(routeFromHash('#/student/csc138/midterm')).toEqual({ section: 'course', course: 'csc138', view: 'midterm' })
     expect(routeFromHash('#/student/csc138/practice/chapter2')).toEqual({ section: 'course', course: 'csc138', view: 'practice', chapter: 'chapter2' })
     expect(routeFromHash('#/student/csc138/reference/chapter2')).toEqual({ section: 'course', course: 'csc138', view: 'reference', chapter: 'chapter2' })
     expect(routeFromHash('#/student/csc138/practice/chapter3')).toEqual({ section: 'course', course: 'csc138', view: 'practice', chapter: 'chapter3' })

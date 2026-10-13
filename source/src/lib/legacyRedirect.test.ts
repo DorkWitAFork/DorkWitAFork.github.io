@@ -8,7 +8,7 @@ const html = readFileSync(new URL('../../../csc138/index.html', import.meta.url)
 const script = html.match(/<script>([\s\S]*?)<\/script>/)![1]
 
 describe('published CSC 138 redirect', () => {
-  const views = ['dashboard', 'roadmap', 'chapter1', 'chapter2', 'chapter3', 'practice', 'reference']
+  const views = ['dashboard', 'roadmap', 'chapter1', 'chapter2', 'chapter3', 'practice', 'reference', 'midterm']
   for (const view of views) {
     it.each([`#/${view}`, `#${view}`, `#/${view}/detail`, `#/student/csc138/${view}`])('preserves %s', hash => {
       let destination = ''

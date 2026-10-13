@@ -5,6 +5,7 @@ import { emptyProgress, loadProgress, recordQuizAttempt, saveProgress } from '..
 import type { SiteRoute } from '../lib/router'
 import type { Csc138ChapterId, Csc138Progress, Csc138View } from '../types'
 import { Csc138Chapter3Reference } from './Csc138Chapter3Reference'
+import { Csc138Midterm } from './Csc138Midterm'
 import { Icon } from './Icons'
 import { LessonVisual } from './LessonVisual'
 import { NetworkDiagram } from './NetworkDiagram'
@@ -18,6 +19,7 @@ const views: Array<{ id: Csc138View; label: string; icon: string }> = [
   { id: 'roadmap', label: 'Semester plan', icon: 'roadmap' },
   { id: 'practice', label: 'Practice', icon: 'practice' },
   { id: 'reference', label: 'Reference', icon: 'reference' },
+  { id: 'midterm', label: 'Midterm', icon: 'reference' },
 ]
 
 function ProgressRing({ value, size = 108 }: { value: number; size?: number }) {
@@ -171,7 +173,7 @@ export function Csc138App({ route }: { route: Csc138Route }) {
 
   return <div className="app-shell">
     <header className="topbar"><button className="brand" onClick={() => navigate('dashboard')}><span className="brand-mark"><i/><i/><i/></span><span><b>NETWORK</b><small>CSC 138 FIELD LAB</small></span></button><nav id="csc138-primary-navigation" className={mobileOpen ? 'open' : ''} aria-label="Primary navigation">{views.slice(0, 2).map(renderNavButton)}<div className="chapter-nav" ref={chapterNavRef} onKeyDown={event => { if (event.key === 'Escape') { setChaptersOpen(false); chapterNavRef.current?.querySelector<HTMLButtonElement>('.chapter-trigger')?.focus() } }}><button type="button" className={`nav-item chapter-trigger ${csc138ChapterList.some(chapter => chapter.id === view) ? 'active' : ''}`} aria-expanded={chaptersOpen} aria-controls="csc138-chapter-navigation" onClick={() => setChaptersOpen(open => !open)}><Icon name="book"/><span>Chapters</span><Icon name="chevronDown" size={14}/></button><ul id="csc138-chapter-navigation" className="chapter-menu" hidden={!chaptersOpen}>{csc138ChapterList.map(chapter => <li key={chapter.id}><button type="button" aria-current={view === chapter.id ? 'page' : undefined} onClick={() => { setChaptersOpen(false); setMobileOpen(false); navigate(chapter.id) }}><span>Chapter {chapter.number}</span><small>{chapter.title}</small></button></li>)}</ul></div>{views.slice(2).map(renderNavButton)}</nav><button className="course-back" onClick={() => { window.location.hash = '/student' }}>All courses</button><div className="topbar-meta"><span>FALL</span><b>2026</b></div><button className="menu-button" aria-label="Toggle navigation" aria-controls="csc138-primary-navigation" aria-expanded={mobileOpen} onClick={() => setMobileOpen(value => !value)}><i/><i/><i/></button></header>
-    <main>{view === 'dashboard' && <Dashboard progress={progress} navigate={navigate}/>} {view === 'roadmap' && <Roadmap navigate={navigate}/>} {csc138ChapterList.some(chapter => chapter.id === view) && <Chapter key={activeChapter.id} chapter={activeChapter} progress={progress} completeLesson={completeLesson} navigate={navigate}/>} {view === 'practice' && <Practice key={activeChapter.id} chapter={activeChapter} completedActivities={progress.completedActivities} completeActivity={completeActivity} recordQuiz={recordQuiz} selectChapter={selectPracticeChapter}/>} {view === 'reference' && <Reference chapter={activeChapter} selectChapter={selectReferenceChapter} reset={reset}/>}</main>
+     <main>{view === 'dashboard' && <Dashboard progress={progress} navigate={navigate}/>} {view === 'roadmap' && <Roadmap navigate={navigate}/>} {csc138ChapterList.some(chapter => chapter.id === view) && <Chapter key={activeChapter.id} chapter={activeChapter} progress={progress} completeLesson={completeLesson} navigate={navigate}/>} {view === 'practice' && <Practice key={activeChapter.id} chapter={activeChapter} completedActivities={progress.completedActivities} completeActivity={completeActivity} recordQuiz={recordQuiz} selectChapter={selectPracticeChapter}/>} {view === 'reference' && <Reference chapter={activeChapter} selectChapter={selectReferenceChapter} reset={reset}/>} {view === 'midterm' && <Csc138Midterm/>}</main>
     <footer className="site-footer"><div><span className="brand-mark small"><i/><i/><i/></span><strong>CSC 138 NETWORK LAB</strong></div><span>Independent study companion · Sacramento State · Fall 2026</span><small>Progress stays in this browser.</small></footer>
   </div>
 }
