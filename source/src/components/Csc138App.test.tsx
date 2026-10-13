@@ -129,7 +129,7 @@ describe('CSC 138 Chapter 2', () => {
 
   it('renders the Chapter 2 reference', () => {
     render(<Csc138App route={{ section: 'course', course: 'csc138', view: 'reference', chapter: 'chapter2' }}/>)
-    expect(screen.getByText('2RTT + transmission time')).toBeInTheDocument()
+    expect(document.querySelector('.reference-equation')).toHaveTextContent('2RTT + transmission time')
     expect(screen.getByText('HTTP METHODS')).toBeInTheDocument()
     expect(screen.getByText('DNS RECORDS')).toBeInTheDocument()
     expect(screen.getByText('BITTORRENT STRATEGY')).toBeInTheDocument()
@@ -215,7 +215,8 @@ describe('CSC 138 Chapter 3', () => {
 
   it('renders Chapter 3 formulas, mechanisms, glossary, and sources', () => {
     render(<Csc138App route={{ section: 'course', course: 'csc138', view: 'reference', chapter: 'chapter3' }}/>)
-    expect(screen.getByText('(L/R) / (RTT + L/R)')).toBeInTheDocument()
+    expect(document.querySelector('.reference-equation')).toHaveTextContent('(L/R) / (RTT + L/R)')
+    expect(document.querySelector('.reference-equation sup')).toBeTruthy()
     expect(screen.getByText('RDT PROGRESSION')).toBeInTheDocument()
     expect(screen.getByText('PIPELINING MOTIVATION')).toBeInTheDocument()
     expect(screen.getByText('Alternating-bit protocol')).toBeInTheDocument()
