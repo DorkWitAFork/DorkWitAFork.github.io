@@ -1,10 +1,51 @@
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import { midtermQuestions, midtermReviewSections } from '../data/csc138Midterm'
 
+function Formula({ id }: { id: string }) {
+  const formulas: Record<string, ReactNode> = {
+    'nodal-delay': <><i>d</i><sub>nodal</sub> = <i>d</i><sub>proc</sub> + <i>d</i><sub>queue</sub> + <i>L</i>/<i>R</i> + <i>d</i>/<i>v</i></>,
+    'store-forward': <>D = Σ(<i>L</i>/<i>R</i><sub>i</sub> + <i>d</i><sub>i</sub>/<i>v</i><sub>i</sub>)</>,
+    bottleneck: <>Throughput = min(<i>R</i><sub>1</sub>, <i>R</i><sub>2</sub>, …, <i>R</i><sub>H</sub>)</>,
+    'traffic-intensity': <>ρ = <i>La</i>/<i>R</i></>,
+    'dns-total': <>D<sub>DNS</sub> = Σ required sequential DNS RTTs</>,
+    'http-nonpersistent': <>D<sub>HTTP</sub> = D<sub>DNS</sub> + 2(<i>m</i> + 1)<i>r</i></>,
+    'http-persistent': <>D<sub>HTTP</sub> = D<sub>DNS</sub> + 3<i>r</i> &nbsp;(<i>m</i> ≥ 1)</>,
+    'distribution-cs': <>D<sub>CS</sub> ≥ max(<i>NF</i>/<i>u</i><sub>s</sub>, <i>F</i>/<i>d</i><sub>min</sub>)</>,
+    'distribution-p2p': <>D<sub>P2P</sub> ≥ max(<i>F</i>/<i>u</i><sub>s</sub>, <i>F</i>/<i>d</i><sub>min</sub>, <i>NF</i>/(<i>u</i><sub>s</sub> + Σ<i>u</i><sub>i</sub>))</>,
+    'stop-wait': <><i>U</i> = (<i>L</i>/<i>R</i>) / (<i>RTT</i> + <i>L</i>/<i>R</i>)</>,
+    'pipeline-utilization': <><i>U</i> ≈ min(1, <i>W</i>(<i>L</i>/<i>R</i>) / (<i>RTT</i> + <i>L</i>/<i>R</i>))</>,
+    'gbn-window': <>GBN: <i>W</i> ≤ <i>M</i> − 1</>,
+    'sr-window': <>SR: <i>W</i> ≤ <i>M</i>/2</>,
+    'segment-range': <>Seq through Seq + payload − 1</>,
+    'tcp-ack': <>ACK = first byte not yet received in order</>,
+    'receive-window': <>rwnd = buffer size − unread buffered bytes</>,
+    'window-allowance': <>additional allowance = advertised rwnd − outstanding bytes</>,
+    'retransmission-timeout': <>Timeout = EstimatedRTT + 4 DevRTT</>,
+    'workflow-draw': <>1. Draw the path or timeline</>,
+    'workflow-units': <>2. Convert units before substituting</>,
+    'workflow-assumptions': <>3. List assumptions</>,
+    'workflow-combine': <>4. Sum stages or choose the bottleneck</>,
+    'workflow-label': <>5. Label the final answer</>,
+  }
+  return <code className="midterm-formula">{formulas[id] ?? id}</code>
+}
+
+function ReviewVisual({ sectionIndex }: { sectionIndex: number }) {
+  if (sectionIndex === 0) return <div className="midterm-visual timing-visual" aria-label="Packet timing diagram"><span>packet</span><div><b>transmit</b><i /><b>propagate</b><i /><b>arrive</b></div><small>L / R</small><small>d / v</small></div>
+  if (sectionIndex === 1) return <div className="midterm-visual application-visual" aria-label="Application request timeline"><span>DNS</span><span>TCP</span><span>base HTML</span><span>objects</span><div className="visual-line" /></div>
+  if (sectionIndex === 2) return <div className="midterm-visual reliability-visual" aria-label="Go-Back-N and Selective Repeat comparison"><div><b>GBN</b><span>0 ✓</span><span>1 lost</span><span>2 discard</span><span>3 discard</span></div><div><b>SR</b><span>0 ✓</span><span>1 lost</span><span>2 buffer</span><span>3 buffer</span></div></div>
+  if (sectionIndex === 3) return <div className="midterm-visual tcp-visual" aria-label="TCP byte sequence diagram"><span>Seq 1000</span><b>bytes 1000–1499</b><span>ACK 1500</span><div className="visual-arrow" /></div>
+  return <div className="midterm-visual workflow-visual" aria-label="Exam workflow"><span>draw</span><b>→</b><span>convert</span><b>→</b><span>model</span><b>→</b><span>solve</span><b>→</b><span>check</span></div>
+}
+
 function ReviewSection({ section }: { section: (typeof midtermReviewSections)[number] }) {
+  const sectionIndex = midtermReviewSections.indexOf(section)
   return <article className="midterm-review-card">
     <div className="midterm-review-heading"><span>{section.eyebrow}</span><h2>{section.title}</h2><p>{section.summary}</p></div>
-    <div className="midterm-review-columns"><div><h3>Formulas and models</h3><ul className="formula-list">{section.formulas.map(formula => <li key={formula}><code>{formula}</code></li>)}</ul></div><div><h3>What to remember</h3><ul>{section.checks.map(check => <li key={check}>{check}</li>)}</ul></div></div>
+    <ReviewVisual sectionIndex={sectionIndex} />
+    <div className="midterm-review-columns"><div><h3>Formulas and models</h3><ul className="formula-list">{section.formulas.map(formula => <li key={formula}><Formula id={formula} /></li>)}</ul></div><div><h3>What to understand</h3><ul>{section.details.map(detail => <li key={detail}>{detail}</li>)}</ul></div></div>
+    <div className="midterm-review-lower"><div><h3>Worked approach</h3><p>{section.workedExample}</p></div><div><h3>Common traps</h3><ul>{section.pitfalls.map(pitfall => <li key={pitfall}>{pitfall}</li>)}</ul></div></div>
+    <div className="midterm-review-checks"><h3>Quick checks</h3><ul>{section.checks.map(check => <li key={check}>{check}</li>)}</ul></div>
   </article>
 }
 
