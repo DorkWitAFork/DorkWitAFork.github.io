@@ -32,7 +32,7 @@ export const midtermReviewSections = [
     title: '3. Reliable transfer and pipelining',
     eyebrow: 'UDP, rdt, GBN, and SR',
     summary: 'Keep protocol state separate from application data. For every loss trace, mark what the receiver delivers, what ACK means, and how the sender base moves.',
-    formulas: ['stop-wait', 'pipeline-utilization', 'gbn-window', 'sr-window'],
+    formulas: ['stop-wait', 'pipeline-utilization', 'sequence-space', 'gbn-window', 'sr-window'],
     details: ['A reliable-transfer protocol adds a small state machine around an unreliable channel. The sender may need a checksum, sequence number, ACK/NAK behavior, a timer, and a retransmission rule.', 'Stop-and-wait sends one packet and waits. A pipeline keeps several packets in flight, increasing utilization when propagation and RTT are large compared with transmission time.', 'Go-Back-N uses cumulative ACKs. The receiver accepts only the next expected packet, discards later out-of-order packets, and the sender retransmits the unacknowledged suffix after a timeout.', 'Selective Repeat individually acknowledges and buffers correctly received out-of-order packets. Its larger state is worth it when retransmitting an entire suffix would waste bandwidth.'],
     workedExample: 'For a loss trace, draw sender and receiver columns. Label each arriving packet as delivered, buffered, or discarded; then write the ACK value. Only after that should you move the sender window or schedule a timeout.',
     pitfalls: ['Treating a cumulative ACK as proof that every later packet arrived.', 'Letting an SR receiver deliver bytes with a gap in the application stream.', 'Using the GBN window rule for SR, or ignoring sequence-number wraparound.'],

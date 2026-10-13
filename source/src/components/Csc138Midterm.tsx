@@ -14,6 +14,7 @@ function Formula({ id }: { id: string }) {
     'distribution-p2p': <>D<sub>P2P</sub> ≥ max(<i>F</i>/<i>u</i><sub>s</sub>, <i>F</i>/<i>d</i><sub>min</sub>, <i>NF</i>/(<i>u</i><sub>s</sub> + Σ<i>u</i><sub>i</sub>))</>,
     'stop-wait': <><i>U</i> = (<i>L</i>/<i>R</i>) / (<i>RTT</i> + <i>L</i>/<i>R</i>)</>,
     'pipeline-utilization': <><i>U</i> ≈ min(1, <i>W</i>(<i>L</i>/<i>R</i>) / (<i>RTT</i> + <i>L</i>/<i>R</i>))</>,
+    'sequence-space': <><i>M</i> = 2<sup><i>k</i></sup></>,
     'gbn-window': <>GBN: <i>W</i> ≤ <i>M</i> − 1</>,
     'sr-window': <>SR: <i>W</i> ≤ <i>M</i>/2</>,
     'segment-range': <>Seq through Seq + payload − 1</>,
