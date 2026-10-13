@@ -5,6 +5,7 @@ import { calculateDelayMs } from '../lib/progress'
 import { Csc138Chapter2Practice } from './Csc138Chapter2Practice'
 import { Csc138Chapter3Practice } from './Csc138Chapter3Practice'
 import { Icon } from './Icons'
+import { MathText } from './MathText'
 
 type Props = {
   chapter: Csc138Chapter
@@ -97,12 +98,12 @@ function ChapterQuiz({ chapter, recordQuiz }: { chapter: Csc138Chapter; recordQu
   return <section className="quiz-panel" aria-labelledby="quiz-title">
     <div className="quiz-intro"><span>CHAPTER {chapter.number} CHECK</span><h2 id="quiz-title">Test the big picture</h2><p>{chapter.quizQuestions.length} questions covering the chapter's major concepts. Each answer includes an explanation after submission.</p></div>
     {chapter.quizQuestions.map((question, questionIndex) => <fieldset className="question-card" key={question.id} disabled={submitted}>
-      <legend><span>{String(questionIndex + 1).padStart(2, '0')}</span>{question.prompt}</legend>
+      <legend><span>{String(questionIndex + 1).padStart(2, '0')}</span><MathText>{question.prompt}</MathText></legend>
       <div className="answer-list">{question.choices.map((choice, choiceIndex) => {
         const state = submitted ? choiceIndex === question.answer ? 'right' : answers[question.id] === choiceIndex ? 'wrong' : '' : ''
-        return <label className={state} key={choice}><input type="radio" name={question.id} checked={answers[question.id] === choiceIndex} onChange={() => setAnswers({ ...answers, [question.id]: choiceIndex })}/><span>{String.fromCharCode(65 + choiceIndex)}</span>{choice}</label>
+        return <label className={state} key={choice}><input type="radio" name={question.id} checked={answers[question.id] === choiceIndex} onChange={() => setAnswers({ ...answers, [question.id]: choiceIndex })}/><span>{String.fromCharCode(65 + choiceIndex)}</span><MathText>{choice}</MathText></label>
       })}</div>
-      {submitted && <p className="answer-explanation">{question.explanation}</p>}
+      {submitted && <p className="answer-explanation"><MathText>{question.explanation}</MathText></p>}
     </fieldset>)}
     {!submitted ? <button className="button" disabled={Object.keys(answers).length !== chapter.quizQuestions.length} onClick={submit}>Submit answers</button> : <div className="quiz-result"><div><span>Your score</span><strong>{score}<small>/{chapter.quizQuestions.length}</small></strong></div><p>{score >= Math.ceil(chapter.quizQuestions.length * 0.8) ? `Strong work. You have the Chapter ${chapter.number} foundation.` : 'Review the explanations and revisit the lessons that need reinforcement.'}</p><button className="button button-ghost" onClick={retry}>Try again</button></div>}
   </section>

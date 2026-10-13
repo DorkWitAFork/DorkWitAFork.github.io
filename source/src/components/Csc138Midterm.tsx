@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from 'react'
 import { midtermQuestions, midtermReviewSections } from '../data/csc138Midterm'
+import { MathText } from './MathText'
 
 function Formula({ id }: { id: string }) {
   const formulas: Record<string, ReactNode> = {
@@ -59,9 +60,9 @@ function PracticeMidterm() {
     <header className="midterm-practice-header"><span className="kicker">FULL PRACTICE EXAM</span><h2 id="midterm-practice-title">Show your calculations and reasoning.</h2><p>{midtermQuestions.length} questions cover the supplied midterm study guide: math problems, protocol traces, application concepts, security, and short coding questions. Work on paper first, then submit to check your answers.</p></header>
     <div className="midterm-category-strip" aria-label="Practice exam categories">{categories.map(category => <span key={category}>{category}</span>)}</div>
     {midtermQuestions.map((question, index) => <fieldset className="question-card" key={question.id} disabled={submitted}>
-      <legend><span>{String(index + 1).padStart(2, '0')}</span><small>{question.category}</small>{question.prompt}</legend>
-      <div className="answer-list">{question.choices.map((choice, choiceIndex) => { const state = submitted ? choiceIndex === question.answer ? 'right' : answers[question.id] === choiceIndex ? 'wrong' : '' : ''; return <label className={state} key={choice}><input type="radio" name={question.id} checked={answers[question.id] === choiceIndex} onChange={() => setAnswers(current => ({ ...current, [question.id]: choiceIndex }))}/><span>{String.fromCharCode(65 + choiceIndex)}</span>{choice}</label> })}</div>
-      {submitted && <p className="answer-explanation">{question.explanation}</p>}
+       <legend><span>{String(index + 1).padStart(2, '0')}</span><small>{question.category}</small><MathText>{question.prompt}</MathText></legend>
+       <div className="answer-list">{question.choices.map((choice, choiceIndex) => { const state = submitted ? choiceIndex === question.answer ? 'right' : answers[question.id] === choiceIndex ? 'wrong' : '' : ''; return <label className={state} key={choice}><input type="radio" name={question.id} checked={answers[question.id] === choiceIndex} onChange={() => setAnswers(current => ({ ...current, [question.id]: choiceIndex }))}/><span>{String.fromCharCode(65 + choiceIndex)}</span><MathText>{choice}</MathText></label> })}</div>
+       {submitted && <p className="answer-explanation"><MathText>{question.explanation}</MathText></p>}
     </fieldset>)}
     {!submitted ? <button className="button" disabled={Object.keys(answers).length !== midtermQuestions.length} onClick={() => setSubmitted(true)}>Submit practice midterm</button> : <div className="quiz-result"><div><span>Your score</span><strong>{score}<small>/{midtermQuestions.length}</small></strong></div><p>{score >= Math.ceil(midtermQuestions.length * 0.8) ? 'Strong work. Review the explanations for any missed calculations.' : 'Use the explanations to identify which problem type needs another paper-and-pencil pass.'}</p><button className="button button-ghost" onClick={() => { setAnswers({}); setSubmitted(false); window.scrollTo({ top: 0, behavior: 'smooth' }) }}>Try again</button></div>}
   </section>
