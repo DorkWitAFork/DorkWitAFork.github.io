@@ -101,7 +101,7 @@ function ChapterQuiz({ chapter, recordQuiz }: { chapter: Csc138Chapter; recordQu
       <legend><span>{String(questionIndex + 1).padStart(2, '0')}</span><MathText>{question.prompt}</MathText></legend>
       <div className="answer-list">{question.choices.map((choice, choiceIndex) => {
         const state = submitted ? choiceIndex === question.answer ? 'right' : answers[question.id] === choiceIndex ? 'wrong' : '' : ''
-        return <label className={state} key={choice}><input type="radio" name={question.id} checked={answers[question.id] === choiceIndex} onChange={() => setAnswers({ ...answers, [question.id]: choiceIndex })}/><span>{String.fromCharCode(65 + choiceIndex)}</span><MathText>{choice}</MathText></label>
+        return <label className={state} key={choice}><input type="radio" name={question.id} checked={answers[question.id] === choiceIndex} onChange={() => setAnswers({ ...answers, [question.id]: choiceIndex })}/><span className="answer-letter">{String.fromCharCode(65 + choiceIndex)}</span><MathText>{choice}</MathText></label>
       })}</div>
       {submitted && <p className="answer-explanation"><MathText>{question.explanation}</MathText></p>}
     </fieldset>)}

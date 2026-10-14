@@ -15,9 +15,9 @@ function renderToken(token: string): ReactNode {
 export function MathText({ children }: { children: string }) {
   const parts = children.split(mathToken)
   let tokenIndex = 0
-  return <>{parts.map((part, index) => {
+  return <span className="math-text">{parts.map((part, index) => {
     if (index % 2 === 0) return <span key={`${part}-${index}`}>{part}</span>
     const token = children.match(mathToken)?.[tokenIndex++] ?? part
     return <span className="math-token" key={`${token}-${index}`}>{renderToken(token)}</span>
-  })}</>
+  })}</span>
 }
