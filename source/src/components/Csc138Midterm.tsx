@@ -40,6 +40,13 @@ function ReviewVisual({ sectionIndex }: { sectionIndex: number }) {
   return <div className="midterm-visual workflow-visual" aria-label="Exam workflow"><span>draw</span><b>→</b><span>convert</span><b>→</b><span>model</span><b>→</b><span>solve</span><b>→</b><span>check</span></div>
 }
 
+function QuestionVisual({ questionId }: { questionId: string }) {
+  if (questionId === 'mid-q3') return <div className="question-visual path-question-visual" aria-label="Three-link store-and-forward path"><span className="question-endpoint">SOURCE</span><i>6 Mbps<br/>200 km</i><b>R1</b><i>3 Mbps<br/>600 km</i><b>R2</b><i>4 Mbps<br/>400 km</i><span className="question-endpoint">DEST.</span></div>
+  if (questionId === 'mid-q4') return <div className="question-visual pipeline-question-visual" aria-label="Packets moving through a three-link pipeline"><div><span>Link 1</span><i/><i/><i/></div><div><span>Link 2</span><i/><i/><i/></div><div><span>Link H</span><i/><i/><i/></div><small>Packet 1 fills the path; later packets advance one link time at a time.</small></div>
+  if (questionId === 'mid-q7') return <div className="question-visual routing-question-visual" aria-label="Routing computes a path and forwarding selects a local output"><div><b>ROUTING</b><span>computes end-to-end path</span><strong>HOST → R1 → R2 → DEST.</strong></div><div><b>FORWARDING</b><span>uses the next-hop table</span><strong>packet → local output port</strong></div></div>
+  return null
+}
+
 function ReviewSection({ section }: { section: (typeof midtermReviewSections)[number] }) {
   const sectionIndex = midtermReviewSections.indexOf(section)
   return <article className="midterm-review-card">
@@ -61,7 +68,8 @@ function PracticeMidterm() {
     <div className="midterm-category-strip" aria-label="Practice exam categories">{categories.map(category => <span key={category}>{category}</span>)}</div>
     {midtermQuestions.map((question, index) => <fieldset className="question-card" key={question.id} disabled={submitted}>
        <legend><span>{String(index + 1).padStart(2, '0')}</span><small>{question.category}</small><MathText>{question.prompt}</MathText></legend>
-       <div className="answer-list">{question.choices.map((choice, choiceIndex) => { const state = submitted ? choiceIndex === question.answer ? 'right' : answers[question.id] === choiceIndex ? 'wrong' : '' : ''; return <label className={state} key={choice}><input type="radio" name={question.id} checked={answers[question.id] === choiceIndex} onChange={() => setAnswers(current => ({ ...current, [question.id]: choiceIndex }))}/><span>{String.fromCharCode(65 + choiceIndex)}</span><MathText>{choice}</MathText></label> })}</div>
+       <QuestionVisual questionId={question.id}/>
+       <div className="answer-list">{question.choices.map((choice, choiceIndex) => { const state = submitted ? choiceIndex === question.answer ? 'right' : answers[question.id] === choiceIndex ? 'wrong' : '' : ''; return <label className={state} key={choice}><input type="radio" name={question.id} checked={answers[question.id] === choiceIndex} onChange={() => setAnswers(current => ({ ...current, [question.id]: choiceIndex }))}/><span className="answer-letter">{String.fromCharCode(65 + choiceIndex)}</span><MathText>{choice}</MathText></label> })}</div>
        {submitted && <p className="answer-explanation"><MathText>{question.explanation}</MathText></p>}
     </fieldset>)}
     {!submitted ? <button className="button" disabled={Object.keys(answers).length !== midtermQuestions.length} onClick={() => setSubmitted(true)}>Submit practice midterm</button> : <div className="quiz-result"><div><span>Your score</span><strong>{score}<small>/{midtermQuestions.length}</small></strong></div><p>{score >= Math.ceil(midtermQuestions.length * 0.8) ? 'Strong work. Review the explanations for any missed calculations.' : 'Use the explanations to identify which problem type needs another paper-and-pencil pass.'}</p><button className="button button-ghost" onClick={() => { setAnswers({}); setSubmitted(false); window.scrollTo({ top: 0, behavior: 'smooth' }) }}>Try again</button></div>}
