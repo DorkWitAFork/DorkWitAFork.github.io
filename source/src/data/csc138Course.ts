@@ -2,6 +2,7 @@ import type { Csc138ChapterId, Lesson, QuizQuestion } from '../types'
 import { glossary, lessons, quizQuestions } from './course'
 import { chapter2ActivityIds, chapter2Glossary, chapter2Lessons, chapter2QuizQuestions } from './courseChapter2'
 import { chapter3ActivityIds, chapter3Glossary, chapter3Lessons, chapter3QuizQuestions } from './courseChapter3'
+import { chapter4ActivityIds, chapter4Glossary, chapter4Lessons, chapter4QuizQuestions } from './courseChapter4'
 
 export type Csc138Chapter = {
   id: Csc138ChapterId
@@ -53,6 +54,12 @@ export const csc138Chapters: Record<Csc138ChapterId, Csc138Chapter> = {
     glossary: chapter3Glossary,
     activityIds: chapter3ActivityIds,
   },
+  chapter4: {
+    id: 'chapter4', number: '4', moduleLabel: 'Module 04 · Network Layer: Data Plane', title: 'Network Layer: Data Plane',
+    tagline: 'Give every packet a next hop.',
+    summary: 'Trace a datagram through router input, fabric, queues, and scheduler; then read IPv4 headers, address blocks, DHCP, and route aggregation from both current lecture decks.',
+    lessons: chapter4Lessons, quizQuestions: chapter4QuizQuestions, glossary: chapter4Glossary, activityIds: chapter4ActivityIds,
+  },
 }
 
-export const csc138ChapterList = [csc138Chapters.chapter1, csc138Chapters.chapter2, csc138Chapters.chapter3]
+export const csc138ChapterList = [csc138Chapters.chapter1, csc138Chapters.chapter2, csc138Chapters.chapter3, csc138Chapters.chapter4]

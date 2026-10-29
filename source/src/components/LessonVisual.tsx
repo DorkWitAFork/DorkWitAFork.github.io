@@ -1,3 +1,5 @@
+import { Csc138Chapter4Visual } from './Csc138Chapter4Visual'
+
 type VisualProps = {
   lessonId: string
 }
@@ -10,6 +12,7 @@ function FlowFigure({ title, description, steps }: { title: string; description:
 }
 
 export function LessonVisual({ lessonId }: VisualProps) {
+  if (lessonId.startsWith('ch4-')) return <Csc138Chapter4Visual lessonId={lessonId}/>
   if (lessonId === 'internet-overview') return <FlowFigure title="One request, many networks" description="A browser request moves from an end system through access and provider networks to a server; the response returns to the browser." steps={[
     { label: 'Browser', detail: 'Creates a request' },
     { label: 'Access', detail: 'WiFi and home router' },

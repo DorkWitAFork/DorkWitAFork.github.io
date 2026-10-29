@@ -1,12 +1,12 @@
 import type { ReactNode } from 'react'
 
-const mathToken = /(2\^\(m - 1\)|2\^m|10\^9|N\^2|D_CS|D_P2P|U_sender|[ud]_(?:min|[si])|ACK[01])/g
+const mathToken = /(2\^\([0-9m]+\s*[−-]\s*[0-9]+\)|2\^[0-9mk]+|10\^9|N\^2|D_CS|D_P2P|U_sender|[ud]_(?:min|[si])|ACK[01])/g
 
 function renderToken(token: string): ReactNode {
-  if (token === '2^m') return <>2<sup>m</sup></>
-  if (token === '2^(m - 1)') return <>2<sup>(m - 1)</sup></>
-  if (token === '10^9') return <>10<sup>9</sup></>
-  if (token === 'N^2') return <>N<sup>2</sup></>
+  if (token.includes('^')) {
+    const [base, exponent] = token.split('^')
+    return <>{base}<sup>{exponent.replaceAll('-', '−')}</sup></>
+  }
   if (token.startsWith('ACK')) return <>ACK<sub>{token.slice(3)}</sub></>
   const [base, subscript] = token.split('_')
   return <><i>{base}</i><sub>{subscript}</sub></>
