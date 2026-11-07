@@ -46,7 +46,7 @@ function Dashboard({ progress, navigate }: { progress: Csc138Progress; navigate:
 
   return <div className="page dashboard-page">
     <section className="hero">
-      <div className="hero-copy"><span className="kicker light">CSC 138 / Fall 2026</span><h1>See the system.<br/><em>Follow the packet.</em></h1><p>A self-study field guide to computer networks, built around Dr. Bang Tran's top-down course sequence.</p><div className="hero-actions"><button className="button button-gold" onClick={() => navigate(next.chapter.id)}>Continue Chapter {next.chapter.number} <Icon name="arrow"/></button><button className="button button-outline" onClick={() => navigate('roadmap')}>View semester plan</button></div></div>
+      <div className="hero-copy"><span className="kicker light">CSC 138 / Fall 2026</span><h1>An Introduction to Computer Networking</h1><p>A self-study field guide to computer networks, built around Dr. Bang Tran's top-down course sequence.</p><div className="hero-actions"><button className="button button-gold" onClick={() => navigate(next.chapter.id)}>Continue Chapter {next.chapter.number} <Icon name="arrow"/></button><button className="button button-outline" onClick={() => navigate('roadmap')}>View semester plan</button></div></div>
       <div className="hero-visual"><div className="signal-tag tag-one">HTTP</div><div className="signal-tag tag-two">PACKET 0111</div><NetworkDiagram/></div>
     </section>
     <section className="status-strip">

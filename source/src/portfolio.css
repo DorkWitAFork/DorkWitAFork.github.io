@@ -82,7 +82,8 @@
 .wc-page-intro div > p { margin: 0 0 12px; color: var(--wc-red); font: italic 700 13px/1.2 'Courier New', monospace; }
 .wc-page-intro h1 { max-width: 800px; margin: 0; font-size: clamp(52px, 6.5vw, 92px); font-weight: 400; line-height: .9; letter-spacing: -.055em; }
 .wc-page-intro > p { margin: 0; padding-top: 18px; border-top: 1px solid var(--wc-ink); color: var(--wc-faded); font-size: 14px; line-height: 1.65; }
-.wc-subpage .wc-work { padding-top: 80px; }
+.wc-subpage .wc-work { padding-top: 0; }
+.wc-project-intro { grid-template-columns: minmax(125px, .24fr) minmax(0, 1.55fr); }
 
 .wc-academic-list { max-width: 1288px; margin: 80px auto 110px; border-top: 1px solid var(--wc-ink); }
 .wc-academic-list > a { min-height: 180px; padding: 28px 25px; display: grid; grid-template-columns: 150px 1fr auto; align-items: center; gap: 30px; border-bottom: 1px solid var(--wc-ink); text-decoration: none; }
@@ -155,6 +156,16 @@
 .wc-project-asteroids .wc-project-copy { grid-column: 2; grid-row: 2; }
 
 .wc-poker { background: var(--wc-blue); }
+.wc-fitness, .wc-market { padding: 30px; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; }
+.wc-fitness { background: #315c4d; }
+.wc-fitness > small, .wc-market > small, .wc-market > span { font: 400 9px/1.5 'Courier New', monospace; letter-spacing: .08em; }
+.wc-fitness > strong { font: 700 clamp(30px, 4vw, 52px)/1.05 Arial, sans-serif; text-align: center; }
+.wc-fitness > div { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; }
+.wc-fitness > div span { padding: 7px; border: 1px solid rgba(255,255,255,.5); font: 400 9px/1.4 'Courier New', monospace; }
+.wc-market { background: var(--wc-ink); }
+.wc-market svg { width: 100%; height: auto; fill: none; stroke: #efbd21; stroke-width: 3; }
+.wc-market svg .wc-market-grid { stroke: #77756d; stroke-width: .5; }
+.wc-market > strong { font: 700 13px/1.5 'Courier New', monospace; }
 .wc-poker::before { content: ''; position: absolute; inset: 18px; border: 1px solid rgba(255,255,255,.45); }
 .wc-playing-card { position: absolute; top: 54px; width: 112px; height: 165px; padding: 13px; display: flex; flex-direction: column; justify-content: space-between; background: var(--wc-paper-light); color: var(--wc-ink); border: 2px solid var(--wc-ink); }
 .wc-playing-card b { font: 400 27px/1 'Iowan Old Style', Georgia, serif; }.wc-playing-card i { align-self: center; font: normal 42px/1 Georgia, serif; }
