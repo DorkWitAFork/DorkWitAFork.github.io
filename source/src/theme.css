@@ -65,6 +65,25 @@ button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible
 .notebook-header nav a:hover, .notebook-header nav a[aria-current] { color: var(--theme-accent); text-decoration: underline; }
 
 /* Personal and audience pages */
+.working-copy, .portfolio-shell, .hiring-page { position: relative; isolation: isolate; overflow-x: clip; }
+.working-copy::after, .portfolio-shell::after, .hiring-page::after {
+  content: '';
+  position: absolute;
+  top: -52px;
+  right: -24px;
+  width: clamp(250px, 24vw, 350px);
+  height: clamp(250px, 24vw, 350px);
+  background: url('./assets/coffee-ring.svg') center / contain no-repeat;
+  opacity: .78;
+  pointer-events: none;
+  z-index: -1;
+}
+@media (max-width: 1100px) {
+  .working-copy::after, .portfolio-shell::after, .hiring-page::after { top: -42px; right: -28px; width: 270px; height: 270px; opacity: .7; }
+}
+@media (max-width: 760px) {
+  .working-copy::after, .portfolio-shell::after, .hiring-page::after { top: -26px; right: -34px; width: 220px; height: 220px; opacity: .52; }
+}
 .working-copy, .portfolio-shell, .hiring-page, .app-shell {
   /* Background-only layers: the grain never covers text or intercepts links. */
   background-color: var(--theme-paper);
@@ -77,6 +96,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible
 }
 @media print {
   .working-copy, .portfolio-shell, .hiring-page, .app-shell { background: white; }
+  .working-copy::after, .portfolio-shell::after, .hiring-page::after { display: none; }
 }
 .wc-home-hero, .wc-page-intro, .wc-audience, .wc-notes, .wc-academic-list, .wc-teacher-note, .library-page, .wc-footer { width: min(1080px, calc(100% - 80px)); max-width: 1080px; margin-inline: auto; }
 .wc-home-hero { min-height: 0; padding: 58px 0 42px; grid-template-columns: minmax(0, 1fr) minmax(0, .7fr); gap: 20px 60px; border: 0; }
