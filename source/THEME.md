@@ -11,7 +11,8 @@ portfolio and course layout styles in `src/main.tsx`.
   edge shading in `theme.css`. The embedded SVG textures need no external image
   requests. Reading panels remain light, and printing uses plain white paper.
 - Personal/audience page shells also show one decorative coffee stain near the
-  top-right paper edge (`src/assets/coffee-ring.svg`). It uses a noninteractive
+  top-right paper edge (`src/assets/coffee-ring-4.png`), with its cropped top
+  aligned to the page edge. It uses a noninteractive
   background pseudo-element, fades on small screens, and is omitted from course
   shells and print output.
 - Georgia headings, readable sans-serif body text, monospace only for code,

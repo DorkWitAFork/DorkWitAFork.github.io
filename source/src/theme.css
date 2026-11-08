@@ -69,20 +69,20 @@ button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible
 .working-copy::after, .portfolio-shell::after, .hiring-page::after {
   content: '';
   position: absolute;
-  top: -52px;
+  top: 0;
   right: -24px;
   width: clamp(250px, 24vw, 350px);
   height: clamp(250px, 24vw, 350px);
-  background: url('./assets/coffee-ring.svg') center / contain no-repeat;
+  background: url('./assets/coffee-ring-4.png') center top / contain no-repeat;
   opacity: .78;
   pointer-events: none;
   z-index: -1;
 }
 @media (max-width: 1100px) {
-  .working-copy::after, .portfolio-shell::after, .hiring-page::after { top: -42px; right: -28px; width: 270px; height: 270px; opacity: .7; }
+  .working-copy::after, .portfolio-shell::after, .hiring-page::after { right: -28px; width: 270px; height: 270px; opacity: .7; }
 }
 @media (max-width: 760px) {
-  .working-copy::after, .portfolio-shell::after, .hiring-page::after { top: -26px; right: -34px; width: 220px; height: 220px; opacity: .52; }
+  .working-copy::after, .portfolio-shell::after, .hiring-page::after { right: -34px; width: 220px; height: 220px; opacity: .52; }
 }
 .working-copy, .portfolio-shell, .hiring-page, .app-shell {
   /* Background-only layers: the grain never covers text or intercepts links. */
