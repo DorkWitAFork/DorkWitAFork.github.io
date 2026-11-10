@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 
-const mathToken = /(2\^\([0-9m]+\s*[−-]\s*[0-9]+\)|2\^[0-9mk]+|10\^9|N\^2|D_CS|D_P2P|U_sender|[ud]_(?:min|[si])|ACK[01])/g
+const mathToken = /(2\^\([0-9m]+\s*[−-]\s*(?:[0-9]+|prefix)\)|2\^[0-9mkh]+|10\^9|N\^2|D_CS|D_P2P|D_[a-z]\b|U_sender|[ud]_(?:min|[si])|ACK[01])/g
 
 function renderToken(token: string): ReactNode {
   if (token.includes('^')) {

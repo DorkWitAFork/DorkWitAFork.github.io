@@ -5,7 +5,8 @@ export const STORAGE_KEY = 'csc138-progress-v1'
 const emptyChapter1Quiz: ChapterQuizProgress = { attempts: 0, bestScore: 0, total: 10 }
 const emptyChapter2Quiz: ChapterQuizProgress = { attempts: 0, bestScore: 0, total: 26 }
 const emptyChapter3Quiz: ChapterQuizProgress = { attempts: 0, bestScore: 0, total: 24 }
-const emptyChapter4Quiz: ChapterQuizProgress = { attempts: 0, bestScore: 0, total: 30 }
+const emptyChapter4Quiz: ChapterQuizProgress = { attempts: 0, bestScore: 0, total: 42 }
+const emptyChapter5Quiz: ChapterQuizProgress = { attempts: 0, bestScore: 0, total: 18 }
 
 export const emptyProgress: Csc138Progress = {
   version: 1,
@@ -19,6 +20,7 @@ export const emptyProgress: Csc138Progress = {
     chapter2: { ...emptyChapter2Quiz },
     chapter3: { ...emptyChapter3Quiz },
     chapter4: { ...emptyChapter4Quiz },
+    chapter5: { ...emptyChapter5Quiz },
   },
 }
 
@@ -59,6 +61,7 @@ export function loadProgress(storage: Pick<Storage, 'getItem'> = localStorage): 
         chapter2: loadQuiz(parsed.chapterQuizzes?.chapter2, { ...emptyChapter2Quiz }),
         chapter3: loadQuiz(parsed.chapterQuizzes?.chapter3, { ...emptyChapter3Quiz }),
         chapter4: loadQuiz(parsed.chapterQuizzes?.chapter4, { ...emptyChapter4Quiz }),
+        chapter5: loadQuiz(parsed.chapterQuizzes?.chapter5, { ...emptyChapter5Quiz }),
       },
     }
   } catch {

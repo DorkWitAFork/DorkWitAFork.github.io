@@ -1,5 +1,7 @@
 import type { Lesson, QuizQuestion } from '../types'
 import { chapter4RouterLessons, chapter4RouterQuizQuestions } from './courseChapter4Router'
+import { chapter4ExtendedGlossary, chapter4ExtendedLessons, chapter4ExtendedQuizQuestions } from './courseChapter4Extended'
+import { chapter4Worksheets } from './networkWorksheets'
 
 const slides = 'Chapter4-Data Plane-IP.pdf'
 const book = 'Chaptert 4 - Computer Networking, EBook, Global Edition.pdf'
@@ -104,6 +106,7 @@ const chapter4IpQuizQuestions: QuizQuestion[] = [
 ]
 
 export const chapter4Glossary: Array<[string, string]> = [
+  ...chapter4ExtendedGlossary,
   ['Best effort', 'The Internet network layer makes no basic guarantee of datagram delivery, timing, order, or minimum bandwidth.'],
   ['Buffer overflow', 'Loss when a finite packet queue cannot hold additional arrivals.'],
   ['Crossbar', 'Switching fabric that can transfer packets between distinct input/output pairs concurrently.'],
@@ -141,6 +144,6 @@ export const chapter4Glossary: Array<[string, string]> = [
   ['Upper-layer protocol', 'IPv4 field selecting the payload handler at the destination, such as TCP (6) or UDP (17).'],
 ]
 
-export const chapter4Lessons: Lesson[] = [chapter4IpLessons[0], ...chapter4RouterLessons, ...chapter4IpLessons.slice(1)].map((lesson, index) => ({ ...lesson, number: String(index + 1).padStart(2, '0') }))
-export const chapter4QuizQuestions: QuizQuestion[] = [...chapter4RouterQuizQuestions, ...chapter4IpQuizQuestions]
-export const chapter4ActivityIds = ['ch4-router-match', 'ch4-fabric', 'ch4-scheduler', 'ch4-header-trace', 'ch4-subnet-islands', 'ch4-cidr-calculator', 'ch4-dhcp-sequence', 'ch4-longest-prefix'] as const
+export const chapter4Lessons: Lesson[] = [chapter4IpLessons[0], ...chapter4RouterLessons, ...chapter4IpLessons.slice(1), ...chapter4ExtendedLessons].map((lesson, index) => ({ ...lesson, number: String(index + 1).padStart(2, '0') }))
+export const chapter4QuizQuestions: QuizQuestion[] = [...chapter4RouterQuizQuestions, ...chapter4IpQuizQuestions, ...chapter4ExtendedQuizQuestions]
+export const chapter4ActivityIds = ['ch4-router-match', 'ch4-fabric', 'ch4-scheduler', 'ch4-header-trace', 'ch4-subnet-islands', 'ch4-cidr-calculator', 'ch4-dhcp-sequence', 'ch4-longest-prefix', ...chapter4Worksheets.map(worksheet => worksheet.id)]
