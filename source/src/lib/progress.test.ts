@@ -53,6 +53,7 @@ describe('progress storage', () => {
         chapter2: { attempts: 2, bestScore: 9, total: 10 },
         chapter3: { attempts: 1, bestScore: 15, total: 24 },
         chapter4: { attempts: 1, bestScore: 24, total: 30 },
+        chapter5: { attempts: 0, bestScore: 0, total: 18 },
       },
     }
     saveProgress(progress, storage)
@@ -72,7 +73,7 @@ describe('progress storage', () => {
     expect(loaded.chapterQuizzes.chapter1).toEqual({ attempts: 3, bestScore: 8, total: 10 })
     expect(loaded.chapterQuizzes.chapter2).toEqual({ attempts: 0, bestScore: 0, total: 26 })
     expect(loaded.chapterQuizzes.chapter3).toEqual({ attempts: 0, bestScore: 0, total: 24 })
-    expect(loaded.chapterQuizzes.chapter4).toEqual({ attempts: 0, bestScore: 0, total: 30 })
+    expect(loaded.chapterQuizzes.chapter4).toEqual({ attempts: 0, bestScore: 0, total: 42 })
     expect(loaded.completedLessons).toEqual(['protocols'])
   })
 
@@ -94,7 +95,7 @@ describe('progress storage', () => {
     expect(loaded.chapterQuizzes.chapter1).toEqual({ attempts: 1, bestScore: 4, total: 10 })
     expect(loaded.chapterQuizzes.chapter2).toEqual({ attempts: 2, bestScore: 7, total: 10 })
     expect(loaded.chapterQuizzes.chapter3).toEqual({ attempts: 0, bestScore: 0, total: 24 })
-    expect(loaded.chapterQuizzes.chapter4).toEqual({ attempts: 0, bestScore: 0, total: 30 })
+    expect(loaded.chapterQuizzes.chapter4).toEqual({ attempts: 0, bestScore: 0, total: 42 })
   })
 
   it('backfills Chapter 3 without changing an older two-chapter save', () => {
@@ -112,7 +113,7 @@ describe('progress storage', () => {
     expect(loaded.completedActivities).toEqual(['ch2-cache-calculator'])
     expect(loaded.chapterQuizzes.chapter2).toEqual({ attempts: 2, bestScore: 20, total: 26 })
     expect(loaded.chapterQuizzes.chapter3).toEqual({ attempts: 0, bestScore: 0, total: 24 })
-    expect(loaded.chapterQuizzes.chapter4).toEqual({ attempts: 0, bestScore: 0, total: 30 })
+    expect(loaded.chapterQuizzes.chapter4).toEqual({ attempts: 0, bestScore: 0, total: 42 })
   })
 
   it('backfills Chapter 4 without losing Chapter 3 quiz and lesson progress', () => {
@@ -120,7 +121,16 @@ describe('progress storage', () => {
     const loaded = loadProgress(memoryStorage(stored))
     expect(loaded.completedLessons).toEqual(['ch3-tcp-ack'])
     expect(loaded.chapterQuizzes.chapter3).toEqual({ attempts: 2, bestScore: 20, total: 36 })
-    expect(loaded.chapterQuizzes.chapter4).toEqual({ attempts: 0, bestScore: 0, total: 30 })
+    expect(loaded.chapterQuizzes.chapter4).toEqual({ attempts: 0, bestScore: 0, total: 42 })
+  })
+
+  it('backfills Chapter 5 and preserves historical Chapter 4 scores and activity IDs', () => {
+    const stored = JSON.stringify({ version: 1, completedLessons: ['ch4-cidr'], completedActivities: ['ch4-longest-prefix'], chapterQuizzes: { chapter4: { attempts: 2, bestScore: 25, total: 30 } } })
+    const loaded = loadProgress(memoryStorage(stored))
+    expect(loaded.chapterQuizzes.chapter5).toEqual({ attempts: 0, bestScore: 0, total: 18 })
+    expect(loaded.chapterQuizzes.chapter4).toEqual({ attempts: 2, bestScore: 25, total: 30 })
+    expect(loaded.completedLessons).toEqual(['ch4-cidr'])
+    expect(loaded.completedActivities).toEqual(['ch4-longest-prefix'])
   })
 
   it('ignores data from an unknown schema version', () => {

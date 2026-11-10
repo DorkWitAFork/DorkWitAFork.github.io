@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest'
 import { csc138ChapterList, csc138Chapters } from './csc138Course'
 
 describe('CSC 138 chapter registry', () => {
-  it('registers four complete chapters', () => {
-    expect(csc138ChapterList.map(chapter => chapter.id)).toEqual(['chapter1', 'chapter2', 'chapter3', 'chapter4'])
+  it('registers five available chapter modules', () => {
+    expect(csc138ChapterList.map(chapter => chapter.id)).toEqual(['chapter1', 'chapter2', 'chapter3', 'chapter4', 'chapter5'])
     expect(csc138Chapters.chapter1.lessons).toHaveLength(7)
     expect(csc138Chapters.chapter2.lessons).toHaveLength(15)
     expect(csc138Chapters.chapter2.quizQuestions).toHaveLength(26)
@@ -13,12 +13,15 @@ describe('CSC 138 chapter registry', () => {
     expect(csc138Chapters.chapter3.quizQuestions).toHaveLength(36)
     expect(csc138Chapters.chapter3.activityIds).toHaveLength(12)
     expect(csc138Chapters.chapter3.lessons.map(lesson => lesson.id)).toEqual(expect.arrayContaining(['ch3-demultiplexing', 'ch3-checksum', 'ch3-rdt3', 'ch3-stop-wait']))
-    expect(csc138Chapters.chapter4.lessons).toHaveLength(13)
-    expect(csc138Chapters.chapter4.quizQuestions).toHaveLength(30)
-    expect(csc138Chapters.chapter4.activityIds).toHaveLength(8)
-    expect(csc138Chapters.chapter4.lessons.map(lesson => lesson.number)).toEqual(Array.from({ length: 13 }, (_, index) => String(index + 1).padStart(2, '0')))
+    expect(csc138Chapters.chapter4.lessons).toHaveLength(19)
+    expect(csc138Chapters.chapter4.quizQuestions).toHaveLength(42)
+    expect(csc138Chapters.chapter4.activityIds).toHaveLength(15)
+    expect(csc138Chapters.chapter4.lessons.map(lesson => lesson.number)).toEqual(Array.from({ length: 19 }, (_, index) => String(index + 1).padStart(2, '0')))
     expect(csc138Chapters.chapter4.lessons.slice(0, 7).every(lesson => lesson.source.includes('Chapter4-Data Plane-Overview-Router.pdf slides'))).toBe(true)
-    expect(csc138Chapters.chapter4.lessons.slice(7).every(lesson => lesson.source.includes('Chapter4-Data Plane-IP.pdf slides'))).toBe(true)
+    expect(csc138Chapters.chapter4.lessons.slice(7, 13).every(lesson => lesson.source.includes('Chapter4-Data Plane-IP.pdf slides'))).toBe(true)
+    expect(csc138Chapters.chapter5.lessons).toHaveLength(9)
+    expect(csc138Chapters.chapter5.quizQuestions).toHaveLength(18)
+    expect(csc138Chapters.chapter5.activityIds).toHaveLength(9)
   })
 
   it('uses unique IDs across chapters and valid quiz answers', () => {

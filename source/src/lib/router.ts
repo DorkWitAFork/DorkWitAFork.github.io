@@ -9,8 +9,8 @@ export type SiteRoute =
   | { section: 'course'; course: 'csc139'; view: Csc139View; chapter?: Csc139ChapterId }
 
 const courseViews: View[] = ['dashboard', 'roadmap', 'chapter1', 'practice', 'reference']
-const csc138Views: Csc138View[] = [...courseViews, 'chapter2', 'chapter3', 'chapter4', 'midterm']
-const chapterIds: Csc138ChapterId[] = ['chapter1', 'chapter2', 'chapter3', 'chapter4']
+const csc138Views: Csc138View[] = [...courseViews, 'chapter2', 'chapter3', 'chapter4', 'chapter5', 'midterm']
+const chapterIds: Csc138ChapterId[] = ['chapter1', 'chapter2', 'chapter3', 'chapter4', 'chapter5']
 const csc139Views: Csc139View[] = [...courseViews, 'chapter2']
 const csc139ChapterIds: Csc139ChapterId[] = ['chapter1', 'chapter2']
 
