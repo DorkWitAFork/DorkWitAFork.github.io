@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
 import type { Csc138Chapter } from '../data/csc138Course'
+import { csc138ChapterList } from '../data/csc138Course'
 import type { Csc138ChapterId } from '../types'
 import { calculateDelayMs } from '../lib/progress'
 import { Csc138Chapter2Practice } from './Csc138Chapter2Practice'
 import { Csc138Chapter3Practice } from './Csc138Chapter3Practice'
 import { Csc138Chapter4Practice } from './Csc138Chapter4Practice'
+import { Csc138Chapter5Practice } from './Csc138Chapter5Practice'
 import { Icon } from './Icons'
 import { MathText } from './MathText'
 
@@ -114,9 +116,9 @@ export function Practice({ chapter, completedActivities, completeActivity, recor
   const [tab, setTab] = useState<'labs' | 'quiz'>('labs')
   const completedCount = chapter.activityIds.filter(id => completedActivities.includes(id)).length
   return <div className="page practice-page">
-    <header className="page-heading"><div><span className="kicker">Chapter {chapter.number} practice center</span><h1>{chapter.id === 'chapter1' ? 'Learn by moving packets.' : chapter.id === 'chapter2' ? 'Learn by tracing requests.' : chapter.id === 'chapter4' ? 'Learn by following IP.' : 'Learn by recovering delivery.'}</h1><p>Change the inputs, watch the system react, and use feedback to correct your mental model.</p></div><div className="practice-score"><b>{completedCount}/{chapter.activityIds.length}</b><span>labs complete</span></div></header>
-    <div className="chapter-switch" aria-label="Practice chapter">{(['chapter1', 'chapter2', 'chapter3', 'chapter4'] as const).map((id, index) => <button key={id} className={chapter.id === id ? 'active' : ''} onClick={() => selectChapter(id)}>Chapter {index + 1}</button>)}</div>
+    <header className="page-heading"><div><span className="kicker">Chapter {chapter.number} practice center</span><h1>{chapter.id === 'chapter1' ? 'Learn by moving packets.' : chapter.id === 'chapter2' ? 'Learn by tracing requests.' : chapter.id === 'chapter4' ? 'Learn by following IP.' : chapter.id === 'chapter5' ? 'Learn by computing routes.' : 'Learn by recovering delivery.'}</h1><p>Change the inputs, watch the system react, and use feedback to correct your mental model.</p></div><div className="practice-score"><b>{completedCount}/{chapter.activityIds.length}</b><span>labs complete</span></div></header>
+    <div className="chapter-switch" aria-label="Practice chapter">{csc138ChapterList.map(item => <button key={item.id} className={chapter.id === item.id ? 'active' : ''} onClick={() => selectChapter(item.id)}>Chapter {item.number}</button>)}</div>
     <div className="tab-bar" role="tablist"><button role="tab" aria-selected={tab === 'labs'} onClick={() => setTab('labs')}>Interactive labs</button><button role="tab" aria-selected={tab === 'quiz'} onClick={() => setTab('quiz')}>Chapter quiz</button></div>
-    {tab === 'labs' ? chapter.id === 'chapter1' ? <div className="labs-stack"><DelayCalculator complete={() => completeActivity('delay')}/><QueueSimulator complete={() => completeActivity('queue')}/><ProtocolSequencer complete={() => completeActivity('protocol')}/></div> : chapter.id === 'chapter2' ? <Csc138Chapter2Practice completeActivity={completeActivity}/> : chapter.id === 'chapter4' ? <Csc138Chapter4Practice completedActivities={completedActivities} completeActivity={completeActivity}/> : <Csc138Chapter3Practice completeActivity={completeActivity}/> : <ChapterQuiz chapter={chapter} recordQuiz={recordQuiz}/>}
+    {tab === 'labs' ? chapter.id === 'chapter1' ? <div className="labs-stack"><DelayCalculator complete={() => completeActivity('delay')}/><QueueSimulator complete={() => completeActivity('queue')}/><ProtocolSequencer complete={() => completeActivity('protocol')}/></div> : chapter.id === 'chapter2' ? <Csc138Chapter2Practice completeActivity={completeActivity}/> : chapter.id === 'chapter4' ? <Csc138Chapter4Practice completedActivities={completedActivities} completeActivity={completeActivity}/> : chapter.id === 'chapter5' ? <Csc138Chapter5Practice completedActivities={completedActivities} completeActivity={completeActivity}/> : <Csc138Chapter3Practice completeActivity={completeActivity}/> : <ChapterQuiz chapter={chapter} recordQuiz={recordQuiz}/>}
   </div>
 }

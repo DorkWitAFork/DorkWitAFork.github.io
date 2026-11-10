@@ -157,6 +157,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible
 .folio-index { font: 400 13px/1.6 var(--theme-sans); letter-spacing: 0; }
 .course-card { min-height: 280px; padding: 26px; color: var(--theme-ink); background: transparent; border: 1px solid var(--theme-line); }
 .course-card:hover { background: var(--theme-soft); transform: none; }
+.course-coming-soon:hover { background: transparent; }
 .course-art { display: none; }
 .course-card-top { font: 500 14px/1.5 var(--theme-sans); letter-spacing: 0; }
 .course-card-top i, .os-course .course-card-top i { font: normal 400 11px/1.5 var(--theme-sans); color: var(--theme-muted); padding: 0; border: 0; }

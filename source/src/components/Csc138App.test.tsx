@@ -13,7 +13,7 @@ afterEach(cleanup)
 describe('CSC 138 Chapter 2', () => {
   it('renders the Chapter 2 lesson collection', () => {
     render(<Csc138App route={{ section: 'course', course: 'csc138', view: 'chapter2' }}/>)
-    expect(screen.getByRole('heading', { name: 'Follow the request.' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'The Application Layer' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /Building Network Applications/ })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /Distributing Files at Scale/ })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /Inside a BitTorrent Swarm/ })).toBeInTheDocument()
@@ -157,7 +157,7 @@ describe('CSC 138 midterm', () => {
 describe('CSC 138 Chapter 4', () => {
   it('shows the current slide-aligned lessons and source context', () => {
     render(<Csc138App route={{ section: 'course', course: 'csc138', view: 'chapter4' }}/>)
-    expect(screen.getByRole('heading', { name: 'Give every packet a next hop.' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'The Network Layer: Data Plane' })).toBeInTheDocument()
     expect(screen.getByRole('complementary', { name: 'Chapter 4 lessons' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /The Internet’s Best-Effort Service/ })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /Inside a Router/ })).toBeInTheDocument()
@@ -185,9 +185,9 @@ describe('CSC 138 Chapter 4', () => {
     render(<Csc138App route={{ section: 'course', course: 'csc138', view: 'practice', chapter: 'chapter4' }}/>)
     expect(screen.getByRole('heading', { name: 'Find a CIDR network' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Schedule an output queue' })).toBeInTheDocument()
-    expect(screen.getByText('0/8')).toBeInTheDocument()
+    expect(screen.getByText('0/15')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('tab', { name: 'Chapter quiz' }))
-    expect(screen.getAllByRole('radio')).toHaveLength(120)
+    expect(screen.getAllByRole('radio')).toHaveLength(168)
   })
 
   it('requires a correct CIDR answer before completing the lab', () => {
@@ -245,7 +245,7 @@ describe('CSC 138 Chapter 4', () => {
 describe('CSC 138 Chapter 3', () => {
   it('renders the lecture-aligned transport lesson collection and chapter navigation', () => {
     render(<Csc138App route={{ section: 'course', course: 'csc138', view: 'chapter3' }}/>)
-    expect(screen.getByRole('heading', { name: 'Make delivery reliable.' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'The Transport Layer' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /Transport Services Between Processes/ })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /The Internet Checksum/ })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /rdt3.0: Handling Loss/ })).toBeInTheDocument()
