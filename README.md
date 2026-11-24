@@ -1,49 +1,45 @@
 # DorkWitAFork.github.io
 
-Spencer Le Bleu's portfolio and study hub. **`source/` is the canonical Vite/React
-application** for the root hub, CSC 138, and CSC 139. Make application changes
-there, not in the generated root `index.html` or `assets/`.
+Spencer Le Bleu's portfolio and course guides. Edit the React app in [`source/`](source/). For lesson sources see [CSC 138](source/CSC138-SOURCES.md); for styling see the [notebook theme](source/THEME.md).
 
-## Develop and Publish
+## Development
 
-From `source/`, run:
+Run these commands from `source/` with Node 22:
 
 ```sh
 npm ci
 npm run dev
 ```
 
-Before publishing, also from `source/`:
+`/#/student` lists the courses. CSC 138 has chapters 1 through 5, interactive labs, quizzes and midterm practice. The CSC 139 and CSC 179 cards say “Coming Soon”. Existing CSC 139 bookmarks still work. The portfolio also has `/#/teacher` and `/#/hiring` views.
+
+## Verification
+
+From `source/`:
 
 ```sh
-npm run check
 npm test
 npm run publish:site
+npm run check:mirror
+npx playwright install chromium
+npm run test:pages
 ```
 
-`publish:site` builds into the ignored `source/dist/` staging directory, checks
-the entry point's asset references, then copies only its `index.html` and
-`assets/` to the repository root. It does not commit, push, or delete unrelated
-pages. Do not configure Vite to empty the repository root as its output directory.
-Old hashed assets are retained; remove only confirmed unused bundles if needed.
+`publish:site` type-checks, builds `dist/`, then updates the root `index.html` and `assets/`. For a check without changing the mirror, run `npm run build` instead. Use `npm run check` for TypeScript alone.
 
-Review the Git diff, then commit the source and root build outputs together and
-push to `main` to update GitHub Pages (published from the repository root).
-For a local production preview, serve the repository root with
-`python3 -m http.server 8000` and open `http://localhost:8000/`.
+`check:mirror` compares the Pages build with the files at the repository root. It lists tracked files in `assets/` absent from the new build. Review that list, remove obsolete generated files, and include the current outputs with the source change. The check ignores untracked experiments. Avoid staging the whole `assets/` directory.
 
-## Routes and Existing Pages
+Playwright tests the built artifact using a local Python 3 static server on port 4173. On a fresh Linux runner use `npx playwright install --with-deps chromium`. For a manual preview, run `python3 -m http.server 8000 --directory dist` from `source/`.
 
-- `/#/` is the portfolio hub; `/#/student` lists both study guides.
-- `/#/student/csc138/dashboard` and `/#/student/csc139/dashboard` open the courses.
-- CSC 138 course views include `dashboard`, `roadmap`, `chapter1`, `chapter2`, `chapter3`, `practice`, and `reference`.
-- `/csc138/` and `/csc138/index.html` redirect legacy hashes such as `#/practice`
-  to `/#/student/csc138/practice`; missing or invalid views open the dashboard.
-- Existing CSC 173 pages, assignment files, and legacy CSC 138 assets are retained.
-- Progress remains in the same origin's local storage under `csc138-progress-v1`
-  and `csc139-progress-v1`; changing the URL path does not erase it.
+## Deployment
 
-The former `csc138/source/` tracked app has been replaced by `source/`.
-The original `/root/school/Fall2026/CSC138/lesson-site` working copy is not part of
-this repository and was deliberately left untouched during migration. Use this
-repository's `source/` for future development.
+The [Pages workflow](.github/workflows/deploy-pages.yml) checks pull requests to `main`. On `main` it deploys `source/dist/`. The build includes the `/csc138/` bookmark redirect, `/csc173/`, the standalone final practice quiz and their public stylesheets. Preserve both browser progress keys (`csc138-progress-v1` and `csc139-progress-v1`) when changing routes or lessons.
+
+## Coding tools
+
+[AGENTS.md](AGENTS.md#code-review-workflow) defines the review order and links the offline rubrics. Open the repository root in your coding tool.
+
+- **OpenCode:** restart after a config change. [opencode.json](opencode.json) pins Ponytail `5.3.3`. Use `/ponytail-help` to see its commands. `opencode debug skill` should list `principle-subtract-before-you-add`, `thermo-nuclear-code-quality-review` and `unslop` from this checkout's `docs/agent-skills/`. First use of the plugin requires npm access or a populated OpenCode cache.
+- **Cline:** enable the [workspace rules](.clinerules/) and start a new task. [Claude Code](CLAUDE.md), [Gemini CLI](GEMINI.md) and [Copilot](.github/copilot-instructions.md) each point to the same project instructions.
+
+The [upstream revisions and MIT notices](docs/agent-skills/NOTICES.md) cover the local rubrics. On upgrade, review the Ponytail plugin pin and Cline rule together. These are development tools; the site build does not load them.

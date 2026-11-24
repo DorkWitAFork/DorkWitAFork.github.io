@@ -1,7 +1,7 @@
 import { cleanup, fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { chapter4Worksheets } from '../data/networkWorksheets'
-import { Csc138App } from './Csc138App'
+import Csc138App from './Csc138App'
 import { NetworkWorksheet } from './NetworkWorksheet'
 import { Csc138Chapter5Practice } from './Csc138Chapter5Practice'
 

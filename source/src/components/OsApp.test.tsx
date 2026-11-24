@@ -1,7 +1,7 @@
 import { cleanup, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { SiteRoute } from '../lib/router'
-import { OsApp } from './OsApp'
+import OsApp from './OsApp'
 
 type Csc139Route = Extract<SiteRoute, { section: 'course'; course: 'csc139' }>
 

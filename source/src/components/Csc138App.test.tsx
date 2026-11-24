@@ -1,6 +1,6 @@
 import { cleanup, fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { Csc138App } from './Csc138App'
+import Csc138App from './Csc138App'
 
 beforeEach(() => {
   localStorage.clear()
@@ -143,9 +143,9 @@ describe('CSC 138 Chapter 2', () => {
 })
 
 describe('CSC 138 midterm', () => {
-  it('renders the review and full practice tabs', () => {
+  it('renders the review and full practice tabs', async () => {
     render(<Csc138App route={{ section: 'course', course: 'csc138', view: 'midterm' }}/>)
-    expect(screen.getByRole('heading', { name: 'Practice the whole path.' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Practice the whole path.' })).toBeInTheDocument()
     expect(screen.getByText('Packet timing')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('tab', { name: 'Practice midterm' }))
     expect(screen.getByRole('heading', { name: 'Show your calculations and reasoning.' })).toBeInTheDocument()

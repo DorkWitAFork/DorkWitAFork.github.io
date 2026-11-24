@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react'
-import { Csc138App } from './components/Csc138App'
-import { OsApp } from './components/OsApp'
+import { Suspense, useEffect, useState } from 'react'
+import { lazyCourseView } from './components/lazyCourseView'
 import { HiringPortfolio, PortfolioHome, StudentLibrary, TeacherPage } from './components/SitePages'
 import { normalizeRoute, routeFromHash } from './lib/router'
+
+const NetworkCourse = lazyCourseView(() => import('./components/Csc138App'))
+const OsCourse = lazyCourseView(() => import('./components/OsApp'))
 
 export default function App() {
   const [route, setRoute] = useState(() => routeFromHash(window.location.hash))
@@ -23,8 +25,9 @@ export default function App() {
     document.title = title
   }, [route])
 
-  if (route.section === 'course' && route.course === 'csc138') return <Csc138App route={route} />
-  if (route.section === 'course' && route.course === 'csc139') return <OsApp route={route} />
+  if (route.section === 'course') return <Suspense fallback={<p role="status">Loading course…</p>}>
+    {route.course === 'csc138' ? <NetworkCourse route={route} /> : <OsCourse route={route} />}
+  </Suspense>
   if (route.section === 'student') return <StudentLibrary />
   if (route.section === 'teacher') return <TeacherPage />
   if (route.section === 'hiring') return <HiringPortfolio />

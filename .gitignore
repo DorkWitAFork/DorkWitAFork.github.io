@@ -7,3 +7,6 @@ vite.config.d.ts
 .DS_Store
 archive/
 **/AGENTS.md
+!/AGENTS.md
+test-results/
+playwright-report/

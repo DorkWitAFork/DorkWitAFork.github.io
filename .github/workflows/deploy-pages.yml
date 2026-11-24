@@ -1,6 +1,8 @@
 name: Deploy GitHub Pages
 
 on:
+  pull_request:
+    branches: [main]
   push:
     branches:
       - main
@@ -8,11 +10,9 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
-  group: pages
+  group: pages-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -34,27 +34,32 @@ jobs:
         working-directory: source
         run: npm ci
 
-      - name: Type check
-        working-directory: source
-        run: npm run check
-
       - name: Run tests
         working-directory: source
         run: npm test
 
-      - name: Build site
+      - name: Type check and build site
         working-directory: source
         run: npm run build
 
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
+      - name: Verify published files and run browser tests
+        working-directory: source
+        run: |
+          npm run check:mirror
+          npx playwright install --with-deps chromium
+          npm run test:pages
 
       - name: Upload Pages artifact
+        if: github.ref == 'refs/heads/main'
         uses: actions/upload-pages-artifact@v4
         with:
           path: source/dist
 
   deploy:
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
