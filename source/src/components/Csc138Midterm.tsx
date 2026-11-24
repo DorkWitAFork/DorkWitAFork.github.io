@@ -76,7 +76,7 @@ function PracticeMidterm() {
   </section>
 }
 
-export function Csc138Midterm() {
+export default function Csc138Midterm() {
   const [tab, setTab] = useState<'review' | 'practice'>('review')
   return <div className="page midterm-page">
     <header className="page-heading"><div><span className="kicker">CSC 138 / MIDTERM</span><h1>Practice the whole path.</h1></div><p>A focused review of the supplied midterm study guide, followed by a full-length practice set with extra calculation, reasoning, and coding questions.</p></header>

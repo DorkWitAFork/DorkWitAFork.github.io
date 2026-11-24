@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { Suspense, useEffect, useRef, useState } from 'react'
 import { csc138ChapterList, csc138Chapters, type Csc138Chapter } from '../data/csc138Course'
 import { semesterWeeks } from '../data/course'
 import { emptyProgress, loadProgress, recordQuizAttempt, saveProgress } from '../lib/progress'
@@ -7,12 +7,14 @@ import type { Csc138ChapterId, Csc138Progress, Csc138View } from '../types'
 import { Csc138Chapter3Reference } from './Csc138Chapter3Reference'
 import { Csc138Chapter4Reference } from './Csc138Chapter4Reference'
 import { Csc138Chapter4ExtendedReference, Csc138Chapter5Reference } from './Csc138NetworkReference'
-import { Csc138Midterm } from './Csc138Midterm'
+import { lazyCourseView } from './lazyCourseView'
 import { MathText } from './MathText'
 import { Icon } from './Icons'
 import { LessonVisual } from './LessonVisual'
 import { NetworkDiagram } from './NetworkDiagram'
 import { Practice } from './Practice'
+
+const Csc138Midterm = lazyCourseView(() => import('./Csc138Midterm'))
 
 type Csc138Route = Extract<SiteRoute, { section: 'course'; course: 'csc138' }>
 type Navigate = (view: Csc138View, chapter?: Csc138ChapterId) => void
@@ -145,7 +147,7 @@ function Reference({ chapter, selectChapter, reset }: { chapter: Csc138Chapter; 
   </div>
 }
 
-export function Csc138App({ route }: { route: Csc138Route }) {
+export default function Csc138App({ route }: { route: Csc138Route }) {
   const { view } = route
   const activeChapterId = csc138ChapterList.find(chapter => chapter.id === view)?.id ?? route.chapter ?? 'chapter1'
   const activeChapter = csc138Chapters[activeChapterId]
@@ -194,7 +196,7 @@ export function Csc138App({ route }: { route: Csc138Route }) {
 
   return <div className="app-shell">
     <header className="topbar"><button className="brand" onClick={() => navigate('dashboard')}><span className="brand-mark"><i/><i/><i/></span><span><b>NETWORK</b><small>CSC 138 FIELD LAB</small></span></button><nav id="csc138-primary-navigation" className={mobileOpen ? 'open' : ''} aria-label="Primary navigation">{views.slice(0, 2).map(renderNavButton)}<div className="chapter-nav" ref={chapterNavRef} onKeyDown={event => { if (event.key === 'Escape') { setChaptersOpen(false); chapterNavRef.current?.querySelector<HTMLButtonElement>('.chapter-trigger')?.focus() } }}><button type="button" className={`nav-item chapter-trigger ${csc138ChapterList.some(chapter => chapter.id === view) ? 'active' : ''}`} aria-expanded={chaptersOpen} aria-controls="csc138-chapter-navigation" onClick={() => setChaptersOpen(open => !open)}><Icon name="book"/><span>Chapters</span><Icon name="chevronDown" size={14}/></button><ul id="csc138-chapter-navigation" className="chapter-menu" hidden={!chaptersOpen}>{csc138ChapterList.map(chapter => <li key={chapter.id}><button type="button" aria-current={view === chapter.id ? 'page' : undefined} onClick={() => { setChaptersOpen(false); setMobileOpen(false); navigate(chapter.id) }}><span>Chapter {chapter.number}</span><small>{chapter.title}</small></button></li>)}</ul></div>{views.slice(2).map(renderNavButton)}</nav><button className="course-back" onClick={() => { window.location.hash = '/student' }}>All courses</button><div className="topbar-meta"><span>FALL</span><b>2026</b></div><button className="menu-button" aria-label="Toggle navigation" aria-controls="csc138-primary-navigation" aria-expanded={mobileOpen} onClick={() => setMobileOpen(value => !value)}><i/><i/><i/></button></header>
-     <main>{view === 'dashboard' && <Dashboard progress={progress} navigate={navigate}/>} {view === 'roadmap' && <Roadmap navigate={navigate}/>} {csc138ChapterList.some(chapter => chapter.id === view) && <Chapter key={activeChapter.id} chapter={activeChapter} progress={progress} completeLesson={completeLesson} navigate={navigate}/>} {view === 'practice' && <Practice key={activeChapter.id} chapter={activeChapter} completedActivities={progress.completedActivities} completeActivity={completeActivity} recordQuiz={recordQuiz} selectChapter={selectPracticeChapter}/>} {view === 'reference' && <Reference chapter={activeChapter} selectChapter={selectReferenceChapter} reset={reset}/>} {view === 'midterm' && <Csc138Midterm/>}</main>
+     <main>{view === 'dashboard' && <Dashboard progress={progress} navigate={navigate}/>} {view === 'roadmap' && <Roadmap navigate={navigate}/>} {csc138ChapterList.some(chapter => chapter.id === view) && <Chapter key={activeChapter.id} chapter={activeChapter} progress={progress} completeLesson={completeLesson} navigate={navigate}/>} {view === 'practice' && <Practice key={activeChapter.id} chapter={activeChapter} completedActivities={progress.completedActivities} completeActivity={completeActivity} recordQuiz={recordQuiz} selectChapter={selectPracticeChapter}/>} {view === 'reference' && <Reference chapter={activeChapter} selectChapter={selectReferenceChapter} reset={reset}/>} {view === 'midterm' && <Suspense fallback={<p role="status">Loading midterm…</p>}><Csc138Midterm/></Suspense>}</main>
     <footer className="site-footer"><div><span className="brand-mark small"><i/><i/><i/></span><strong>CSC 138 NETWORK LAB</strong></div><span>Independent study companion · Sacramento State · Fall 2026</span><small>Progress stays in this browser.</small></footer>
   </div>
 }

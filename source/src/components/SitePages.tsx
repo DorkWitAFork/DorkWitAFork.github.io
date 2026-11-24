@@ -10,10 +10,6 @@ function scrollToHiringSection(event: MouseEvent<HTMLAnchorElement>) {
   target?.focus({ preventScroll: true })
 }
 
-function SiteHeader() {
-  return <PortfolioHeader />
-}
-
 function PortfolioHeader() {
   return <header className="notebook-header">
     <a className="notebook-name" href="#/">Spencer Le Bleu</a>
@@ -37,12 +33,11 @@ function ProjectImplementation({ id }: Pick<PortfolioProject, 'id'>) {
 }
 
 function ProjectRecords() {
-  const order: PortfolioProject['id'][] = ['keys2fitness', 'rs-mercher', 'poker-app', 'course-labs']
-  return <section className="hiring-projects" id="work" aria-label="Selected projects" tabIndex={-1}>{order.map(id => {
-    const project = portfolioProjects.find(item => item.id === id)!
+  return <section className="hiring-projects" id="work" aria-label="Selected projects" tabIndex={-1}>{portfolioProjects.map(project => {
+    const { id } = project
     return <article className="hiring-project" id={`project-${id}`} key={id} aria-labelledby={`title-${id}`} tabIndex={-1}>
       <header><p className="hiring-project-kind">{project.kind}</p><h2 id={`title-${id}`}>{project.title}</h2><p className="hiring-focus">{project.focus}</p><p className="hiring-tools">{project.tools.join(' · ')}</p></header>
-      <div className="hiring-project-body"><div className="hiring-project-notes"><p className="hiring-summary">{project.summary}</p><ul>{project.notes.map(note => <li key={note}>{note}</li>)}</ul><nav aria-label={`${project.title} links`}>{project.privateSource ? <span className="hiring-source-private">Source code is private.</span> : <a href={project.sourceUrl} target="_blank" rel="noreferrer">Read the source<span className="hiring-repo">{new URL(project.sourceUrl).pathname.slice(1)}</span></a>}{project.liveUrl && <a href={project.liveUrl}>{project.liveLabel}</a>}</nav></div><ProjectImplementation id={id}/></div>
+      <div className="hiring-project-body"><div className="hiring-project-notes"><p className="hiring-summary">{project.summary}</p><ul>{project.notes.map(note => <li key={note}>{note}</li>)}</ul><nav aria-label={`${project.title} links`}>{project.sourceUrl ? <a href={project.sourceUrl} target="_blank" rel="noreferrer">Read the source<span className="hiring-repo">{new URL(project.sourceUrl).pathname.slice(1)}</span></a> : <span className="hiring-source-private">Source code is private.</span>}{project.liveUrl && <a href={project.liveUrl}>{project.liveLabel}</a>}</nav></div><ProjectImplementation id={id}/></div>
     </article>
   })}</section>
 }
@@ -134,7 +129,7 @@ export function TeacherPage() {
 
 export function StudentLibrary() {
   return <div className="portfolio-shell library-shell">
-    <SiteHeader />
+    <PortfolioHeader />
     <main className="library-page">
       <header className="library-heading"><div><span className="folio-index">STUDENT DESK / FALL 2026</span><h1>Choose a<br/><em>field guide.</em></h1></div><p>Course notes transformed into focused lessons, interactive practice, and quick reference material. Progress stays in your browser.</p></header>
       <section className="course-grid" aria-label="Available courses">

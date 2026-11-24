@@ -1,13 +1,11 @@
 export type PortfolioProject = {
   id: 'poker-app' | 'keys2fitness' | 'course-labs' | 'rs-mercher'
-  fileNumber: string
   title: string
   kind: string
   summary: string
   notes: string[]
   tools: string[]
-  sourceUrl: string
-  privateSource?: boolean
+  sourceUrl?: string
   focus: string
   liveUrl?: string
   liveLabel?: string
@@ -15,22 +13,7 @@ export type PortfolioProject = {
 
 export const portfolioProjects: PortfolioProject[] = [
   {
-    id: 'poker-app',
-    fileNumber: '01',
-    title: 'PokerApp',
-    focus: 'Relational data modeling and desktop application structure',
-    kind: 'Desktop application / In progress',
-    summary: 'A Java desktop application for recording poker games, players, buy-ins, cash-outs, and table history.',
-    notes: [
-      'I’m using Java Swing for the desktop interface and SQLite for the session records. Game setup, player lookup, reports, and statistics have their own screens.',
-      'The service operations are still being completed. Models, database access, services, and interface code are kept separate so that work does not all end up in screen handlers.',
-    ],
-    tools: ['Java', 'Swing', 'SQLite', 'Maven'],
-    sourceUrl: 'https://github.com/DorkWitAFork/PokerApp',
-  },
-  {
     id: 'keys2fitness',
-    fileNumber: '02',
     title: 'Keys2Fitness',
     focus: 'Leading development across the coach and client experience',
     kind: 'Lead developer / Senior project / In progress',
@@ -44,8 +27,6 @@ export const portfolioProjects: PortfolioProject[] = [
   },
   {
     id: 'rs-mercher',
-    privateSource: true,
-    fileNumber: '03',
     title: 'rs-mercher',
     focus: 'Learning from real market trends in Old School RuneScape',
     kind: 'Machine learning + market analysis / In progress',
@@ -56,11 +37,22 @@ export const portfolioProjects: PortfolioProject[] = [
       'It is still in progress. Recorded evidence supports evaluation, paper decisions, and replay; dry-run is the default while I develop and test the learning and trading workflows.',
     ],
     tools: ['Python', 'Machine learning', 'SQLite', 'Market data', 'Evaluation + replay'],
-    sourceUrl: 'https://github.com/DorkWitAFork/rs-mercher',
+  },
+  {
+    id: 'poker-app',
+    title: 'PokerApp',
+    focus: 'Relational data modeling and desktop application structure',
+    kind: 'Desktop application / In progress',
+    summary: 'A Java desktop application for recording poker games, players, buy-ins, cash-outs, and table history.',
+    notes: [
+      'I’m using Java Swing for the desktop interface and SQLite for the session records. Game setup, player lookup, reports, and statistics have their own screens.',
+      'The service operations are still being completed. Models, database access, services, and interface code are kept separate so that work does not all end up in screen handlers.',
+    ],
+    tools: ['Java', 'Swing', 'SQLite', 'Maven'],
+    sourceUrl: 'https://github.com/DorkWitAFork/PokerApp',
   },
   {
     id: 'course-labs',
-    fileNumber: '04',
     title: 'Course Labs',
     focus: 'Turning networking and operating-systems material into usable study tools',
     kind: 'Bundled study tools / CSC 138 + CSC 139',
